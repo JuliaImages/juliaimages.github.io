@@ -9,4 +9,4 @@ notifications:
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'Pkg.add("Documenter")'
-  - julia -e 'cd(ENV["TRAVIS_BUILD_DIR"]); include(joinpath("docs", "make.jl"))'
+  - julia -e 'cd(ENV["TRAVIS_BUILD_DIR"]); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
