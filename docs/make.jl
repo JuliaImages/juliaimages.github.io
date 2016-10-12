@@ -5,6 +5,7 @@ makedocs(format   = Documenter.Formats.HTML,
          pages    = ["Home"=>"index.md", "install.md", "troubleshooting.md"])
 
 deploydocs(repo    = "github.com/JuliaImages/juliaimages.github.io.git",
+           target  = "build",
            branch  = "master",
            latest  = "source",
            julia   = "0.5",
