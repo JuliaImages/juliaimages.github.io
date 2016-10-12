@@ -2,7 +2,7 @@ using Documenter
 
 makedocs(format   = Documenter.Formats.HTML,
          sitename = "JuliaImages",
-         pages    = ["index.md", "install.md", "troubleshooting.md"])
+         pages    = ["Home"=>"index.md", "install.md", "troubleshooting.md"])
 
 deploydocs(repo    = "github.com/JuliaImages/juliaimages.github.io.git",
            branch  = "master",
