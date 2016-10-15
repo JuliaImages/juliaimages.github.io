@@ -1,4 +1,4 @@
-# Getting started: Installation and testing your setup
+# Getting started: Installation and testing your install
 
 Most users probably want to start with the Images package, which bundles
 much (but not all) of the functionality in JuliaImages.
@@ -31,6 +31,12 @@ using TestImages
 img = testimage("mandrill")
 ```
 
+If this is your first time working with images in Julia, it's likely
+that these commands will prompt you to install one or more additional
+packages appropriate for your platform; you should generally accept
+the recommendation, unless you have reasons to prefer an alternate
+solution.
+
 For loading image files that might already be on your computer, you should
 (if you installed Images) already have the [FileIO
 package](https://github.com/JuliaIO/FileIO.jl):
@@ -45,8 +51,14 @@ an input/output package appropriate for your platform.
 
 ## Displaying images
 
-When working with images, it's obviously helpful to be able to look at them.
-If you use Julia through [Juno](http://junolab.org/) or [IJulia](https://github.com/JuliaLang/IJulia.jl), images should display automatically.
+When working with images, it's obviously helpful to be able to look at
+them.  If you use Julia through [Juno](http://junolab.org/) (**FIXME:
+figure out Juno**) or
+[IJulia](https://github.com/JuliaLang/IJulia.jl), images should
+display automatically:
+
+![IJulia](assets/ijulia.png)
+
 Users of the Julia command-line interface (REPL) can install the [ImageView](https://github.com/timholy/ImageView.jl) package:
 
 ```julia
@@ -55,6 +67,10 @@ using TestImages, Images, ImageView
 img = testimage("mandrill")
 imshow(img)
 ```
+
+`ImageView` includes interactive features (panning/zooming, contrast
+adjustment, playing movies, labeling, etc.) and may be of interest
+even for users of graphical environments.
 
 ## Troubleshooting
 
