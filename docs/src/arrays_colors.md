@@ -133,7 +133,7 @@ julia> img == imgg
 true
 ```
 
-There's more to say on this topic, but we'll wait until we discuss [Views](@ref).
+There's more to say on this topic, but we'll wait until we discuss [Conversions vs. views](@ref).
 
 ## Colors beyond the pale
 
