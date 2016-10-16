@@ -13,28 +13,28 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "JuliaImages: image processing and machine vision for Julia",
     "category": "section",
-    "text": "JuliaImages hosts the major Julia packages for image processing. These pages are designed to help you get started with image analysis in Julia.Pages = [\"install.md\"]"
+    "text": "JuliaImages (source code) hosts the major Julia packages for image processing.These pages are designed to help you get started with image analysis in Julia.Pages = [\"install.md\", \"arrays_colors.md\", \"conversions_views.md\", \"indexing.md\"]"
 },
 
 {
     "location": "install.html#",
-    "page": "Getting started: Installation and testing your setup",
-    "title": "Getting started: Installation and testing your setup",
+    "page": "Getting started: Installation and testing your install",
+    "title": "Getting started: Installation and testing your install",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "install.html#Getting-started:-Installation-and-testing-your-setup-1",
-    "page": "Getting started: Installation and testing your setup",
-    "title": "Getting started: Installation and testing your setup",
+    "location": "install.html#Getting-started:-Installation-and-testing-your-install-1",
+    "page": "Getting started: Installation and testing your install",
+    "title": "Getting started: Installation and testing your install",
     "category": "section",
     "text": "Most users probably want to start with the Images package, which bundles much (but not all) of the functionality in JuliaImages."
 },
 
 {
     "location": "install.html#Installation-1",
-    "page": "Getting started: Installation and testing your setup",
+    "page": "Getting started: Installation and testing your install",
     "title": "Installation",
     "category": "section",
     "text": "Install Images via the package manager,Pkg.add(\"Images\")This will also install many dependencies.Images (and possibly some additional packages) may be all you need to manipulate images programmatically. However, most users will want to take one or two additional steps: ensuring that you can load and display images."
@@ -42,26 +42,186 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "install.html#Loading-your-first-image-1",
-    "page": "Getting started: Installation and testing your setup",
+    "page": "Getting started: Installation and testing your install",
     "title": "Loading your first image",
     "category": "section",
-    "text": "When testing ideas or just following along with the documentation, it can be useful to have some images to work with. The TestImages package bundles several \"standard\" images for you.To load one of the images from this package, sayPkg.add(\"TestImages\")    # if you haven't already installed this package\nusing TestImages\nimg = testimage(\"mandrill\")For loading image files that might already be on your computer, you should (if you installed Images) already have the FileIO package:using FileIO\nimg = load(\"myphoto.png\")This should load the image for you, possibly prompting you to install an input/output package appropriate for your platform."
+    "text": "When testing ideas or just following along with the documentation, it can be useful to have some images to work with. The TestImages package bundles several \"standard\" images for you.To load one of the images from this package, sayPkg.add(\"TestImages\")    # if you haven't already installed this package\nusing TestImages\nimg = testimage(\"mandrill\")If this is your first time working with images in Julia, it's likely that these commands will prompt you to install one or more additional packages appropriate for your platform; you should generally accept the recommendation, unless you have reasons to prefer an alternate solution.For loading image files that might already be on your computer, you should (if you installed Images) already have the FileIO package:using FileIO\nimg = load(\"myphoto.png\")This should load the image for you, possibly prompting you to install an input/output package appropriate for your platform."
 },
 
 {
     "location": "install.html#Displaying-images-1",
-    "page": "Getting started: Installation and testing your setup",
+    "page": "Getting started: Installation and testing your install",
     "title": "Displaying images",
     "category": "section",
-    "text": "When working with images, it's obviously helpful to be able to look at them. If you use Julia through Juno or IJulia, images should display automatically. Users of the Julia command-line interface (REPL) can install the ImageView package:Pkg.add(\"ImageView\")\nusing TestImages, Images, ImageView\nimg = testimage(\"mandrill\")\nimshow(img)"
+    "text": "When working with images, it's obviously helpful to be able to look at them.  If you use Julia through Juno (FIXME: figure out Juno) or IJulia, images should display automatically:(Image: IJulia)Users of the Julia command-line interface (REPL) can install the ImageView package:Pkg.add(\"ImageView\")\nusing TestImages, Images, ImageView\nimg = testimage(\"mandrill\")\nimshow(img)ImageView includes interactive features (panning/zooming, contrast adjustment, playing movies, labeling, etc.) and may be of interest even for users of graphical environments."
 },
 
 {
     "location": "install.html#Troubleshooting-1",
-    "page": "Getting started: Installation and testing your setup",
+    "page": "Getting started: Installation and testing your install",
     "title": "Troubleshooting",
     "category": "section",
     "text": "Reading and writing images, as well as graphical display, involve interactions with external software libraries; occasionally, the installation of these libraries goes badly. If you experience any difficulties with any of the above steps, please see the Installation troubleshooting page for more information."
+},
+
+{
+    "location": "arrays_colors.html#",
+    "page": "Arrays, Numbers, and Colors",
+    "title": "Arrays, Numbers, and Colors",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "arrays_colors.html#Arrays,-Numbers,-and-Colors-1",
+    "page": "Arrays, Numbers, and Colors",
+    "title": "Arrays, Numbers, and Colors",
+    "category": "section",
+    "text": "DocTestSetup = quote\n    srand(2)\nendIn Julia, an image is just an array, and many of the ways you manipulate images come from the general methods to work with multidimensional arrays. For example,julia> img = rand(2,2)\n2×2 Array{Float64,2}:\n 0.366796  0.210256\n 0.523879  0.819338defines an \"image\" img of 64-bit floating-point numbers. You should be able to use this as an image in most or all functions in JuliaImages.We'll be talking quite a bit about handling arrays. This page will focus on the \"element type\" (eltype) stored in the array. In case you're new to Julia, if a is an array of integers:julia> a = [1,2,3,4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4then all of the following create a new array where the element type is Float64:convert(Array{Float64}, a)\nmap(Float64, a)\nFloat64.(a)     # short for broadcast(Float64, a)For example,julia> Float64.(a)\n4-element Array{Float64,1}:\n 1.0\n 2.0\n 3.0\n 4.0Arrays are indexed with square brackets (a[1]), with indexing starting at 1 by default. A two-dimensional array like img can be indexed as img[2,1], which would be the second row, first column. Julia also supports \"linear indexing,\" using a single integer to address elements of an arbitrary multidimensional array in a manner that (in simple cases) reflects the memory offset of the particular element. For example, img[3] corresponds to img[1,2] (numbering goes down columns, and then wraps around at the top of the next column, because Julia arrays are stored in \"column major\" order where the fastest dimension is the first dimension)."
+},
+
+{
+    "location": "arrays_colors.html#Numbers-versus-colors-1",
+    "page": "Arrays, Numbers, and Colors",
+    "title": "Numbers versus colors",
+    "category": "section",
+    "text": "For the array img we created above, you can display it as a grayscale image using ImageView. But if you're following along in IJulia, you might notice that img does not display as an image: instead, it prints as an array of numbers as shown above.  Arrays of \"plain numbers\" are not displayed graphically, because they might represent something numerical (e.g., a matrix used for linear algebra) rather than an image. To indicate that this is worthy of graphical display, convert the element type to a color chosen from the Colors package:(Image: float_gray)Here we used Gray to indicate that this array should be interpreted as a grayscale image.Under the hood, what is Gray doing?  It's informative to see the \"raw\" object, displayed as text:(Image: float_gray_text)(should there be a convenience function for this?) (Users of the Julia command-line REPL interface will see this representation immediately, rather than the graphical one.)You can see this is a 2×2 array of Gray{Float64} objects. You might be curious how these Gray objects are represented. In the command-line REPL, it looks like this (the same command works with IJulia):julia> dump(imgg[1,1])\nColorTypes.Gray{Float64}\n  val: Float64 0.36679641243992434dump shows the \"internal\" representation of an object.  You can see that Gray is a type (technically, an immutable) with a single field val; for Gray{Float64}, val is a 64-bit floating point number. Using val directly is not recommended: you can extract the Float64 value with the accessor functions real or gray (the reason for the latter name will be clearer when we discuss RGB colors).What kind of overhead do these objects incur?julia> sizeof(img)\n32\n\njulia> sizeof(imgg)\n32The answer is \"none\": they don't take up any memory of their own, nor do they typically require any additional processing time. The Gray \"wrapper\" is just an \"interpretation\" of the values, one that helps clarify that this should be displayed as a grayscale image.  Indeed, img and imgg compare as equal:julia> img == imgg\ntrueThere's more to say on this topic, but we'll wait until we discuss Conversions vs. views."
+},
+
+{
+    "location": "arrays_colors.html#Colors-beyond-the-pale-1",
+    "page": "Arrays, Numbers, and Colors",
+    "title": "Colors beyond the pale",
+    "category": "section",
+    "text": "Gray is not the only color in the universe:(Image: randrgb)Let's look at imgc as text (shown here in the REPL):julia> imgc\n2×2 Array{ColorTypes.RGB{Float32},2}:\n RGB{Float32}(0.75509,0.965058,0.65486)     RGB{Float32}(0.696203,0.142474,0.783316)\n RGB{Float32}(0.705195,0.953892,0.0744661)  RGB{Float32}(0.571945,0.42736,0.548254)\n\njulia> size(imgc)\n(2,2)\n\njulia> dump(imgc[1,1])\nColorTypes.RGB{Float32}\n  r: Float32 0.7550899\n  g: Float32 0.9650581\n  b: Float32 0.65485954Here we see one of the primary differences between Julia's approach to images and that of several other popular frameworks: imgc does not have a dimension of the array devoted to the \"color channel.\" Instead, every element of the array corresponds to a complete pixel's worth of information. Often this simplifies the logic of many algorithms, sometimes allowing a single implementation to work for both color and grayscale images.You can extract the individual color channels using their field names (r, g, and b), but as you'll see in a moment, a more universal approach is to use accessor functions:julia> c = imgc[1,1]; (red(c), green(c), blue(c))\n(0.7550899f0,0.9650581f0,0.65485954f0)Julia's Colors package allows the same color to be represented in several different ways, and this can facilitate interaction with other tools. For example, certain C libraries permit or prefer the order of the color channels to be different:julia> dump(convert(BGR, c))\nColorTypes.BGR{Float32}\n  b: Float32 0.65485954\n  g: Float32 0.9650581\n  r: Float32 0.7550899or even to pack the red, green, and blue colors–-together with a dummy \"alpha\" (transparency) channel–-into a single 32-bit integer:julia> c24 = convert(RGB24, c); dump(c24)\nColorTypes.RGB24\n  color: UInt32 12711591\n\njulia> c24.color\n0x00c1f6a7From first (the first two hex-digits after the \"0x\") to last (the final two hex-digits), the order of the channels here is alpha, red, green, blue:julia> 0xc1/0xff\n0.7568627450980392\n\njulia> 0xf6/0xff\n0.9647058823529412\n\njulia> 0xa7/0xff\n0.6549019607843137These values are close to the channels of c, but have been rounded off–-each channel is encoded with only 8 bits, so some approximation of the exact floating-point value is unavoidable."
+},
+
+{
+    "location": "arrays_colors.html#A-consistent-scale-for-floating-point-and-\"integer\"-colors:-fixed-point-numbers-1",
+    "page": "Arrays, Numbers, and Colors",
+    "title": "A consistent scale for floating-point and \"integer\" colors: fixed-point numbers",
+    "category": "section",
+    "text": "c24 does not have an r field, but we can still use red to extract the red channel:julia> r = red(c24)\n0.757N0f8This may look fairly strange at first, so let's unpack this carefully. Notice first that the \"floating-point\" portion of this number matches (to within the precision of the rounding) the value of red(c). The N0f8 means \"Normalized with 8 fractional bits, with 0 bits left for representing values higher than 1.\" This is a fixed-point number–-rather like floating-point numbers, except that the decimal does not \"float\". Internally, these are represented in terms of the 8-bit unsigned integer UInt8julia> dump(r)\nFixedPointNumbers.UFixed{UInt8,8}\n  i: UInt8 193(Note that N0f8 is an abbreviation; the full typename is UFixed{UInt8, 8}.) N0f8 interprets this 8-bit integer as a value lying between 0 and 1, with 0 corresponding to 0x00 and 1 corresponding to 0xff. This interpretation affects how the number is used for arithmetic and conversion to and from other values. Stated another way, r behaves asjulia> r == 193/255\ntruefor essentailly all purposes (but see A note on arithmetic overflow).This has a very important consequence: in many other image frameworks, the \"meaning\" of an image depends on how it is stored, but in Julia the meaning can be assigned independently of storage representation. In some other frameworks, if your image is stored with floating-point numbers, then \"white\" corresponds to all color channels having the value 1.0; conversely, if it is stored with unsigned 8-bit integers, then \"white\" corresponds to values of 255. In most number systems we would agree that 255 != 1.0, and this fact means that you sometimes need to be quite careful when converting from one representation to another.  Conversely, using these Julia packages there is no discrepancy in \"meaning\" between the encoding of images represented as floating point or 8-bit (or 16-bit) fixed-point numbers: 0 always means \"black\" and 1 always means \"white\" or \"saturated.\"Now, this doesn't prevent you from constructing pixels with values out of this range:(Image: saturated_spectrum)Notice that the first two yellows look identical, because both the red and green color channels are 1 or higher and consequently are saturated.However, you should be aware that for integer inputs, the default is to use the N0f8 element type, and this type cannot represent values outside the range from 0 to 1:julia> RGB(8,2,0)\nERROR: ArgumentError: (8,2,0) are integers in the range 0-255, but integer inputs are encoded with the N0f8\n  type, an 8-bit type representing 256 discrete values between 0 and 1.\n  Consider dividing your input values by 255, for example: RGB{N0f8}(8/255,2/255,0/255)\n  See the READMEs for FixedPointNumbers and ColorTypes for more information.\n in throw_colorerror(::Type{FixedPointNumbers.UFixed{UInt8,8}}, ::Tuple{Int64,Int64,Int64}) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:639\n in throw_colorerror(::Type{FixedPointNumbers.UFixed{UInt8,8}}, ::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:608\n in checkval at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:596 [inlined]\n in ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:90\n in ColorTypes.RGB{T<:Union{AbstractFloat,FixedPointNumbers.FixedPoint}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:437The error message here reminds you how to resolve a common mistake, trying to construct red as RGB(255, 0, 0). In Julia, that should always be RGB(1, 0, 0)."
+},
+
+{
+    "location": "arrays_colors.html#More-fixed-point-numbers-1",
+    "page": "Arrays, Numbers, and Colors",
+    "title": "More fixed-point numbers",
+    "category": "section",
+    "text": "16-bit images can be expressed in terms of the N0f16 type. Let's compare the maximum values (typemax) and smallest-difference (eps) representable with N0f8 and N0f16:julia> using FixedPointNumbers\n\njulia> (typemax(N0f8), eps(N0f8))\n(1.0N0f8,0.004N0f8)\n\njulia> (typemax(N0f16), eps(N0f16))\n(1.0N0f16,2.0e-5N0f16)You can see that this type also has a maximum value of 1, but is higher precision, with the gap between adjacent numbers being much smaller.Many cameras (particularly, scientific cameras) now return 16-bit values. However, some cameras do not provide a full 16 bits worth of information; for example, the camera might be 12-bit and return values between 0x0000 and 0x0fff.  As an N0f16, the latter displays as nearly black:(Image: 12bit_black)Since the camera is saturated, this is quite misleading–-it should instead display as white.This again illustrates one of the fundamental problems about assuming that the representation (a 16-bit integer) also describes the meaning of the number. In Julia, we decouple these by providing many different fixed-point number types. In this case, the natural way to interpret these values is by using a fixed-point number with 12 fractional bits; this leaves 4 bits that we can use to represent values bigger than 1, so the number type is called N4f12:julia> (typemax(N4f12), eps(N4f12))\n(16.0037N4f12,0.0002N4f12)You can see that the maximum value achievable by an N4f12 is approximately 16 = 2^4.Using this N4f12 interpretation of the 16 bits, the color displays correctly as white:(Image: 12bit_black)and acts like 1 for all arithmetic purposes. Even though the raw representation as 0x0fff is the same, we can endow the number with appropriate meaning through its type."
+},
+
+{
+    "location": "arrays_colors.html#A-note-on-arithmetic-overflow-1",
+    "page": "Arrays, Numbers, and Colors",
+    "title": "A note on arithmetic overflow",
+    "category": "section",
+    "text": "Sometimes, being able to construct a color values outside 0 to 1 is useful. For example, if you want to compute the average color in an image, the natural approach is to first sum all the pixels and then divide by the total number of pixels. At an intermediate stage, the sum will typically result in a color that is well beyond saturation.It's important to note that arithmetic with N0f8 numbers, like arithmetic with UInt8, overflows:julia> 0xff + 0xff\n0xfe\n\njulia> 0xfe/0xff\n0.996078431372549\n\njulia> 1N0f8 + 1N0f8\n0.996N0f8Consequently, if you're accumulating values, it's advisable to accumulate them in an appropriate floating-point type, such as Float32, Gray{Float64}, or RGB{Float32}."
+},
+
+{
+    "location": "conversions_views.html#",
+    "page": "Conversions vs. views",
+    "title": "Conversions vs. views",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "conversions_views.html#Conversions-vs.-views-1",
+    "page": "Conversions vs. views",
+    "title": "Conversions vs. views",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "conversions_views.html#Sharing-memory:-an-introduction-to-views-1",
+    "page": "Conversions vs. views",
+    "title": "Sharing memory: an introduction to views",
+    "category": "section",
+    "text": "In Arrays, Numbers, and Colors we discussed how one can convert the element type of an array a = [1,2,3,4] using a syntax like Float64.(a). You might be curious what affect, if any, Int.(a) has:julia> a = [1,2,3,4]\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4\n\njulia> b = Int.(a)\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4There's certainly no obvious change, and as you'd expect b == a returns true.  Beyond having equal size and elements, there's a more extensive notion of \"sameness\": do a and b refer to the same storage area in memory?  We can test that in the following ways:julia> a === b   # note: 3 equal signs!\nfalseor more generally by setting a value and seeing whether the change is reflected in the other:julia> b[1] = 5\n5\n\njulia> b\n4-element Array{Int64,1}:\n 5\n 2\n 3\n 4\n\njulia> a\n4-element Array{Int64,1}:\n 1\n 2\n 3\n 4Since the types of a and b are identical, both tests tell us that a and b are independent objects, even if they (initially) had the same values.This occurs because f.(a) (which calls the function broadcast(f, a)) always allocates a new array to return its values. However, not all functions operate this way. One good example is view:julia> v = view(a, :)\n4-element SubArray{Int64,1,Array{Int64,1},Tuple{Colon},true}:\n 1\n 2\n 3\n 4Now, v and a have the same values but are distinct objects:julia> v == a\ntrue\n\njulia> v === a\nfalseHowever, they share the same memory:julia> v[1] = 10\n10\n\njulia> v\n4-element SubArray{Int64,1,Array{Int64,1},Tuple{Colon},true}:\n 10\n  2\n  3\n  4\n\njulia> a\n4-element Array{Int64,1}:\n 10\n  2\n  3\n  4Consequently, v is a \"view\" of the values stored in a.  While this usage of view is trivial, more generally it can be used to select a rectangular region of interest, which is a common operation in image processing; this region is selected without copying any data, and any manipulations of the values within this region are reflected in the original (parent) array. See the documentation on view, by typing ?view, for more information.view is not the only function with this property: another good example is reshape, which can be used to change the dimensions of an array:julia> r = reshape(a, 2, 2)\n2×2 Array{Int64,2}:\n 10  3\n  2  4\n\njulia> r[1,2] = 7\n7\n\njulia> r\n2×2 Array{Int64,2}:\n 10  7\n  2  4\n\njulia> a\n4-element Array{Int64,1}:\n 10\n  2\n  7\n  4Notice that the return type of reshape is just an Array, one which happens to be serving as a view of a. However, some inputs cannot be represented as a view with an Array. For example:julia> r = reshape(1:15, 3, 5)\n3×5 Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}:\n 1  4  7  10  13\n 2  5  8  11  14\n 3  6  9  12  15A UnitRange is represented compactly–-storing only the starting and stopping values–-so there is no memory location that can be referenced to access all values. In such cases, reshape returns a ReshapedArray, which is a generic \"view type\" that handles reshaping of any kind of AbstractArray.The output of both view and reshape are always views: make a change in either the parent or the view, and the change is reflected in the other."
+},
+
+{
+    "location": "conversions_views.html#Views-for-\"converting\"-between-fixed-point-and-raw-representations-1",
+    "page": "Conversions vs. views",
+    "title": "Views for \"converting\" between fixed-point and raw representations",
+    "category": "section",
+    "text": "Arrays, Numbers, and Colors also introduced the fixed-point numbers used in some representations of color (or grayscale) information. If you want to switch representation, you can use the reinterpret function:julia> using FixedPointNumbers\n\njulia> x = 0.5N0f8\n0.502N0f8\n\njulia> y = reinterpret(x)  # alternatively, use: reinterpret(UInt8, x)\n0x80\n\njulia> reinterpret(N0f8, y)\n0.502N0f8You can apply this to arrays:julia> a = [0.2N0f8, 0.8N0f8]\n2-element Array{FixedPointNumbers.UFixed{UInt8,8},1}:\n 0.2N0f8\n 0.8N0f8\n\njulia> b = reinterpret.(a)\n2-element Array{UInt8,1}:\n 0x33\n 0xccBecause of the f.(a) call, b does not share memory with a:julia> b[2] = 0xff\n0xff\n\njulia> a\n2-element Array{FixedPointNumbers.UFixed{UInt8,8},1}:\n 0.2N0f8\n 0.8N0f8Often this might not be a problem, but sometimes you might wish that these referenced the same underlying object.  For such situations, JuliaImages, through the ImageCore package (which is bundled with Images), implements views that can perform this reinterpretation:julia> using Images\n\njulia> v = rawview(a)\n2-element Array{UInt8,1}:\n 0x33\n 0xcc\n\njulia> v[2] = 0xff\n0xff\n\njulia> a\n2-element Array{FixedPointNumbers.UFixed{UInt8,8},1}:\n 0.2N0f8\n 1.0N0f8The opposite transformation is ufixedview:julia> c = [0x11, 0x22]\n2-element Array{UInt8,1}:\n 0x11\n 0x22\n\njulia> ufixedview(c)\n2-element Array{FixedPointNumbers.UFixed{UInt8,8},1}:\n 0.067N0f8\n 0.133N0f8ufixedview allows you to pass the interpreted type as the first argument, i.e., ufixedview(N0f8, A), and indeed it's required to do so unless A has element type UInt8, in which case ufixedview assumes you want N0f8.Like reshape, both rawview and ufixedview might return an Array or a more complicated type (a MappedArray from the MappedArrays package), depending on the types of the inputs."
+},
+
+{
+    "location": "conversions_views.html#Color-separations:-views-for-converting-between-numbers-and-colors-1",
+    "page": "Conversions vs. views",
+    "title": "Color separations: views for converting between numbers and colors",
+    "category": "section",
+    "text": "In Arrays, Numbers, and Colors, we pointed out that one can convert a numeric array to a grayscale array with Gray.(a); the opposite transformation can be performed with real.(b). Handling RGB colors is a little more complicated, because the dimensionality of the array changes. One approach is to use Julia's comprehensions:julia> a = reshape(collect(0.1:0.1:0.6), 3, 2)\n3×2 Array{Float64,2}:\n 0.1  0.4\n 0.2  0.5\n 0.3  0.6\n\njulia> c = [RGB(a[1,j], a[2,j], a[3,j]) for j = 1:2]\n2-element Array{ColorTypes.RGB{Float64},1}:\n RGB{Float64}(0.1,0.2,0.3)\n RGB{Float64}(0.4,0.5,0.6)\n\njulia> x = [getfield(c[j], i) for i = 1:3, j = 1:2]\n3×2 Array{Float64,2}:\n 0.1  0.4\n 0.2  0.5\n 0.3  0.6While this approach works, it's not without flaws:this implementation relies on the two-dimensionality of a; a 3d array (producing a 2d color image) would need a different implementation\nthe use of getfield assumes that elements of c have fields and that they are in the order r, g, b. Given the large number of different representations of RGB supported by ColorTypes, neither of these assumptions is entirely safe.\nit always makes a copy of the dataTo address these weaknesses, JuliaImages provides two complementary view types, ColorView and ChannelView:julia> colv = colorview(RGB, a)\n2-element Array{ColorTypes.RGB{Float64},1}:\n RGB{Float64}(0.1,0.2,0.3)\n RGB{Float64}(0.4,0.5,0.6)\n\njulia> chanv = channelview(c)\n3×2 Array{Float64,2}:\n 0.1  0.4\n 0.2  0.5\n 0.3  0.6colorview and channelview always return a view of the original array; whether they return an Array or a ColorView/ChannelView again depends on the input types."
+},
+
+{
+    "location": "conversions_views.html#Using-colorview-to-make-color-overlays-1",
+    "page": "Conversions vs. views",
+    "title": "Using colorview to make color overlays",
+    "category": "section",
+    "text": "Another use for colorview is to combine multiple grayscale images into a single color image. For example:using Colors, Images\nr = linspace(0,1,11)\nb = linspace(1,0,11)\nimg1d = colorview(RGB, r, zeroarray, b)results (in IJulia) in(Image: linspace)zeroarray is a special constant that \"expands\" to return the equivalent of an all-zeros array matching the indices of the other inputs to colorview."
+},
+
+{
+    "location": "conversions_views.html#Changing-the-order-of-dimensions-1",
+    "page": "Conversions vs. views",
+    "title": "Changing the order of dimensions",
+    "category": "section",
+    "text": "When you've separated colors into a separate color dimension, some code might assume that color is the last (slowest) dimension. You can convert directly using Julia's permutedims function:julia> pc = permutedims(a, (2,1))\n2×3 Array{Float64,2}:\n 0.1  0.2  0.3\n 0.4  0.5  0.6permutedims explicitly creates a new array with the data rearranged in memory. It's also possible to perform something similar as a view:julia> pv = permuteddimsview(a, (2,1))\n2×3 permuteddimsview(::Array{Float64,2}, (2,1)) with element type Float64:\n 0.1  0.2  0.3\n 0.4  0.5  0.6While this looks the same, pv (unlike pc) shares memory with a; this is an apparent permutation, achieved by having the indexing of a permuteddimsview array swap the input indexes whenever individual elements are accessed.One thing to be aware of is that the performance of these two might differ, for reasons that have to do with how CPUs and memory work rather than any limitation of Julia. If a is large and you want to access all three elements corresponding to the color channels of a single pixel, pv will likely be more efficient because values are adjacent in memory and thus likely share a cache line. Conversely, if you want to access different pixels from a single color channel sequentially, pc may be more efficient (for the same reason)."
+},
+
+{
+    "location": "conversions_views.html#Decoupling-views-from-the-parent-memory-1",
+    "page": "Conversions vs. views",
+    "title": "Decoupling views from the parent memory",
+    "category": "section",
+    "text": "If you want to use some of these views but have an application where the sharing of memory is actually problematic, keep in mind that you can always call Julia's copy function to create a copy of the array. The type of the resulting copy might not be identical to the original, but the values will be the same."
+},
+
+{
+    "location": "conversions_views.html#Composing-views-(and-compact-summaries)-1",
+    "page": "Conversions vs. views",
+    "title": "Composing views (and compact summaries)",
+    "category": "section",
+    "text": "When Julia displays an array as text, there is usually a 1-line summary at the top showing the array type. You may have already noticed that JuliaImages uses an unconventional syntax for summarizing information about certain kinds of arrays. For example, the type of pv above isBase.PermutedDimsArrays.PermutedDimsArray{Float64,2,(2,1),(2,1),Array{Float64,2}}but when you display such an object, in the summary line it prints aspermuteddimsview(::Array{Float64,2}, (2,1)) with element type Float64This is intended to result in more easily-readable information about types.The main motivation for this is that different view types can be combined freely, and when you do so sometimes the type gets quite long. For example, suppose you have a disk file storing a m×n×3×t UInt8 array representing an RGB movie (t being the time axis). To have it display as an RGB movie, you might create the following view of the array A:mov = colorview(RGB, ufixedview(permuteddimsview(A, (3,1,2,4))))If you show mov at the REPL, the summary prints like this:ColorView{RGB}(ufixedview(N0f8, permuteddimsview(::Array{UInt8,4}, (3,1,2,4)))) with element type ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}}which may be somewhat easier to read than the type:ImageCore.ColorView{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},3,MappedArrays.MappedArray{FixedPointNumbers.UFixed{UInt8,8},4,Base.PermutedDimsArrays.PermutedDimsArray{UInt8,4,(3,1,2,4),(2,3,1,4),Array{UInt8,4}},ImageCore.##29#30{FixedPointNumbers.UFixed{UInt8,8}},Base.#reinterpret}}While there is little or no performance cost to making use of JuliaImage's convenient views, sometimes the types can get complicated! The strategy adopted here is to ShowItLikeYouBuildIt."
+},
+
+{
+    "location": "indexing.html#",
+    "page": "Arrays: more advanced indexing",
+    "title": "Arrays: more advanced indexing",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "indexing.html#Arrays:-more-advanced-indexing-1",
+    "page": "Arrays: more advanced indexing",
+    "title": "Arrays: more advanced indexing",
+    "category": "section",
+    "text": "In addition to the handling of numbers and colors, one of the main ways that JuliaImages leverages Julia is through a number of more sophisticated indexing operations. These are perhaps best illustrated with examples."
+},
+
+{
+    "location": "indexing.html#Keeping-track-of-location-with-unconventional-indices-1",
+    "page": "Arrays: more advanced indexing",
+    "title": "Keeping track of location with unconventional indices",
+    "category": "section",
+    "text": "(Note: this depends on the not-yet-integrated ImageTransformations.jl)Consider the following pair of images:(Image: cameraman)You might guess that the one on the right is a rotated version of the one on the left. But, what is the angle? Is there also a translation?A \"low tech\" way to test this is to rotate and shift the image on the right until it seems aligned with the one on the left. We could overlay the two images (Using colorview to make color overlays) to see how well we're doing.# Define the transformation, using CoordinateTransformations\n# We're rotating around the center of img\njulia> tfm = recenter(RotMatrix(pi/8), center(img))\nAffineMap([0.92388 -0.382683; 0.382683 0.92388], [88.7786,-59.3199])\n\n# Apply it to the image\njulia> imgrot = warp(img, tfm);\n\njulia> summary(img)\n\"386×386 Array{Gray{N0f8},2}\"\n\njulia> summary(imgrot)\n\"-59:446×-59:446 OffsetArray{Gray{Float64},2}\"While img has indices that start with the conventional 1, the summary of imgrot reports that it has indices (-59:446, -59:446). This means that the first element of imgrot is indexed with imgrot[-59,-59] and the last element with imgrot[446,446].What is the meaning of these indices that extend beyond those of the original array in both directions? Displaying the rotated image–-especially when overlaid on the original–-reveals why:# Create a padded version of the original with the same indices as imgrot\njulia> img0 = similar(imgrot);\n\njulia> fill!(img0, 0);\n\n# Copy the original image into the same index location\njulia> img0[1:386, 1:386] = img;  # or write as img0[indices(img)...] = img\n\n# Create the overlay\njulia> imgov = colorview(RGB, img0, imgrot, zeroarray)(Image: rot_overlay)The padding on all sides of the array leaves space for the fact that the rotated image (green) contains some pixels out of the region covered by the original image (red).  The fact that Julia allows these indices to be negative means that we have no trouble adding appropriate \"padding\" to the original image: we just copy the original over to the padded array, using its original indices.We can test whether this rotation aligns well with the original unrotated image at the top of this page:julia> img0[indices(imgref)...] = imgref;  # imgref is the image on the left, top of page\n\njulia> imgov = colorview(RGB, img0, imgrot, zeroarray);(Image: ref_overlay)The fact that the overlapping portion looks yellow–-the combination of red and green–-indicates that we have perfect alignment.You can learn more about Julia's support for arbitrary indices at ??. (to be written)"
+},
+
+{
+    "location": "indexing.html#Keeping-track-of-orientation-with-named-axes-1",
+    "page": "Arrays: more advanced indexing",
+    "title": "Keeping track of orientation with named axes",
+    "category": "section",
+    "text": "Suppose you are presented with a 3-dimensional grayscale image. Is this a movie (2d over time), or a 3d image (x, y, and z)? In such situations, one of the best ways to keep yourself oriented is by naming the axes.julia> using Images, TestImages\n\njulia> img = testimage(\"mri\");\n\n# Create a \"labeled image\"\njulia> imgl = AxisArray(img, :A, :R, :S)\n3-dimensional AxisArray{ColorTypes.Gray{FixedPointNumbers.UFixed{UInt8,8}},3,...} with axes:\n    :A, Base.OneTo(226)\n    :R, Base.OneTo(186)\n    :S, Base.OneTo(27)\nAnd data, a 226×186×27 Array{ColorTypes.Gray{FixedPointNumbers.UFixed{UInt8,8}},3}:\n[:, :, 1] =\n Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)\n Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)\n...Here we used the AxisArrays package to name our axes in terms of the RAS coordinate system (Right, Anterior, Superior) as commonly used in magnetic resonance imaging.We can use this coordinate system to help with visualization. Let's look at a \"horizontal slice,\" one perpendicular to the superior-inferior axis (i.e., a slice with constant S value):(Image: Sslice)From the summary you can see that the slice has just the :A and :R axes remaining.We could slice along the R and A axes too, although for this image (which is sampled very anisotropically) they are not as informative.The ImageAxes and ImageMetadata packages add additional functionality to AxisArrays that may be useful when you need to encode more information about your image."
 },
 
 {
