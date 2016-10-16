@@ -1,8 +1,8 @@
 using Documenter
 
-makedocs(format   = Documenter.Formats.HTML,
+makedocs(format   = :html,
          sitename = "JuliaImages",
-         pages    = ["Home"=>"index.md", "install.md", "troubleshooting.md"])
+         pages    = ["Home"=>"index.md", "install.md", "arrays_colors.md", "conversions_views.md", "indexing.md", "troubleshooting.md"])
 
 deploydocs(repo    = "github.com/JuliaImages/juliaimages.github.io.git",
            target  = "build",
