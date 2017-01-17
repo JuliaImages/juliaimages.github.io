@@ -11,7 +11,9 @@ with examples.
 
 Consider the following pair of images:
 
-![cameraman](assets/indexing/cmpair.png)
+| col | col |
+|:---:|:---:|
+| ![cameraman](assets/indexing/cm.png) | ![cameraman](assets/indexing/cmrot.png) |
 
 You might guess that the one on the right is a rotated version of the
 one on the left. But, what is the angle? Is there also a translation?
