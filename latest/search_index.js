@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "JuliaImages: image processing and machine vision for Julia",
     "category": "section",
-    "text": "JuliaImages (source code) hosts the major Julia packages for image processing.These pages are designed to help you get started with image analysis in Julia.Pages = [\"install.md\", \"arrays_colors.md\", \"conversions_views.md\", \"indexing.md\"]"
+    "text": "JuliaImages (source code) hosts the major Julia packages for image processing. Julia is well-suited to image processing because it is a modern and elegant high-level language that is a pleasure to use, while also allowing you to write \"inner loops\" that compile to efficient machine code (i.e., it is as fast as C).  Julia supports multithreading and, through add-on packages, GPU processing.JuliaImages is a collection of packages specifically focused on image processing.  It is not yet as complete as some toolkits for other programming languages, but it has many useful algorithms.  It is focused on clean architecture and is designed to unify \"machine vision\" and \"biomedical 3d image processing\" communities.These pages are designed to help you get started with image analysis in Julia.Pages = [\"install.md\", \"quickstart.md\", \"arrays_colors.md\", \"conversions_views.md\", \"indexing.md\", \"imageaxes.md\", \"imagefiltering.md\", \"imagemetadata.md\"]"
 },
 
 {
@@ -62,6 +62,54 @@ var documenterSearchIndex = {"docs": [
     "title": "Troubleshooting",
     "category": "section",
     "text": "Reading and writing images, as well as graphical display, involve interactions with external software libraries; occasionally, the installation of these libraries goes badly. If you experience any difficulties with any of the above steps, please see the Installation troubleshooting page for more information."
+},
+
+{
+    "location": "quickstart.html#",
+    "page": "Quickstart",
+    "title": "Quickstart",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "quickstart.html#Quickstart-1",
+    "page": "Quickstart",
+    "title": "Quickstart",
+    "category": "section",
+    "text": "If you're comfortable with Julia or have used another image-processing package before, this page may help you get started quickly. If some of the terms or concepts here seem strange, don't worry–-there are much more detailed explanations in the following sections."
+},
+
+{
+    "location": "quickstart.html#Images-are-just-arrays-1",
+    "page": "Quickstart",
+    "title": "Images are just arrays",
+    "category": "section",
+    "text": "For most purposes, any AbstractArray can be treated as an image. For example,using Images\n\nimg = rand(640,480)               # a random Float64 image\nimg = rand(RGB{N0f8}, 256, 256)   # a random RGB image, 8 bits per channel\n# select a region-of-interest from a larger image\nimgc = img[200:245, 17:42]        # makes a copy\nimgv = @view img[200:245, 17:42]  # makes a view\n# an image that starts small in the upper left and gets large in the lower right:\nimg = reshape(linspace(0,1,10^4), 100, 100)\n# a 3d box image\nimg = zeros(128, 128, 80)\nimg[20:100, 20:100, 10:70] = 1Some add-on packages enable additional behavior. For example,using Images, Unitful, AxisArrays\n\nimg = AxisArray(rand(256, 256, 100, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s))defines a 4d image (3 space dimensions plus one time dimension) with the specified name and physical pixel spacing for each coordinate. The AxisArrays package supports rich and efficient operations on such arrays.JuliaImages interoperates smoothly with AxisArrays and many other packages.  As further examples,the ImageMetadata package (incorporated into Images itself) allows you to \"tag\" images with custom metadata\nthe IndirectArrays package supports indexed (colormap) images\nthe MappedArrays package allows you to represent lazy value-transformations, facilitating work with images that may be too large to store in memory at once\nImageTransformations allows you to encode rotations, shears, etc., either eagerly or lazilyIt is very easy to define new array types in Julia–and consequently specialized images or operations–and have them interoperate smoothly with the vast majority of functions in JuliaImages."
+},
+
+{
+    "location": "quickstart.html#Colors,-the-0-to-1-intensity-scale,-and-views-1",
+    "page": "Quickstart",
+    "title": "Colors, the 0-to-1 intensity scale, and views",
+    "category": "section",
+    "text": "In JuliaImages, by default all images are displayed assuming that 0 means \"black\" and 1 means \"white\" or \"saturated\" (the latter applying to channels of an RGB image).  Perhaps surprisingly, this 0-to-1 convention applies even when the intensities are encoded using only 8-bits per color channel.  JuliaImages uses a special type, N0f8, that interprets an 8-bit \"integer\" as if it had been scaled by 1/255, thus encoding values from 0 to 1 in 256 steps.  N0f8 numbers (standing for Normalized, with 0 integer bits and 8 fractional bits) obey standard mathematical rules, and can be added, multiplied, etc. There are types like N0f16 for working with 16-bit images (and even N2f14 for images acquired with a 14-bit camera, etc.).This infrastructure allows us to unify \"integer\" and floating-point images, and avoids the need for special conversion functions that change the value of pixels when your main goal is simply to change the type (numeric precision and properties) used to represent the pixel.Because images are just arrays, some environments (e.g., IJulia/Jupyter) will display numeric arrays as arrays (using a text representation) but will display 2d arrays that have Colorant elements as images.  You can \"convert\" in the following ways:img = colorview(Gray, rand(8, 8))          # encodes as Gray{Float64}, so displays as image\nimg = colorview(RGB, rand(3, 8, 8))        # encodes as a 2d RGB{Float64} array\nimg = colorview(RGB, rand(N0f8, 3, 8, 8))  # uses only 8 bits per channel\n# The following two \"convert\" between representation as an 8-bit RGB\n# image and as a 3×m×n UInt8 array\nimg = colorview(RGB, ufixedview(A))\nA = rawview(channelview(rand(RGB{N0f8}, 8, 8)))All of these \"conversions\" actually create views, meaning that no copies of the underlying storage are made unless you call copy on the result."
+},
+
+{
+    "location": "quickstart.html#Default-orientation-and-storage-order-1",
+    "page": "Quickstart",
+    "title": "Default orientation and storage order",
+    "category": "section",
+    "text": "Images are \"vertical-major,\" meaning that when the image is displayed the first index corresponds to the vertical axis. Note that by default, in Julia the first index is also the fastest (i.e., has adjacent storage in memory).You can use permuteddimsview to \"reinterpret\" the orientation of a chunk of memory without making a copy, or permutedims if you want a copy."
+},
+
+{
+    "location": "quickstart.html#Function-categories-1",
+    "page": "Quickstart",
+    "title": "Function categories",
+    "category": "section",
+    "text": "See the Function reference for more information about each of these. The list below is accessible via ?Images from the Julia REPL.Constructors, conversions, and traits:- Construction: use constructors of specialized packages, e.g., `AxisArray`, `ImageMeta`, etc.\n- \"Conversion\": `colorview`, `channelview`, `rawview`, `ufixedview`, `permuteddimsview`\n- Traits: `pixelspacing`, `sdims`, `timeaxis`, `timedim`, `spacedirections`Contrast/coloration:- `clamp01`, `clamp01nan`, `scaleminmax`, `colorsigned`, `scalesigned`Algorithms:- Reductions: `maxfinite`, `maxabsfinite`, `minfinite`, `meanfinite`, `sad`, `ssd`, `integral_image`, `boxdiff`, `gaussian_pyramid`\n- Resizing: `restrict`, `imresize` (not yet exported)\n- Filtering: `imfilter`, `imfilter_fft`, `imfilter_gaussian`, `imfilter_LoG`, `imROF`, `ncc`, `padarray`\n- Filtering kernels: `ando[345]`, `guassian2d`, `imaverage`, `imdog`, `imlaplacian`, `prewitt`, `sobel`\n- Exposure : `imhist`, `histeq`, `adjust_gamma`, `histmatch`, `imadjustintensity`, `imstretch`, `imcomplement`, `clahe`, `cliphist`\n- Gradients: `backdiffx`, `backdiffy`, `forwarddiffx`, `forwarddiffy`, `imgradients`\n- Edge detection: `imedge`, `imgradients`, `thin_edges`, `magnitude`, `phase`, `magnitudephase`, `orientation`, `canny`\n- Corner detection: `imcorner`, `harris`, `shi_tomasi`, `kitchen_rosenfeld`, `meancovs`, `gammacovs`, `fastcorners`\n- Blob detection: `blob_LoG`, `findlocalmaxima`, `findlocalminima`\n- Morphological operations: `dilate`, `erode`, `closing`, `opening`, `tophat`, `bothat`, `morphogradient`, `morpholaplace`\n- Connected components: `label_components`, `component_boxes`, `component_lengths`, `component_indices`, `component_subscripts`, `component_centroids`\n- Interpolation: `bilinear_interpolation`Test images and phantoms (see also TestImages.jl):- `shepp_logan`See also the excellent ImageFeatures package, which supports a number of algorithms important for computer vision."
 },
 
 {
@@ -213,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays: more advanced indexing",
     "title": "Keeping track of location with unconventional indices",
     "category": "section",
-    "text": "(Note: this depends on the not-yet-integrated ImageTransformations.jl)Consider the following pair of images:(Image: cameraman)You might guess that the one on the right is a rotated version of the one on the left. But, what is the angle? Is there also a translation?A \"low tech\" way to test this is to rotate and shift the image on the right until it seems aligned with the one on the left. We could overlay the two images (Using colorview to make color overlays) to see how well we're doing.# Define the transformation, using CoordinateTransformations\n# We're rotating around the center of img\njulia> tfm = recenter(RotMatrix(pi/8), center(img))\nAffineMap([0.92388 -0.382683; 0.382683 0.92388], [88.7786,-59.3199])\n\n# Apply it to the image\njulia> imgrot = warp(img, tfm);\n\njulia> summary(img)\n\"386×386 Array{Gray{N0f8},2}\"\n\njulia> summary(imgrot)\n\"-59:446×-59:446 OffsetArray{Gray{Float64},2}\"While img has indices that start with the conventional 1, the summary of imgrot reports that it has indices (-59:446, -59:446). This means that the first element of imgrot is indexed with imgrot[-59,-59] and the last element with imgrot[446,446].What is the meaning of these indices that extend beyond those of the original array in both directions? Displaying the rotated image–-especially when overlaid on the original–-reveals why:# Create a padded version of the original with the same indices as imgrot\njulia> img0 = similar(imgrot);\n\njulia> fill!(img0, 0);\n\n# Copy the original image into the same index location\njulia> img0[1:386, 1:386] = img;  # or write as img0[indices(img)...] = img\n\n# Create the overlay\njulia> imgov = colorview(RGB, img0, imgrot, zeroarray)(Image: rot_overlay)The padding on all sides of the array leaves space for the fact that the rotated image (green) contains some pixels out of the region covered by the original image (red).  The fact that Julia allows these indices to be negative means that we have no trouble adding appropriate \"padding\" to the original image: we just copy the original over to the padded array, using its original indices.We can test whether this rotation aligns well with the original unrotated image at the top of this page:julia> img0[indices(imgref)...] = imgref;  # imgref is the image on the left, top of page\n\njulia> imgov = colorview(RGB, img0, imgrot, zeroarray);(Image: ref_overlay)The fact that the overlapping portion looks yellow–-the combination of red and green–-indicates that we have perfect alignment.You can learn more about Julia's support for arbitrary indices at ??. (to be written)"
+    "text": "(Note: this depends on the not-yet-integrated ImageTransformations.jl)Consider the following pair of images:col col\n(Image: cameraman) (Image: cameraman)You might guess that the one on the right is a rotated version of the one on the left. But, what is the angle? Is there also a translation?A \"low tech\" way to test this is to rotate and shift the image on the right until it seems aligned with the one on the left. We could overlay the two images (Using colorview to make color overlays) to see how well we're doing.# Define the transformation, using CoordinateTransformations\n# We're rotating around the center of img\njulia> tfm = recenter(RotMatrix(pi/8), center(img))\nAffineMap([0.92388 -0.382683; 0.382683 0.92388], [88.7786,-59.3199])\n\n# Apply it to the image\njulia> imgrot = warp(img, tfm);\n\njulia> summary(img)\n\"386×386 Array{Gray{N0f8},2}\"\n\njulia> summary(imgrot)\n\"-59:446×-59:446 OffsetArray{Gray{Float64},2}\"While img has indices that start with the conventional 1, the summary of imgrot reports that it has indices (-59:446, -59:446). This means that the first element of imgrot is indexed with imgrot[-59,-59] and the last element with imgrot[446,446].What is the meaning of these indices that extend beyond those of the original array in both directions? Displaying the rotated image–-especially when overlaid on the original–-reveals why:# Create a padded version of the original with the same indices as imgrot\njulia> img0 = similar(imgrot);\n\njulia> fill!(img0, 0);\n\n# Copy the original image into the same index location\njulia> img0[1:386, 1:386] = img;  # or write as img0[indices(img)...] = img\n\n# Create the overlay\njulia> imgov = colorview(RGB, img0, imgrot, zeroarray)(Image: rot_overlay)The padding on all sides of the array leaves space for the fact that the rotated image (green) contains some pixels out of the region covered by the original image (red).  The fact that Julia allows these indices to be negative means that we have no trouble adding appropriate \"padding\" to the original image: we just copy the original over to the padded array, using its original indices.We can test whether this rotation aligns well with the original unrotated image at the top of this page:julia> img0[indices(imgref)...] = imgref;  # imgref is the image on the left, top of page\n\njulia> imgov = colorview(RGB, img0, imgrot, zeroarray);(Image: ref_overlay)The fact that the overlapping portion looks yellow–-the combination of red and green–-indicates that we have perfect alignment.You can learn more about Julia's support for arbitrary indices at ??. (to be written)"
 },
 
 {
@@ -222,6 +270,198 @@ var documenterSearchIndex = {"docs": [
     "title": "Keeping track of orientation with named axes",
     "category": "section",
     "text": "Suppose you are presented with a 3-dimensional grayscale image. Is this a movie (2d over time), or a 3d image (x, y, and z)? In such situations, one of the best ways to keep yourself oriented is by naming the axes.julia> using Images, TestImages\n\njulia> img = testimage(\"mri\");\n\n# Create a \"labeled image\"\njulia> imgl = AxisArray(img, :A, :R, :S)\n3-dimensional AxisArray{ColorTypes.Gray{FixedPointNumbers.UFixed{UInt8,8}},3,...} with axes:\n    :A, Base.OneTo(226)\n    :R, Base.OneTo(186)\n    :S, Base.OneTo(27)\nAnd data, a 226×186×27 Array{ColorTypes.Gray{FixedPointNumbers.UFixed{UInt8,8}},3}:\n[:, :, 1] =\n Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)\n Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)\n...Here we used the AxisArrays package to name our axes in terms of the RAS coordinate system (Right, Anterior, Superior) as commonly used in magnetic resonance imaging.We can use this coordinate system to help with visualization. Let's look at a \"horizontal slice,\" one perpendicular to the superior-inferior axis (i.e., a slice with constant S value):(Image: Sslice)From the summary you can see that the slice has just the :A and :R axes remaining.We could slice along the R and A axes too, although for this image (which is sampled very anisotropically) they are not as informative.The ImageAxes and ImageMetadata packages add additional functionality to AxisArrays that may be useful when you need to encode more information about your image."
+},
+
+{
+    "location": "imageaxes.html#",
+    "page": "ImageAxes.jl",
+    "title": "ImageAxes.jl",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "imageaxes.html#ImageAxes.jl-1",
+    "page": "ImageAxes.jl",
+    "title": "ImageAxes.jl",
+    "category": "section",
+    "text": "While images can often be represented as plain Arrays, sometimes additional information about the \"meaning\" of each axis of the array is needed.  For example, in a 3-dimensional MRI scan, the voxels may not have the same spacing along the z-axis that they do along the x- and y-axes, and this fact should be accounted for during the display and/or analysis of such images.  Likewise, a movie has two spatial axes and one temporal axis; this fact may be relevant for how one performs image processing.The ImageAxes package (which is incorporated into Images) combines features from AxisArrays and SimpleTraits to provide a convenient representation and programming paradigm for dealing with such images."
+},
+
+{
+    "location": "imageaxes.html#Installation-1",
+    "page": "ImageAxes.jl",
+    "title": "Installation",
+    "category": "section",
+    "text": "If you've installed the Images packages, ImageAxes should already be installed for you. If not, add it withPkg.add(\"ImageAxes\")"
+},
+
+{
+    "location": "imageaxes.html#Usage-1",
+    "page": "ImageAxes.jl",
+    "title": "Usage",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "imageaxes.html#Names-and-locations-1",
+    "page": "ImageAxes.jl",
+    "title": "Names and locations",
+    "category": "section",
+    "text": "The simplest thing you can do is to provide names to your image axes:using ImageAxes\nimg = AxisArray(reshape(1:192, (8,8,3)), :x, :y, :z)As described in more detail in the AxisArrays documentation, you can now take slices like this:sl = img[Axis{:z}(2)]You can also give units to the axes:using ImageAxes, Unitful\nconst mm = u\"mm\"\nimg = AxisArray(reshape(1:192, (8,8,3)),\n                Axis{:x}(1mm:1mm:8mm),\n                Axis{:y}(1mm:1mm:8mm),\n                Axis{:z}(2mm:3mm:8mm))which specifies that x and y have spacing of 1mm and z has a spacing of 3mm, as well as the location of the center of each voxel."
+},
+
+{
+    "location": "imageaxes.html#Temporal-axes-1",
+    "page": "ImageAxes.jl",
+    "title": "Temporal axes",
+    "category": "section",
+    "text": "Any array possessing an axis Axis{:time} will be recognized as having a temporal dimension.  Given an array A,using ImageAxes, Unitful\nconst s = u\"s\"\nimg = AxisArray(reshape(1:9*300, (3,3,300)),\n                Axis{:x}(1:3),\n                Axis{:y}(1:3),\n                Axis{:time}(1s/30:1s/30:10s))you can retrieve its temporal axis withax = timeaxis(img)and index it likeimg[ax(4)]  # returns the 4th \"timeslice\"You can also specialize methods like this:using ImageAxes, SimpleTraits\n@traitfn nimages{AA<:AxisArray;  HasTimeAxis{AA}}(img::AA) = length(timeaxis(img))\n@traitfn nimages{AA<:AxisArray; !HasTimeAxis{AA}}(img::AA) = 1where the pre-defined HasTimeAxis trait will restrict that method to arrays that have a timeaxis. A more complex example isusing ImageAxes, SimpleTraits\n@traitfn meanintensity{AA<:AxisArray; !HasTimeAxis{AA}}(img::AA) = mean(img)\n@traitfn function meanintensity{AA<:AxisArray; HasTimeAxis{AA}}(img::AA)\n    ax = timeaxis(img)\n    n = length(x)\n    intensity = zeros(eltype(img), n)\n    for ti = 1:n\n        sl = img[ax[ti]]  # the image slice at time ax[ti]\n        intensity[ti] = mean(sl)\n    end\n    intensity\nendand, when appropriate, it will return the mean intensity at each timeslice."
+},
+
+{
+    "location": "imageaxes.html#Custom-temporal-axes-1",
+    "page": "ImageAxes.jl",
+    "title": "Custom temporal axes",
+    "category": "section",
+    "text": "Using SimpleTraits's @traitimpl, you can add Axis{:t} or Axis{:scantime} or any other name to the list of axes that have a temporal dimension:using ImageAxes, SimpleTraits\n@traitimpl TimeAxis{Axis{:t}}Note this declaration affects all arrays throughout your entire session.  Moreover, it should be made before calling any functions on array-types that possess such axes; a convenient place to do this is right after you say using ImageAxes in your top-level script."
+},
+
+{
+    "location": "imagefiltering.html#",
+    "page": "ImageFiltering.jl",
+    "title": "ImageFiltering.jl",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "imagefiltering.html#ImageFiltering.jl-1",
+    "page": "ImageFiltering.jl",
+    "title": "ImageFiltering.jl",
+    "category": "section",
+    "text": "ImageFiltering (a package that is incorporated into Images) supports linear and nonlinear filtering operations on arrays, with an emphasis on the kinds of operations used in image processing. The core function is imfilter, and common kernels (filters) are organized in the Kernel and KernelFactors modules."
+},
+
+{
+    "location": "imagefiltering.html#Demonstration-1",
+    "page": "ImageFiltering.jl",
+    "title": "Demonstration",
+    "category": "section",
+    "text": "Let's start with a simple example of linear filtering:julia> using ImageFiltering, TestImages\n\njulia> img = testimage(\"mandrill\");\n\njulia> imgg = imfilter(img, Kernel.gaussian(3));\n\njulia> imgl = imfilter(img, Kernel.Laplacian());When displayed, these three images look like this:(Image: filterintro)The most commonly used function for filtering is imfilter."
+},
+
+{
+    "location": "imagefiltering.html#Linear-filtering:-noteworthy-features-1",
+    "page": "ImageFiltering.jl",
+    "title": "Linear filtering: noteworthy features",
+    "category": "section",
+    "text": "DocTestSetup = quote\n    using Colors, ImageFiltering, TestImages\n    img = testimage(\"mandrill\")\nend"
+},
+
+{
+    "location": "imagefiltering.html#Correlation,-not-convolution-1",
+    "page": "ImageFiltering.jl",
+    "title": "Correlation, not convolution",
+    "category": "section",
+    "text": "ImageFiltering uses the following formula to calculate the filtered image F from an input image A and kernel K:FI = sum_J AI+J KJConsequently, the resulting image is the correlation, not convolution, of the input and the kernel. If you want the convolution, first call reflect on the kernel."
+},
+
+{
+    "location": "imagefiltering.html#Kernel-indices-1",
+    "page": "ImageFiltering.jl",
+    "title": "Kernel indices",
+    "category": "section",
+    "text": "ImageFiltering exploits a feature introduced into Julia 0.5, the ability to define arrays whose indices span an arbitrary range:julia> Kernel.gaussian(1)\nOffsetArrays.OffsetArray{Float64,2,Array{Float64,2}} with indices -2:2×-2:2:\n 0.00296902  0.0133062  0.0219382  0.0133062  0.00296902\n 0.0133062   0.0596343  0.0983203  0.0596343  0.0133062\n 0.0219382   0.0983203  0.162103   0.0983203  0.0219382\n 0.0133062   0.0596343  0.0983203  0.0596343  0.0133062\n 0.00296902  0.0133062  0.0219382  0.0133062  0.00296902The indices of this array span the range -2:2 along each axis, and the center of the gaussian is at position [0,0].  As a consequence, this filter \"blurs\" but does not \"shift\" the image; were the center instead at, say, [3,3], the filtered image would be shifted by 3 pixels downward and to the right compared to the original.The centered function is a handy utility for converting an ordinary array to one that has coordinates [0,0,...] at its center position:julia> centered([1 0 1; 0 1 0; 1 0 1])\nOffsetArrays.OffsetArray{Int64,2,Array{Int64,2}} with indices -1:1×-1:1:\n 1  0  1\n 0  1  0\n 1  0  1See OffsetArrays for more information."
+},
+
+{
+    "location": "imagefiltering.html#Factored-kernels-1",
+    "page": "ImageFiltering.jl",
+    "title": "Factored kernels",
+    "category": "section",
+    "text": "A key feature of Gaussian kernels–-along with many other commonly-used kernels–-is that they are separable, meaning that K[j_1,j_2,...] can be written as K_1j_1 K_2j_2 cdots. As a consequence, the correlationFi_1i_2 = sum_j_1j_2 Ai_1+j_1i_2+j_2 Kj_1j_2can be writtenFi_1i_2 = sum_j_2 left(sum_j_1 Ai_1+j_1i_2+j_2 K_1j_1right) K_2j_2If the kernel is of size m×n, then the upper version line requires mn operations for each point of filtered, whereas the lower version requires m+n operations. Especially when m and n are larger, this can result in a substantial savings.To enable efficient computation for separable kernels, imfilter accepts a tuple of kernels, filtering the image by each sequentially. You can either supply m×1 and 1×n filters directly, or (somewhat more efficiently) call kernelfactors on a tuple-of-vectors:julia> kern1 = centered([1/3, 1/3, 1/3])\nOffsetArrays.OffsetArray{Float64,1,Array{Float64,1}} with indices -1:1:\n 0.333333\n 0.333333\n 0.333333\n\njulia> kernf = kernelfactors((kern1, kern1))\n(ImageFiltering.KernelFactors.ReshapedOneD{Float64,2,0,OffsetArrays.OffsetArray{Float64,1,Array{Float64,1}}}([0.333333,0.333333,0.333333]),ImageFiltering.KernelFactors.ReshapedOneD{Float64,2,1,OffsetArrays.OffsetArray{Float64,1,Array{Float64,1}}}([0.333333,0.333333,0.333333]))\n\njulia> kernp = broadcast(*, kernf...)\nOffsetArrays.OffsetArray{Float64,2,Array{Float64,2}} with indices -1:1×-1:1:\n 0.111111  0.111111  0.111111\n 0.111111  0.111111  0.111111\n 0.111111  0.111111  0.111111\n\njulia> imfilter(img, kernf) ≈ imfilter(img, kernp)\ntrueIf the kernel is a two dimensional array, imfilter will attempt to factor it; if successful, it will use the separable algorithm. You can prevent this automatic factorization by passing the kernel as a tuple, e.g., as (kernp,)."
+},
+
+{
+    "location": "imagefiltering.html#Popular-kernels-in-Kernel-and-KernelFactors-modules-1",
+    "page": "ImageFiltering.jl",
+    "title": "Popular kernels in Kernel and KernelFactors modules",
+    "category": "section",
+    "text": "The two modules Kernel and KernelFactors implement popular kernels in \"dense\" and \"factored\" forms, respectively. Type ?Kernel or ?KernelFactors at the REPL to see which kernels are supported.A common task in image processing and computer vision is computing image gradients (derivatives), for which there is the dedicated function imgradients."
+},
+
+{
+    "location": "imagefiltering.html#Automatic-choice-of-FIR-or-FFT-1",
+    "page": "ImageFiltering.jl",
+    "title": "Automatic choice of FIR or FFT",
+    "category": "section",
+    "text": "For linear filtering with a finite-impulse response filtering, one can either choose a direct algorithm or one based on the fast Fourier transform (FFT).  By default, this choice is made based on kernel size. You can manually specify the algorithm using Algorithm.FFT() or Algorithm.FIR()."
+},
+
+{
+    "location": "imagefiltering.html#Multithreading-1",
+    "page": "ImageFiltering.jl",
+    "title": "Multithreading",
+    "category": "section",
+    "text": "If you launch Julia with JULIA_NUM_THREADS=n (where n > 1), then FIR filtering will by default use multiple threads.  You can control the algorithm by specifying a resource as defined by ComputationalResources. For example, imfilter(CPU1(Algorithm.FIR()), img, ...) would force the computation to be single-threaded."
+},
+
+{
+    "location": "imagefiltering.html#Arbitrary-operations-over-sliding-windows-1",
+    "page": "ImageFiltering.jl",
+    "title": "Arbitrary operations over sliding windows",
+    "category": "section",
+    "text": "This package also exports mapwindow, which allows you to pass an arbitrary function to operate on the values within a sliding window.mapwindow has optimized implementations for some functions (currently, extrema)."
+},
+
+{
+    "location": "imagemetadata.html#",
+    "page": "ImageMetadata.jl",
+    "title": "ImageMetadata.jl",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "imagemetadata.html#ImageMetadata.jl-1",
+    "page": "ImageMetadata.jl",
+    "title": "ImageMetadata.jl",
+    "category": "section",
+    "text": "ImageMetadata (a package incorporated into Images) allows you to add metadata to images: for example, the date and time at which it was collected, identifiers for the location or subject, etc. This metadata is stored as a dictionary, and the ImageMeta type combines properties of arrays and Dict."
+},
+
+{
+    "location": "imagemetadata.html#Introduction-1",
+    "page": "ImageMetadata.jl",
+    "title": "Introduction",
+    "category": "section",
+    "text": "You typically create an ImageMeta using keyword arguments:julia> using Colors, ImageMetadata\n\njulia> img = ImageMeta(fill(RGB(1,0,0), 3, 2), date=Date(2016, 7, 31), time=\"high noon\")\nRGB ImageMeta with:\n  data: 3×2 Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2}\n  properties:\n    time: high noon\n    date: 2016-07-31DocTestSetup = quote\n    using Colors, ImageMetadata\n    img = ImageMeta(fill(RGB(1,0,0), 3, 2), date=Date(2016, 7, 31), time=\"high noon\")\nendYou can then index elements of img like this:julia> img[1,2]\nRGB{U8}(1.0,0.0,0.0)and access and set properties like this:julia> img[\"time\"]\n\"high noon\"\n\njulia> img[\"time\"] = \"evening\"\n\"evening\"\n\njulia> img\nRGB ImageMeta with:\n  data: 3×2 Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2}\n  properties:\n    time: evening\n    date: 2016-07-31You can extract the data matrix with data(img):julia> data(img)\n3×2 Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2}:\n RGB{U8}(1.0,0.0,0.0)  RGB{U8}(1.0,0.0,0.0)\n RGB{U8}(1.0,0.0,0.0)  RGB{U8}(1.0,0.0,0.0)\n RGB{U8}(1.0,0.0,0.0)  RGB{U8}(1.0,0.0,0.0)and the properties dictionary with properties:julia> properties(img)\nDict{String,Any} with 2 entries:\n  \"time\" => \"high noon\"\n  \"date\" => 2016-07-31Properties are not accessed or modified by most of Images' algorithms–-the traits that most affect processing are encoded through Julia's type system.  However, functions that receive an ImageMeta should return an ImageMeta when appropriate. Naturally, in your own code it's fine to use properties to your advantage for custom tasks."
+},
+
+{
+    "location": "imagemetadata.html#getindexim/viewim-1",
+    "page": "ImageMetadata.jl",
+    "title": "getindexim/viewim",
+    "category": "section",
+    "text": "As with the rest of julia, img[i,j,...] will return just the values in an ImageMeta; the properties dictionary is \"left behind.\" You can ensure that the return is also an ImageMeta using getindexim instead of getindex (img[i,j] gets converted into getindex(img, i, j), hence the name):julia> c = getindexim(img, 1:2, 1:2)\nRGB ImageMeta with:\n  data: 2×2 Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2}\n  properties:\n    time: high noon\n    date: 2016-07-31This copies both the data (just the relevant portions) and the properties dictionary. In contrast,julia> v = viewim(img, 1:2, 1:2)\nRGB ImageMeta with:\n  data: 2×2 SubArray{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2,Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2},Tuple{UnitRange{Int64},UnitRange{Int64}},false}\n  properties:\n    time: high noon\n    date: 2016-07-31shares both the data and the properties with the original image img. Modifying values or properties in c has no impact on img, but modifying values or properties in v does."
+},
+
+{
+    "location": "imagemetadata.html#copyproperties/shareproperties-1",
+    "page": "ImageMetadata.jl",
+    "title": "copyproperties/shareproperties",
+    "category": "section",
+    "text": "Two convenient ways to construct a new image with the \"same\" properties are copyproperties (makes a copy of the properties dictionary) and shareproperties (shares the properties dictionary).Incidentally, similar makes a copy of the properties dictionary."
+},
+
+{
+    "location": "imagemetadata.html#spatialproperties-1",
+    "page": "ImageMetadata.jl",
+    "title": "spatialproperties",
+    "category": "section",
+    "text": "Occasionally you may have a property that is linked to the spatial axes of the image. In such cases, one source for potential confusion is permutedims, which swaps the order of the dimensions in the array: if the order is not also swapped in the appropriate properties, chaos could result.You can declare that certain properties are coupled to spatial axes using \"spatialproperties\":julia> using ImageMetadata\n\njulia> A = reshape(1:15, 3, 5)\n3×5 Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}:\n 1  4  7  10  13\n 2  5  8  11  14\n 3  6  9  12  15\n\njulia> img = ImageMeta(A, spatialproperties=Set([\"maxsum\"]), maxsum=[maximum(sum(A,1)), maximum(sum(A,2))])\nInt64 ImageMeta with:\n  data: 3×5 Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}\n  properties:\n    maxsum: [42,45]\n    spatialproperties: Set(String[\"maxsum\"])\n\njulia> imgp = permutedims(img, (2,1))\nInt64 ImageMeta with:\n  data: 5×3 Array{Int64,2}\n  properties:\n    maxsum: [45,42]\n    spatialproperties: Set(String[\"maxsum\"])\n\njulia> maximum(sum(imgp,1))\n45It's not possible to anticipate all the possible transformations that might be necessary, but at least simple swaps are handled automatically."
 },
 
 {
