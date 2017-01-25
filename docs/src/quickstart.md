@@ -17,7 +17,7 @@ img = rand(RGB{N0f8}, 256, 256)   # a random RGB image, 8 bits per channel
 # select a region-of-interest from a larger image
 imgc = img[200:245, 17:42]        # makes a copy
 imgv = @view img[200:245, 17:42]  # makes a view
-# an image that starts small in the upper left and gets large in the lower right:
+# an image that starts black in the upper left and gets bright in the lower right:
 img = reshape(linspace(0,1,10^4), 100, 100)
 # a 3d box image
 img = zeros(128, 128, 80)
@@ -28,6 +28,7 @@ Some add-on packages enable additional behavior. For example,
 
 ```julia
 using Images, Unitful, AxisArrays
+using Unitful: mm, s
 
 img = AxisArray(rand(256, 256, 100, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s))
 ```
@@ -110,7 +111,7 @@ copy.
 
 ## Function categories
 
-See the [Function reference](@ref) for more information about each of
+See [Summary and function reference](@ref) for more information about each of
 these. The list below is accessible via `?Images` from the Julia REPL.
 
 Constructors, conversions, and traits:
@@ -127,8 +128,8 @@ Algorithms:
 
     - Reductions: `maxfinite`, `maxabsfinite`, `minfinite`, `meanfinite`, `sad`, `ssd`, `integral_image`, `boxdiff`, `gaussian_pyramid`
     - Resizing: `restrict`, `imresize` (not yet exported)
-    - Filtering: `imfilter`, `imfilter_fft`, `imfilter_gaussian`, `imfilter_LoG`, `imROF`, `ncc`, `padarray`
-    - Filtering kernels: `ando[345]`, `guassian2d`, `imaverage`, `imdog`, `imlaplacian`, `prewitt`, `sobel`
+    - Filtering: `imfilter`, `imfilter!`, `imfilter_LoG`, `mapwindow`, `imROF`, `padarray`
+    - Filtering kernels: `Kernel.` or `KernelFactors.`, followed by `ando[345]`, `guassian2d`, `imaverage`, `imdog`, `imlaplacian`, `prewitt`, `sobel`
     - Exposure : `imhist`, `histeq`, `adjust_gamma`, `histmatch`, `imadjustintensity`, `imstretch`, `imcomplement`, `clahe`, `cliphist`
     - Gradients: `backdiffx`, `backdiffy`, `forwarddiffx`, `forwarddiffy`, `imgradients`
     - Edge detection: `imedge`, `imgradients`, `thin_edges`, `magnitude`, `phase`, `magnitudephase`, `orientation`, `canny`
