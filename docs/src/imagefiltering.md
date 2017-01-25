@@ -138,7 +138,7 @@ e.g., as `(kernp,)`.
 
 ### Popular kernels in Kernel and KernelFactors modules
 
-The two modules [`Kernel`](@ref) and [`KernelFactors`](@ref) implement popular kernels
+The two modules [Kernel](@ref) and [KernelFactors](@ref) implement popular kernels
 in "dense" and "factored" forms, respectively. Type `?Kernel` or
 `?KernelFactors` at the REPL to see which kernels are supported.
 
