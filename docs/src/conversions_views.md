@@ -183,7 +183,7 @@ You can apply this to arrays:
 
 ```julia
 julia> a = [0.2N0f8, 0.8N0f8]
-2-element Array{FixedPointNumbers.UFixed{UInt8,8},1}:
+2-element Array{FixedPointNumbers.Normed{UInt8,8},1}:
  0.2N0f8
  0.8N0f8
 
@@ -200,7 +200,7 @@ julia> b[2] = 0xff
 0xff
 
 julia> a
-2-element Array{FixedPointNumbers.UFixed{UInt8,8},1}:
+2-element Array{FixedPointNumbers.Normed{UInt8,8},1}:
  0.2N0f8
  0.8N0f8
 ```
@@ -224,12 +224,12 @@ julia> v[2] = 0xff
 0xff
 
 julia> a
-2-element Array{FixedPointNumbers.UFixed{UInt8,8},1}:
+2-element Array{FixedPointNumbers.Normed{UInt8,8},1}:
  0.2N0f8
  1.0N0f8
 ```
 
-The opposite transformation is `ufixedview`:
+The opposite transformation is `normedview`:
 
 ```julia
 julia> c = [0x11, 0x22]
@@ -237,18 +237,18 @@ julia> c = [0x11, 0x22]
  0x11
  0x22
 
-julia> ufixedview(c)
-2-element Array{FixedPointNumbers.UFixed{UInt8,8},1}:
+julia> normedview(c)
+2-element Array{FixedPointNumbers.Normed{UInt8,8},1}:
  0.067N0f8
  0.133N0f8
 ```
 
-`ufixedview` allows you to pass the interpreted type as the first
-argument, i.e., `ufixedview(N0f8, A)`, and indeed it's required to do
-so unless `A` has element type `UInt8`, in which case `ufixedview`
+`normedview` allows you to pass the interpreted type as the first
+argument, i.e., `normedview(N0f8, A)`, and indeed it's required to do
+so unless `A` has element type `UInt8`, in which case `normedview`
 assumes you want `N0f8`.
 
-Like `reshape`, both `rawview` and `ufixedview` might return an
+Like `reshape`, both `rawview` and `normedview` might return an
 `Array` or a more complicated type (a `MappedArray` from the
 [MappedArrays package](https://github.com/JuliaArrays/MappedArrays.jl)),
 depending on the types of the inputs.
@@ -398,19 +398,19 @@ have it display as an RGB movie, you might create the following view of
 the array `A`:
 
 ```julia
-mov = colorview(RGB, ufixedview(permuteddimsview(A, (3,1,2,4))))
+mov = colorview(RGB, normedview(permuteddimsview(A, (3,1,2,4))))
 ```
 
 If you show `mov` at the REPL, the `summary` prints like this:
 
 ```julia
-ColorView{RGB}(ufixedview(N0f8, permuteddimsview(::Array{UInt8,4}, (3,1,2,4)))) with element type ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}}
+ColorView{RGB}(normedview(N0f8, permuteddimsview(::Array{UInt8,4}, (3,1,2,4)))) with element type ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}}
 ```
 
 which may be somewhat easier to read than the type:
 
 ```julia
-ImageCore.ColorView{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},3,MappedArrays.MappedArray{FixedPointNumbers.UFixed{UInt8,8},4,Base.PermutedDimsArrays.PermutedDimsArray{UInt8,4,(3,1,2,4),(2,3,1,4),Array{UInt8,4}},ImageCore.##29#30{FixedPointNumbers.UFixed{UInt8,8}},Base.#reinterpret}}
+ImageCore.ColorView{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},3,MappedArrays.MappedArray{FixedPointNumbers.Normed{UInt8,8},4,Base.PermutedDimsArrays.PermutedDimsArray{UInt8,4,(3,1,2,4),(2,3,1,4),Array{UInt8,4}},ImageCore.##29#30{FixedPointNumbers.Normed{UInt8,8}},Base.#reinterpret}}
 ```
 
 While there is little or no performance cost to making use of

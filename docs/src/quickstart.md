@@ -17,7 +17,7 @@ img = rand(RGB{N0f8}, 256, 256)   # a random RGB image, 8 bits per channel
 # select a region-of-interest from a larger image
 imgc = img[200:245, 17:42]        # makes a copy
 imgv = @view img[200:245, 17:42]  # makes a view
-# an image that starts small in the upper left and gets large in the lower right:
+# an image that starts black in the upper left and gets bright in the lower right:
 img = reshape(linspace(0,1,10^4), 100, 100)
 # a 3d box image
 img = zeros(128, 128, 80)
@@ -28,6 +28,7 @@ Some add-on packages enable additional behavior. For example,
 
 ```julia
 using Images, Unitful, AxisArrays
+using Unitful: mm, s
 
 img = AxisArray(rand(256, 256, 100, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s))
 ```
@@ -89,7 +90,7 @@ img = colorview(RGB, rand(3, 8, 8))        # encodes as a 2d RGB{Float64} array
 img = colorview(RGB, rand(N0f8, 3, 8, 8))  # uses only 8 bits per channel
 # The following two "convert" between representation as an 8-bit RGB
 # image and as a 3×m×n UInt8 array
-img = colorview(RGB, ufixedview(A))
+img = colorview(RGB, normedview(A))
 A = rawview(channelview(rand(RGB{N0f8}, 8, 8)))
 ```
 
@@ -110,13 +111,13 @@ copy.
 
 ## Function categories
 
-See the [Function reference](@ref) for more information about each of
+See [Summary and function reference](@ref) for more information about each of
 these. The list below is accessible via `?Images` from the Julia REPL.
 
 Constructors, conversions, and traits:
 
     - Construction: use constructors of specialized packages, e.g., `AxisArray`, `ImageMeta`, etc.
-    - "Conversion": `colorview`, `channelview`, `rawview`, `ufixedview`, `permuteddimsview`
+    - "Conversion": `colorview`, `channelview`, `rawview`, `normedview`, `permuteddimsview`
     - Traits: `pixelspacing`, `sdims`, `timeaxis`, `timedim`, `spacedirections`
 
 Contrast/coloration:
@@ -127,8 +128,8 @@ Algorithms:
 
     - Reductions: `maxfinite`, `maxabsfinite`, `minfinite`, `meanfinite`, `sad`, `ssd`, `integral_image`, `boxdiff`, `gaussian_pyramid`
     - Resizing: `restrict`, `imresize` (not yet exported)
-    - Filtering: `imfilter`, `imfilter_fft`, `imfilter_gaussian`, `imfilter_LoG`, `imROF`, `ncc`, `padarray`
-    - Filtering kernels: `ando[345]`, `guassian2d`, `imaverage`, `imdog`, `imlaplacian`, `prewitt`, `sobel`
+    - Filtering: `imfilter`, `imfilter!`, `imfilter_LoG`, `mapwindow`, `imROF`, `padarray`
+    - Filtering kernels: `Kernel.` or `KernelFactors.`, followed by `ando[345]`, `guassian2d`, `imaverage`, `imdog`, `imlaplacian`, `prewitt`, `sobel`
     - Exposure : `imhist`, `histeq`, `adjust_gamma`, `histmatch`, `imadjustintensity`, `imstretch`, `imcomplement`, `clahe`, `cliphist`
     - Gradients: `backdiffx`, `backdiffy`, `forwarddiffx`, `forwarddiffy`, `imgradients`
     - Edge detection: `imedge`, `imgradients`, `thin_edges`, `magnitude`, `phase`, `magnitudephase`, `orientation`, `canny`

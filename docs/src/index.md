@@ -18,5 +18,5 @@ These pages are designed to help you get started with image analysis
 in Julia.
 
 ```@contents
-Pages = ["install.md", "quickstart.md", "arrays_colors.md", "conversions_views.md", "indexing.md", "imageaxes.md", "imagefiltering.md", "imagemetadata.md"]
+Pages = ["install.md", "quickstart.md", "arrays_colors.md", "conversions_views.md", "indexing.md", "imageaxes.md", "imagefiltering.md", "imagemetadata.md", "function_reference.md"]
 ```

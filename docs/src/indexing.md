@@ -98,14 +98,14 @@ julia> img = testimage("mri");
 
 # Create a "labeled image"
 julia> imgl = AxisArray(img, :A, :R, :S)
-3-dimensional AxisArray{ColorTypes.Gray{FixedPointNumbers.UFixed{UInt8,8}},3,...} with axes:
+3-dimensional AxisArray{ColorTypes.Gray{FixedPointNumbers.Normed{UInt8,8}},3,...} with axes:
     :A, Base.OneTo(226)
     :R, Base.OneTo(186)
     :S, Base.OneTo(27)
-And data, a 226×186×27 Array{ColorTypes.Gray{FixedPointNumbers.UFixed{UInt8,8}},3}:
+And data, a 226×186×27 Array{ColorTypes.Gray{FixedPointNumbers.Normed{UInt8,8}},3}:
 [:, :, 1] =
- Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)  Gray{U8}(0.0)
+ Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  …  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)
+ Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)     Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)  Gray{N0f8}(0.0)
 ...
 ```
 

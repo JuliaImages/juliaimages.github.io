@@ -15,7 +15,7 @@ julia> using Colors, ImageMetadata
 
 julia> img = ImageMeta(fill(RGB(1,0,0), 3, 2), date=Date(2016, 7, 31), time="high noon")
 RGB ImageMeta with:
-  data: 3×2 Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2}
+  data: 3×2 Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2}
   properties:
     time: high noon
     date: 2016-07-31
@@ -32,7 +32,7 @@ You can then index elements of `img` like this:
 
 ```julia
 julia> img[1,2]
-RGB{U8}(1.0,0.0,0.0)
+RGB{N0f8}(1.0,0.0,0.0)
 ```
 
 and access and set properties like this:
@@ -46,7 +46,7 @@ julia> img["time"] = "evening"
 
 julia> img
 RGB ImageMeta with:
-  data: 3×2 Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2}
+  data: 3×2 Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2}
   properties:
     time: evening
     date: 2016-07-31
@@ -56,10 +56,10 @@ You can extract the data matrix with `data(img)`:
 
 ```julia
 julia> data(img)
-3×2 Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2}:
- RGB{U8}(1.0,0.0,0.0)  RGB{U8}(1.0,0.0,0.0)
- RGB{U8}(1.0,0.0,0.0)  RGB{U8}(1.0,0.0,0.0)
- RGB{U8}(1.0,0.0,0.0)  RGB{U8}(1.0,0.0,0.0)
+3×2 Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2}:
+ RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
+ RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
+ RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
 ```
 
 and the properties dictionary with `properties`:
@@ -89,7 +89,7 @@ i, j)`, hence the name):
 ```julia
 julia> c = getindexim(img, 1:2, 1:2)
 RGB ImageMeta with:
-  data: 2×2 Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2}
+  data: 2×2 Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2}
   properties:
     time: high noon
     date: 2016-07-31
@@ -100,7 +100,7 @@ This copies both the data (just the relevant portions) and the properties dictio
 ```julia
 julia> v = viewim(img, 1:2, 1:2)
 RGB ImageMeta with:
-  data: 2×2 SubArray{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2,Array{ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}},2},Tuple{UnitRange{Int64},UnitRange{Int64}},false}
+  data: 2×2 SubArray{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2,Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2},Tuple{UnitRange{Int64},UnitRange{Int64}},false}
   properties:
     time: high noon
     date: 2016-07-31
