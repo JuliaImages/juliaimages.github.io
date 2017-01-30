@@ -27,9 +27,10 @@ images.
 ```@docs
 colorview
 channelview
-ufixedview
+normedview
 rawview
 permuteddimsview
+StackedView
 ```
 
 Images with defined geometry and axis meaning can be constructed using the [`AxisArrays`](https://github.com/JuliaArrays/AxisArrays.jl) package:
@@ -48,7 +49,7 @@ Any of these operations may be composed together, e.g., if you have an
 metadata:
 
 ```julia
-img = ImageMeta(colorview(RGB, ufixedview(permuteddimsview(A, (3,1,2)))), sample="control")
+img = ImageMeta(colorview(RGB, normedview(permuteddimsview(A, (3,1,2)))), sample="control")
 ```
 
 ## Traits
@@ -77,6 +78,18 @@ scaleminmax
 scalesigned
 colorsigned
 takemap
+```
+
+## Storage-type transformation
+
+```@docs
+float32
+float64
+n0f8
+n6f10
+n4f12
+n2f14
+n0f16
 ```
 
 ## Color conversion
@@ -198,6 +211,7 @@ See the [ImageFeatures]() package for a much more comprehensive set of tools.
 
 ```@docs
 blob_LoG
+BlobLoG
 findlocalmaxima
 findlocalminima
 ```

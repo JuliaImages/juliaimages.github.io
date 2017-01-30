@@ -242,12 +242,12 @@ unsigned integer `UInt8`
 
 ```julia
 julia> dump(r)
-FixedPointNumbers.UFixed{UInt8,8}
+FixedPointNumbers.Normed{UInt8,8}
   i: UInt8 193
 ```
 
 (Note that `N0f8` is an abbreviation; the full typename is
-`UFixed{UInt8, 8}`.) `N0f8` *interprets* this 8-bit integer as a value
+`Normed{UInt8, 8}`.) `N0f8` *interprets* this 8-bit integer as a value
 lying between 0 and 1, with 0 corresponding to `0x00` and 1
 corresponding to `0xff`. This interpretation affects how the number is
 used for arithmetic and conversion to and from other values. Stated
@@ -293,10 +293,10 @@ ERROR: ArgumentError: (8,2,0) are integers in the range 0-255, but integer input
   type, an 8-bit type representing 256 discrete values between 0 and 1.
   Consider dividing your input values by 255, for example: RGB{N0f8}(8/255,2/255,0/255)
   See the READMEs for FixedPointNumbers and ColorTypes for more information.
- in throw_colorerror(::Type{FixedPointNumbers.UFixed{UInt8,8}}, ::Tuple{Int64,Int64,Int64}) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:639
- in throw_colorerror(::Type{FixedPointNumbers.UFixed{UInt8,8}}, ::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:608
+ in throw_colorerror(::Type{FixedPointNumbers.Normed{UInt8,8}}, ::Tuple{Int64,Int64,Int64}) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:639
+ in throw_colorerror(::Type{FixedPointNumbers.Normed{UInt8,8}}, ::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:608
  in checkval at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:596 [inlined]
- in ColorTypes.RGB{FixedPointNumbers.UFixed{UInt8,8}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:90
+ in ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:90
  in ColorTypes.RGB{T<:Union{AbstractFloat,FixedPointNumbers.FixedPoint}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:437
 ```
 

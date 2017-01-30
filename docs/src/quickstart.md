@@ -90,7 +90,7 @@ img = colorview(RGB, rand(3, 8, 8))        # encodes as a 2d RGB{Float64} array
 img = colorview(RGB, rand(N0f8, 3, 8, 8))  # uses only 8 bits per channel
 # The following two "convert" between representation as an 8-bit RGB
 # image and as a 3×m×n UInt8 array
-img = colorview(RGB, ufixedview(A))
+img = colorview(RGB, normedview(A))
 A = rawview(channelview(rand(RGB{N0f8}, 8, 8)))
 ```
 
@@ -117,7 +117,7 @@ these. The list below is accessible via `?Images` from the Julia REPL.
 Constructors, conversions, and traits:
 
     - Construction: use constructors of specialized packages, e.g., `AxisArray`, `ImageMeta`, etc.
-    - "Conversion": `colorview`, `channelview`, `rawview`, `ufixedview`, `permuteddimsview`
+    - "Conversion": `colorview`, `channelview`, `rawview`, `normedview`, `permuteddimsview`
     - Traits: `pixelspacing`, `sdims`, `timeaxis`, `timedim`, `spacedirections`
 
 Contrast/coloration:
