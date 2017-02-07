@@ -266,6 +266,8 @@ component_lengths
 component_indices
 component_subscripts
 component_centroids
+feature_transform
+distance_transform
 ```
 
 ### Interpolation
