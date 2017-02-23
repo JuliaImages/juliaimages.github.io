@@ -111,8 +111,11 @@ copy.
 
 ## Function categories
 
-See [Summary and function reference](@ref) for more information about each of
-these. The list below is accessible via `?Images` from the Julia REPL.
+See [Summary and function reference](@ref) for more information about
+each of these. The list below is accessible via `?Images` from the
+Julia REPL. If you've used other frameworks previously, you may also
+be interested in the
+[Comparison with other image processing frameworks](@ref).
 
 Constructors, conversions, and traits:
 
