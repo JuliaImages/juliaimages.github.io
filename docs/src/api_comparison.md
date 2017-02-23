@@ -1,10 +1,12 @@
 # Comparison with other image processing frameworks
 
 The following table may be useful for people migrating from other
-frameworks, and for identifying missing functionality in JuliaImages. Note
-that there are packages like `DICOM.jl` which have not been integrated
-into more general frameworks; such functionality is not documented
-here.  This table is certainly not complete (corrections are welcome).
+frameworks, and for identifying missing functionality in
+JuliaImages. Note that there are relevant packages which have not been
+integrated into more general frameworks or hosted at JuliaImages
+(e.g., `DICOM.jl`, etc.); such functionality is not documented here.
+This table is certainly not complete, and additions/corrections are
+welcome.
 
 | Operation                             | JuliaImages                               | scikit-image + NumPy              | Matlab (ImageProcessing + ComputerVision) |
 |---------------------------------------|-------------------------------------------|-----------------------------------|-------------------------------------------|
