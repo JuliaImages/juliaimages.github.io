@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "JuliaImages: image processing and machine vision for Julia",
     "category": "section",
-    "text": "JuliaImages (source code) hosts the major Julia packages for image processing. Julia is well-suited to image processing because it is a modern and elegant high-level language that is a pleasure to use, while also allowing you to write \"inner loops\" that compile to efficient machine code (i.e., it is as fast as C).  Julia supports multithreading and, through add-on packages, GPU processing.JuliaImages is a collection of packages specifically focused on image processing.  It is not yet as complete as some toolkits for other programming languages, but it has many useful algorithms.  It is focused on clean architecture and is designed to unify \"machine vision\" and \"biomedical 3d image processing\" communities.These pages are designed to help you get started with image analysis in Julia.Pages = [\"install.md\", \"quickstart.md\", \"arrays_colors.md\", \"conversions_views.md\", \"indexing.md\", \"imageaxes.md\", \"imagefiltering.md\", \"imagemetadata.md\", \"function_reference.md\"]"
+    "text": "JuliaImages (source code) hosts the major Julia packages for image processing. Julia is well-suited to image processing because it is a modern and elegant high-level language that is a pleasure to use, while also allowing you to write \"inner loops\" that compile to efficient machine code (i.e., it is as fast as C).  Julia supports multithreading and, through add-on packages, GPU processing.JuliaImages is a collection of packages specifically focused on image processing.  It is not yet as complete as some toolkits for other programming languages, but it has many useful algorithms.  It is focused on clean architecture and is designed to unify \"machine vision\" and \"biomedical 3d image processing\" communities.These pages are designed to help you get started with image analysis in Julia.Pages = [\"install.md\", \"quickstart.md\", \"arrays_colors.md\", \"conversions_views.md\", \"indexing.md\", \"imageaxes.md\", \"imagefiltering.md\", \"imagemetadata.md\", \"function_reference.md\", \"api_comparison.md\"]"
 },
 
 {
@@ -109,7 +109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Quickstart",
     "title": "Function categories",
     "category": "section",
-    "text": "See Summary and function reference for more information about each of these. The list below is accessible via ?Images from the Julia REPL.Constructors, conversions, and traits:- Construction: use constructors of specialized packages, e.g., `AxisArray`, `ImageMeta`, etc.\n- \"Conversion\": `colorview`, `channelview`, `rawview`, `normedview`, `permuteddimsview`\n- Traits: `pixelspacing`, `sdims`, `timeaxis`, `timedim`, `spacedirections`Contrast/coloration:- `clamp01`, `clamp01nan`, `scaleminmax`, `colorsigned`, `scalesigned`Algorithms:- Reductions: `maxfinite`, `maxabsfinite`, `minfinite`, `meanfinite`, `sad`, `ssd`, `integral_image`, `boxdiff`, `gaussian_pyramid`\n- Resizing: `restrict`, `imresize` (not yet exported)\n- Filtering: `imfilter`, `imfilter!`, `imfilter_LoG`, `mapwindow`, `imROF`, `padarray`\n- Filtering kernels: `Kernel.` or `KernelFactors.`, followed by `ando[345]`, `guassian2d`, `imaverage`, `imdog`, `imlaplacian`, `prewitt`, `sobel`\n- Exposure : `imhist`, `histeq`, `adjust_gamma`, `histmatch`, `imadjustintensity`, `imstretch`, `imcomplement`, `clahe`, `cliphist`\n- Gradients: `backdiffx`, `backdiffy`, `forwarddiffx`, `forwarddiffy`, `imgradients`\n- Edge detection: `imedge`, `imgradients`, `thin_edges`, `magnitude`, `phase`, `magnitudephase`, `orientation`, `canny`\n- Corner detection: `imcorner`, `harris`, `shi_tomasi`, `kitchen_rosenfeld`, `meancovs`, `gammacovs`, `fastcorners`\n- Blob detection: `blob_LoG`, `findlocalmaxima`, `findlocalminima`\n- Morphological operations: `dilate`, `erode`, `closing`, `opening`, `tophat`, `bothat`, `morphogradient`, `morpholaplace`\n- Connected components: `label_components`, `component_boxes`, `component_lengths`, `component_indices`, `component_subscripts`, `component_centroids`\n- Interpolation: `bilinear_interpolation`Test images and phantoms (see also TestImages.jl):- `shepp_logan`See also the excellent ImageFeatures package, which supports a number of algorithms important for computer vision."
+    "text": "See Summary and function reference for more information about each of these. The list below is accessible via ?Images from the Julia REPL. If you've used other frameworks previously, you may also be interested in the Comparison with other image processing frameworks.Constructors, conversions, and traits:Construction: use constructors of specialized packages, e.g., AxisArray, ImageMeta, etc.\n\"Conversion\": colorview, channelview, rawview, normedview, permuteddimsview\nTraits: pixelspacing, sdims, timeaxis, timedim, spacedirectionsContrast/coloration:clamp01, clamp01nan, scaleminmax, colorsigned, scalesignedAlgorithms:Reductions: maxfinite, maxabsfinite, minfinite, meanfinite, sad, ssd, integral_image, boxdiff, gaussian_pyramid\nResizing: restrict, imresize (not yet exported)\nFiltering: imfilter, imfilter!, imfilter_LoG, mapwindow, imROF, padarray\nFiltering kernels: Kernel. or KernelFactors., followed by ando[345], guassian2d, imaverage, imdog, imlaplacian, prewitt, sobel\nExposure : imhist, histeq, adjust_gamma, histmatch, imadjustintensity, imstretch, imcomplement, clahe, cliphist\nGradients: backdiffx, backdiffy, forwarddiffx, forwarddiffy, imgradients\nEdge detection: imedge, imgradients, thin_edges, magnitude, phase, magnitudephase, orientation, canny\nCorner detection: imcorner, harris, shi_tomasi, kitchen_rosenfeld, meancovs, gammacovs, fastcorners\nBlob detection: blob_LoG, findlocalmaxima, findlocalminima\nMorphological operations: dilate, erode, closing, opening, tophat, bothat, morphogradient, morpholaplace, feature_transform, distance_transform\nConnected components: label_components, component_boxes, component_lengths, component_indices, component_subscripts, component_centroids\nInterpolation: bilinear_interpolationTest images and phantoms (see also TestImages.jl):shepp_loganSee also the excellent ImageFeatures package, which supports a number of algorithms important for computer vision."
 },
 
 {
@@ -1577,11 +1577,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "function_reference.html#Images.FeatureTransform.feature_transform",
+    "page": "Summary and function reference",
+    "title": "Images.FeatureTransform.feature_transform",
+    "category": "Function",
+    "text": "feature_transform(I::AbstractArray{Bool, N}, [w=nothing]) -> F\n\nCompute the feature transform of a binary image I, finding the closest \"feature\" (positions where I is true) for each location in I.  Specifically, F[i] is a CartesianIndex encoding the position closest to i for which I[F[i]] is true.  In cases where two or more features in I have the same distance from i, an arbitrary feature is chosen. If I has no true values, then all locations are mapped to an index where each coordinate is typemin(Int).\n\nOptionally specify the weight w assigned to each coordinate.  For example, if I corresponds to an image where voxels are anisotropic, w could be the voxel spacing along each coordinate axis. The default value of nothing is equivalent to w=(1,1,...).\n\nSee also: distance_transform.\n\nCitation\n\n'A Linear Time Algorithm for Computing Exact Euclidean Distance Transforms of Binary Images in Arbitrary Dimensions' Maurer et al., 2003\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.FeatureTransform.distance_transform",
+    "page": "Summary and function reference",
+    "title": "Images.FeatureTransform.distance_transform",
+    "category": "Function",
+    "text": "distance_transform(F::AbstractArray{CartesianIndex}, [w=nothing]) -> D\n\nCompute the distance transform of F, where each element F[i] represents a \"target\" or \"feature\" location assigned to i. Specifically, D[i] is the distance between i and F[i]. Optionally specify the weight w assigned to each coordinate; the default value of nothing is equivalent to w=(1,1,...).\n\nSee also: feature_transform.\n\n\n\n"
+},
+
+{
     "location": "function_reference.html#Morphological-operations-1",
     "page": "Summary and function reference",
     "title": "Morphological operations",
     "category": "section",
-    "text": "dilate\nerode\nopening\nclosing\ntophat\nbothat\nmorphogradient\nmorpholaplace\nlabel_components\ncomponent_boxes\ncomponent_lengths\ncomponent_indices\ncomponent_subscripts\ncomponent_centroids"
+    "text": "dilate\nerode\nopening\nclosing\ntophat\nbothat\nmorphogradient\nmorpholaplace\nlabel_components\ncomponent_boxes\ncomponent_lengths\ncomponent_indices\ncomponent_subscripts\ncomponent_centroids\nfeature_transform\ndistance_transform"
 },
 
 {
@@ -1697,22 +1713,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "function_reference.html#ImageMetadata.getindexim",
-    "page": "Summary and function reference",
-    "title": "ImageMetadata.getindexim",
-    "category": "Function",
-    "text": "getindexim(img::ImageMeta, I...) -> newimg\n\nLike img[I...], except that the returned newimg is another ImageMeta. Like the data component, the properties dictionary of img is copied, so newimg is not linked in any way to img.\n\nSee also: viewim.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#ImageMetadata.viewim",
-    "page": "Summary and function reference",
-    "title": "ImageMetadata.viewim",
-    "category": "Function",
-    "text": "viewim(img::ImageMeta, I...) -> newimg\n\nLike view(img, I...), except that the returned newimg is another ImageMeta. Like the data component, the properties dictionary of img is shared with img, so that changes to either the data or the properties apply to both.\n\nSee also: getindexim.\n\n\n\n"
-},
-
-{
     "location": "function_reference.html#ImageCore.spatialproperties",
     "page": "Summary and function reference",
     "title": "ImageCore.spatialproperties",
@@ -1725,7 +1725,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Summary and function reference",
     "title": "Image metadata utilities",
     "category": "section",
-    "text": "ImageMeta\ndata\nproperties\ncopyproperties\nshareproperties\ngetindexim\nviewim\nspatialproperties"
+    "text": "ImageMeta\ndata\nproperties\ncopyproperties\nshareproperties\nspatialproperties"
+},
+
+{
+    "location": "api_comparison.html#",
+    "page": "Comparison with other image processing frameworks",
+    "title": "Comparison with other image processing frameworks",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "api_comparison.html#Comparison-with-other-image-processing-frameworks-1",
+    "page": "Comparison with other image processing frameworks",
+    "title": "Comparison with other image processing frameworks",
+    "category": "section",
+    "text": "The following table may be useful for people migrating from other frameworks, and for identifying missing functionality in JuliaImages. Note that there are packages like DICOM.jl which have not been integrated into more general frameworks; such functionality is not documented here.  This table is certainly not complete (corrections are welcome).Operation JuliaImages scikit-image + NumPy Matlab (ImageProcessing + ComputerVision)\nInput/output   \nRead image file load (FileIO.jl) imread imread\nWrite image file save (FileIO.jl) imsave imwrite\nImage file metadata magickinfo (ImageMagick.jl)  imfinfo\nTest images testimage (TestImages.jl) astronaut etc. “cameraman.tif” etc\n   \nElement type and color   \nChange numeric precision float32, float64, n0f8, etc. img_as_float etc im2double etc\nChange color space HSV.(img) etc. rgb2hsv etc. rgb2lab etc.\nWhitepoint adjustment map whitebalance (Colors.jl)  makecform\nHigh dynamic range   tonemap\n   \nIntensity & quantization   \nClamping clamp01, clamp01nan  \nLinear scaling scaleminmax, scalesigned, etc. rescale_intensity imadjust\nNonlinear scaling adjust_gamma, imstretch adjust_gamma imadjust\nCompute histogram imhist histogram imhist\nHistogram equalization histeq equalize_hist histeq\nAdaptive equalization clahe equalize_adapthist adapthisteq\nReference histogram matching histmatch  imhistmatch\nQuantization map anonymous function  imquantize\nThreshold estimation  threshold_otsu etc. graythresh etc.\n   \nVisualization and interactivity   \nVisualization imshow (ImageView.jl) imshow imshow, implay, etc.\nContrast adjustment ImageView.jl  imcontrast\nPixel information ImageView.jl  impixelinfo\nDistance measurement   imdistline\nText display of region   impixelregion\nZooming/scrolling ImageView.jl and GtkUtilities.jl imshow imscrollpanel etc.\nInteractive colormap   imcolormaptool\nRegion selection  RecatangleTool etc. imrect, imellipse, imfreehand, etc.\nImage comparison colorview  imshowpair, imfuse\nLabel colorization IndirectArray, ColorizedArray label2rgb label2rgb\n   \nAnnotation   \nDraw lines line, line! (ImageDraw.jl) line, polygon line (visualization only)\nDraw circles/ellipses circle!, ellipse! (ImageDraw.jl) circle, ellipse viscircles (visualization only)\n   \nTransformations   \nResize imresize, restrict resize imresize\nImage pyramids gaussian_pyramid (or use restrict) pyramid_gaussian etc. impyramid\nRotate warp rotate imrotate\nTranslate warp  imtranslate\nGeneral geometric transformation warp warp imwarp\nHough transform  hough_circle, etc. hough\nRadon transform  radon, iradon radon, iradon\nDistance transform feature_transform, distance_transform  bwdist, graydist\n   \nRegistration   \n   \nStatistics and image comparison   \nImage differences ssd, sad, etc.  immse, ssim\nMin/max/mean minfinite, maxfinite, meanfinite  nanmax, etc.\nEntropy entropy  entropy\n   \nFiltering and padding   \nLinear filtering imfilter gaussian, etc. imfilter\nMedian/max/quantile filtering mapwindow median/max etc. nlfilter, medfilt2, etc.\nOther nonlinear filtering (e.g., std) mapwindow  nlfilter, stdfilt\nGradients imgradients sobel_h etc. imgradientxy etc.\nIntegral image integral_image integral_image integralImage\nPadding padarray pad padarray\nDeconvolution weiner (Deconvolution.jl) richardson_lucy, weiner, etc. deconvlucy, deconvwnr, etc.\n   \nFeatures   \nEdge detection imedge, canny canny edge\nCorner detection imcorner, fastcorners corner_harris etc. detectFASTFeatures\nBlob detection blob_LoG blob_log etc. \nLocal binary patterns lbp etc. (ImageFeatures.jl) local_binary_pattern extractLBPFeatures\nHistogram of oriented gradients  hog extractHOGFeatures\nGray-level co-occurence glcm etc. (ImageFeatures.jl) greycomatrix graycomatrix\nPoint descriptors BRIEF, ORB, etc. (ImageFeatures.jl) BRIEF, ORB, etc. detectBRISK etc.\nFeature matching match_keypoints (ImageFeatures.jl) match_descriptors matchFeatures\n   \nSegmentation   \nConnected components label_components label bwconncomp, bwlabel\nForeground/background  active_contour activecontour\nClustering  quickshift \nMarker segmentation  random_walker imsegfmm\nWatershed  watershed watershed\n   \nMorphological operations   \nDilation dilate dilation, binary_dilation imdilate\nErosion erode  \nOpening opening opening imopen\nClosing closing closing imclose\nTop-hat filtering tophat tophat etc. imtophat\nBottom-hat filtering bothat bottomhat imbothat\nRegional max/min mapwindow filters.rank.maximum etc. imregionalmax etc.\nConvex hull  convex_hull_image bwconvhull\nBorders  clear_border imclearborder\nBoundaries  find_boundaries boundarymask\nFilling  remove_small_holes imfill, regionfill"
 },
 
 ]}
