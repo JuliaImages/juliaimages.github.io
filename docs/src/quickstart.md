@@ -36,7 +36,9 @@ img = AxisArray(rand(256, 256, 100, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm
 defines a 4d image (3 space dimensions plus one time dimension) with
 the specified name and physical pixel spacing for each coordinate.
 The AxisArrays package supports rich and efficient operations on such
-arrays.
+arrays, and can be useful to keep track of not just pixel spacing but
+the
+[orientation convention used for multidimensional images](http://www.grahamwideman.com/gw/brain/orientation/orientterms.htm).
 
 JuliaImages interoperates smoothly with AxisArrays and many other
 packages.  As further examples,
@@ -51,8 +53,8 @@ packages.  As further examples,
   value-transformations, facilitating work with images that may be too
   large to store in memory at once
 
-- `ImageTransformations` allows you to encode rotations, shears, etc.,
-  either eagerly or lazily
+- `ImageTransformations` allows you to encode rotations, shears,
+  deformations, etc., either eagerly or lazily
 
 It is very easy to define new array types in Julia--and consequently
 specialized images or operations--and have them interoperate
@@ -109,18 +111,29 @@ You can use `permuteddimsview` to "reinterpret" the orientation of a
 chunk of memory without making a copy, or `permutedims` if you want a
 copy.
 
+## Arrays with arbitrary indices
+
+If you have an input image and perform some kind of spatial
+transformation on it, how do pixels/voxels in the transformed image
+match up to pixels in the input? Through Julia's support for arrays
+with indices that start at values other than 1, it is possible to
+allow array indices to represent *absolute* position in space, making
+it straightforward to keep track of the correspondence between
+location across multiple images. More information can be found in
+[Keeping track of location with unconventional indices](@ref).
+
 ## Function categories
 
 See [Summary and function reference](@ref) for more information about
-each of these. The list below is accessible via `?Images` from the
-Julia REPL. If you've used other frameworks previously, you may also
-be interested in the
+each of the topics below. The list below is accessible via `?Images`
+from the Julia REPL. If you've used other frameworks previously, you
+may also be interested in the
 [Comparison with other image processing frameworks](@ref).
 
 Constructors, conversions, and traits:
 
 - Construction: use constructors of specialized packages, e.g., `AxisArray`, `ImageMeta`, etc.
-- "Conversion": `colorview`, `channelview`, `rawview`, `normedview`, `permuteddimsview`
+- "Conversion": `colorview`, `channelview`, `rawview`, `normedview`, `permuteddimsview`, `paddedviews`
 - Traits: `pixelspacing`, `sdims`, `timeaxis`, `timedim`, `spacedirections`
 
 Contrast/coloration:
@@ -130,7 +143,7 @@ Contrast/coloration:
 Algorithms:
 
 - Reductions: `maxfinite`, `maxabsfinite`, `minfinite`, `meanfinite`, `sad`, `ssd`, `integral_image`, `boxdiff`, `gaussian_pyramid`
-- Resizing: `restrict`, `imresize` (not yet exported)
+- Resizing and spatial transformations: `restrict`, `imresize`, `warp`
 - Filtering: `imfilter`, `imfilter!`, `imfilter_LoG`, `mapwindow`, `imROF`, `padarray`
 - Filtering kernels: `Kernel.` or `KernelFactors.`, followed by `ando[345]`, `guassian2d`, `imaverage`, `imdog`, `imlaplacian`, `prewitt`, `sobel`
 - Exposure : `imhist`, `histeq`, `adjust_gamma`, `histmatch`, `imadjustintensity`, `imstretch`, `imcomplement`, `clahe`, `cliphist`

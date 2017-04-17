@@ -26,11 +26,14 @@ images.
 
 ```@docs
 colorview
+ColorView
 channelview
+ChannelView
 normedview
 rawview
 permuteddimsview
 StackedView
+paddedviews
 ```
 
 Images with defined geometry and axis meaning can be constructed using the [`AxisArrays`](https://github.com/JuliaArrays/AxisArrays.jl) package:
@@ -225,15 +228,17 @@ histeq
 adjust_gamma
 imstretch
 imadjustintensity
-imcomplement
+complement
 histmatch
 clahe
 ```
 
-### Resizing
+### Spatial transformations and resizing
 
 ```@docs
+imresize
 restrict
+warp
 ```
 
 ### Image statistics
