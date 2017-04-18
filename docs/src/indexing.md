@@ -7,12 +7,10 @@ with examples.
 
 ## Keeping track of location with unconventional indices
 
-(**Note: this depends on the not-yet-integrated ImageTransformations.jl**)
-
 Consider the following pair of images:
 
-| col | col |
-|:---:|:---:|
+| imgref | img |
+|:------:|:---:|
 | ![cameraman](assets/indexing/cm.png) | ![cameraman](assets/indexing/cmrot.png) |
 
 You might guess that the one on the right is a rotated version of the
@@ -50,16 +48,7 @@ original array in both directions? Displaying the rotated
 image---especially when overlaid on the original---reveals why:
 
 ```julia
-# Create a padded version of the original with the same indices as imgrot
-julia> img0 = similar(imgrot);
-
-julia> fill!(img0, 0);
-
-# Copy the original image into the same index location
-julia> img0[1:386, 1:386] = img;  # or write as img0[indices(img)...] = img
-
-# Create the overlay
-julia> imgov = colorview(RGB, img0, imgrot, zeroarray)
+julia> imgov = colorview(RGB, paddedviews(0, img, imgrot, zeroarray)...)
 ```
 
 ![rot_overlay](assets/indexing/rot_overlay.png)
@@ -71,13 +60,11 @@ indices to be *negative* means that we have no trouble adding
 appropriate "padding" to the original image: we just copy the
 original over to the padded array, using its original indices.
 
-We can test whether this rotation aligns well with the original
-unrotated image at the top of this page:
+We can test whether `imgrot` aligns well with the original
+unrotated image `imgref` at the top of this page:
 
 ```julia
-julia> img0[indices(imgref)...] = imgref;  # imgref is the image on the left, top of page
-
-julia> imgov = colorview(RGB, img0, imgrot, zeroarray);
+julia> imgov_ref = colorview(RGB, paddedviews(0, imgref, imgrot, zeroarray)...)
 ```
 
 ![ref_overlay](assets/indexing/ref_overlay.png)
@@ -85,7 +72,8 @@ julia> imgov = colorview(RGB, img0, imgrot, zeroarray);
 The fact that the overlapping portion looks yellow---the combination
 of red and green---indicates that we have perfect alignment.
 
-You can learn more about Julia's support for arbitrary indices at ??. (**to be written**)
+You can learn more about Julia's support for arbitrary indices in
+[this blog post]().
 
 ## Keeping track of orientation with named axes
 

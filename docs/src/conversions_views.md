@@ -361,6 +361,40 @@ adjacent in memory and thus likely share a cache line. Conversely, if
 you want to access different pixels from a single color channel
 sequentially, `pc` may be more efficient (for the same reason).
 
+## Adding padding
+
+Sometimes when you want to compare two images, one might be of a
+different size than another. You can create array views that have
+common indices with `paddedviews`:
+
+```julia
+julia> a1 = reshape([1,2], 2, 1)
+2×1 Array{Int64,2}:
+ 1
+ 2
+
+julia> a2 = [1.0,2.0]'
+1×2 Array{Float64,2}:
+ 1.0  2.0
+
+julia> a1p, a2p = paddedviews(0, a1, a2);   # 0 is the fill value
+
+julia> a1p
+2×2 PaddedViews.PaddedView{Int64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},Array{Int64,2}}:
+ 1  0
+ 2  0
+
+julia> a2p
+2×2 PaddedViews.PaddedView{Float64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},Array{Float64,2}}:
+ 1.0  2.0
+ 0.0  0.0
+```
+
+This can be especially useful in conjunction with `colorview` to
+compare two (or more) grayscale images. See
+[Keeping track of location with unconventional indices](@ref) for more
+information.
+
 ## Decoupling views from the parent memory
 
 If you want to use some of these views but have an application where
