@@ -85,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Quickstart",
     "title": "Images are just arrays",
     "category": "section",
-    "text": "For most purposes, any AbstractArray can be treated as an image. For example,using Images\n\nimg = rand(640,480)               # a random Float64 image\nimg = rand(RGB{N0f8}, 256, 256)   # a random RGB image, 8 bits per channel\n# select a region-of-interest from a larger image\nimgc = img[200:245, 17:42]        # makes a copy\nimgv = @view img[200:245, 17:42]  # makes a view\n# an image that starts black in the upper left and gets bright in the lower right:\nimg = reshape(linspace(0,1,10^4), 100, 100)\n# a 3d box image\nimg = zeros(128, 128, 80)\nimg[20:100, 20:100, 10:70] = 1Some add-on packages enable additional behavior. For example,using Images, Unitful, AxisArrays\nusing Unitful: mm, s\n\nimg = AxisArray(rand(256, 256, 100, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s))defines a 4d image (3 space dimensions plus one time dimension) with the specified name and physical pixel spacing for each coordinate. The AxisArrays package supports rich and efficient operations on such arrays.JuliaImages interoperates smoothly with AxisArrays and many other packages.  As further examples,the ImageMetadata package (incorporated into Images itself) allows you to \"tag\" images with custom metadata\nthe IndirectArrays package supports indexed (colormap) images\nthe MappedArrays package allows you to represent lazy value-transformations, facilitating work with images that may be too large to store in memory at once\nImageTransformations allows you to encode rotations, shears, etc., either eagerly or lazilyIt is very easy to define new array types in Julia–and consequently specialized images or operations–and have them interoperate smoothly with the vast majority of functions in JuliaImages."
+    "text": "For most purposes, any AbstractArray can be treated as an image. For example,using Images\n\nimg = rand(640,480)               # a random Float64 image\nimg = rand(RGB{N0f8}, 256, 256)   # a random RGB image, 8 bits per channel\n# select a region-of-interest from a larger image\nimgc = img[200:245, 17:42]        # makes a copy\nimgv = @view img[200:245, 17:42]  # makes a view\n# an image that starts black in the upper left and gets bright in the lower right:\nimg = reshape(linspace(0,1,10^4), 100, 100)\n# a 3d box image\nimg = zeros(128, 128, 80)\nimg[20:100, 20:100, 10:70] = 1Some add-on packages enable additional behavior. For example,using Images, Unitful, AxisArrays\nusing Unitful: mm, s\n\nimg = AxisArray(rand(256, 256, 100, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s))defines a 4d image (3 space dimensions plus one time dimension) with the specified name and physical pixel spacing for each coordinate. The AxisArrays package supports rich and efficient operations on such arrays, and can be useful to keep track of not just pixel spacing but the orientation convention used for multidimensional images.JuliaImages interoperates smoothly with AxisArrays and many other packages.  As further examples,the ImageMetadata package (incorporated into Images itself) allows you to \"tag\" images with custom metadata\nthe IndirectArrays package supports indexed (colormap) images\nthe MappedArrays package allows you to represent lazy value-transformations, facilitating work with images that may be too large to store in memory at once\nImageTransformations allows you to encode rotations, shears, deformations, etc., either eagerly or lazilyIt is very easy to define new array types in Julia–and consequently specialized images or operations–and have them interoperate smoothly with the vast majority of functions in JuliaImages."
 },
 
 {
@@ -105,11 +105,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "quickstart.html#Arrays-with-arbitrary-indices-1",
+    "page": "Quickstart",
+    "title": "Arrays with arbitrary indices",
+    "category": "section",
+    "text": "If you have an input image and perform some kind of spatial transformation on it, how do pixels/voxels in the transformed image match up to pixels in the input? Through Julia's support for arrays with indices that start at values other than 1, it is possible to allow array indices to represent absolute position in space, making it straightforward to keep track of the correspondence between location across multiple images. More information can be found in Keeping track of location with unconventional indices."
+},
+
+{
     "location": "quickstart.html#Function-categories-1",
     "page": "Quickstart",
     "title": "Function categories",
     "category": "section",
-    "text": "See Summary and function reference for more information about each of these. The list below is accessible via ?Images from the Julia REPL. If you've used other frameworks previously, you may also be interested in the Comparison with other image processing frameworks.Constructors, conversions, and traits:Construction: use constructors of specialized packages, e.g., AxisArray, ImageMeta, etc.\n\"Conversion\": colorview, channelview, rawview, normedview, permuteddimsview\nTraits: pixelspacing, sdims, timeaxis, timedim, spacedirectionsContrast/coloration:clamp01, clamp01nan, scaleminmax, colorsigned, scalesignedAlgorithms:Reductions: maxfinite, maxabsfinite, minfinite, meanfinite, sad, ssd, integral_image, boxdiff, gaussian_pyramid\nResizing: restrict, imresize (not yet exported)\nFiltering: imfilter, imfilter!, imfilter_LoG, mapwindow, imROF, padarray\nFiltering kernels: Kernel. or KernelFactors., followed by ando[345], guassian2d, imaverage, imdog, imlaplacian, prewitt, sobel\nExposure : imhist, histeq, adjust_gamma, histmatch, imadjustintensity, imstretch, imcomplement, clahe, cliphist\nGradients: backdiffx, backdiffy, forwarddiffx, forwarddiffy, imgradients\nEdge detection: imedge, imgradients, thin_edges, magnitude, phase, magnitudephase, orientation, canny\nCorner detection: imcorner, harris, shi_tomasi, kitchen_rosenfeld, meancovs, gammacovs, fastcorners\nBlob detection: blob_LoG, findlocalmaxima, findlocalminima\nMorphological operations: dilate, erode, closing, opening, tophat, bothat, morphogradient, morpholaplace, feature_transform, distance_transform\nConnected components: label_components, component_boxes, component_lengths, component_indices, component_subscripts, component_centroids\nInterpolation: bilinear_interpolationTest images and phantoms (see also TestImages.jl):shepp_loganSee also the excellent ImageFeatures package, which supports a number of algorithms important for computer vision."
+    "text": "See Summary and function reference for more information about each of the topics below. The list below is accessible via ?Images from the Julia REPL. If you've used other frameworks previously, you may also be interested in the Comparison with other image processing frameworks.Constructors, conversions, and traits:Construction: use constructors of specialized packages, e.g., AxisArray, ImageMeta, etc.\n\"Conversion\": colorview, channelview, rawview, normedview, permuteddimsview, paddedviews\nTraits: pixelspacing, sdims, timeaxis, timedim, spacedirectionsContrast/coloration:clamp01, clamp01nan, scaleminmax, colorsigned, scalesignedAlgorithms:Reductions: maxfinite, maxabsfinite, minfinite, meanfinite, sad, ssd, integral_image, boxdiff, gaussian_pyramid\nResizing and spatial transformations: restrict, imresize, warp\nFiltering: imfilter, imfilter!, imfilter_LoG, mapwindow, imROF, padarray\nFiltering kernels: Kernel. or KernelFactors., followed by ando[345], guassian2d, imaverage, imdog, imlaplacian, prewitt, sobel\nExposure : imhist, histeq, adjust_gamma, histmatch, imadjustintensity, imstretch, imcomplement, clahe, cliphist\nGradients: backdiffx, backdiffy, forwarddiffx, forwarddiffy, imgradients\nEdge detection: imedge, imgradients, thin_edges, magnitude, phase, magnitudephase, orientation, canny\nCorner detection: imcorner, harris, shi_tomasi, kitchen_rosenfeld, meancovs, gammacovs, fastcorners\nBlob detection: blob_LoG, findlocalmaxima, findlocalminima\nMorphological operations: dilate, erode, closing, opening, tophat, bothat, morphogradient, morpholaplace, feature_transform, distance_transform\nConnected components: label_components, component_boxes, component_lengths, component_indices, component_subscripts, component_centroids\nInterpolation: bilinear_interpolationTest images and phantoms (see also TestImages.jl):shepp_loganSee also the excellent ImageFeatures package, which supports a number of algorithms important for computer vision."
 },
 
 {
@@ -225,6 +233,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "conversions_views.html#Adding-padding-1",
+    "page": "Conversions vs. views",
+    "title": "Adding padding",
+    "category": "section",
+    "text": "Sometimes when you want to compare two images, one might be of a different size than another. You can create array views that have common indices with paddedviews:julia> a1 = reshape([1,2], 2, 1)\n2×1 Array{Int64,2}:\n 1\n 2\n\njulia> a2 = [1.0,2.0]'\n1×2 Array{Float64,2}:\n 1.0  2.0\n\njulia> a1p, a2p = paddedviews(0, a1, a2);   # 0 is the fill value\n\njulia> a1p\n2×2 PaddedViews.PaddedView{Int64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},Array{Int64,2}}:\n 1  0\n 2  0\n\njulia> a2p\n2×2 PaddedViews.PaddedView{Float64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},Array{Float64,2}}:\n 1.0  2.0\n 0.0  0.0This can be especially useful in conjunction with colorview to compare two (or more) grayscale images. See Keeping track of location with unconventional indices for more information."
+},
+
+{
     "location": "conversions_views.html#Decoupling-views-from-the-parent-memory-1",
     "page": "Conversions vs. views",
     "title": "Decoupling views from the parent memory",
@@ -261,7 +277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays: more advanced indexing",
     "title": "Keeping track of location with unconventional indices",
     "category": "section",
-    "text": "(Note: this depends on the not-yet-integrated ImageTransformations.jl)Consider the following pair of images:col col\n(Image: cameraman) (Image: cameraman)You might guess that the one on the right is a rotated version of the one on the left. But, what is the angle? Is there also a translation?A \"low tech\" way to test this is to rotate and shift the image on the right until it seems aligned with the one on the left. We could overlay the two images (Using colorview to make color overlays) to see how well we're doing.# Define the transformation, using CoordinateTransformations\n# We're rotating around the center of img\njulia> tfm = recenter(RotMatrix(pi/8), center(img))\nAffineMap([0.92388 -0.382683; 0.382683 0.92388], [88.7786,-59.3199])\n\n# Apply it to the image\njulia> imgrot = warp(img, tfm);\n\njulia> summary(img)\n\"386×386 Array{Gray{N0f8},2}\"\n\njulia> summary(imgrot)\n\"-59:446×-59:446 OffsetArray{Gray{Float64},2}\"While img has indices that start with the conventional 1, the summary of imgrot reports that it has indices (-59:446, -59:446). This means that the first element of imgrot is indexed with imgrot[-59,-59] and the last element with imgrot[446,446].What is the meaning of these indices that extend beyond those of the original array in both directions? Displaying the rotated image–-especially when overlaid on the original–-reveals why:# Create a padded version of the original with the same indices as imgrot\njulia> img0 = similar(imgrot);\n\njulia> fill!(img0, 0);\n\n# Copy the original image into the same index location\njulia> img0[1:386, 1:386] = img;  # or write as img0[indices(img)...] = img\n\n# Create the overlay\njulia> imgov = colorview(RGB, img0, imgrot, zeroarray)(Image: rot_overlay)The padding on all sides of the array leaves space for the fact that the rotated image (green) contains some pixels out of the region covered by the original image (red).  The fact that Julia allows these indices to be negative means that we have no trouble adding appropriate \"padding\" to the original image: we just copy the original over to the padded array, using its original indices.We can test whether this rotation aligns well with the original unrotated image at the top of this page:julia> img0[indices(imgref)...] = imgref;  # imgref is the image on the left, top of page\n\njulia> imgov = colorview(RGB, img0, imgrot, zeroarray);(Image: ref_overlay)The fact that the overlapping portion looks yellow–-the combination of red and green–-indicates that we have perfect alignment.You can learn more about Julia's support for arbitrary indices at ??. (to be written)"
+    "text": "Consider the following pair of images:imgref img\n(Image: cameraman) (Image: cameraman)You might guess that the one on the right is a rotated version of the one on the left. But, what is the angle? Is there also a translation?A \"low tech\" way to test this is to rotate and shift the image on the right until it seems aligned with the one on the left. We could overlay the two images (Using colorview to make color overlays) to see how well we're doing.# Define the transformation, using CoordinateTransformations\n# We're rotating around the center of img\njulia> tfm = recenter(RotMatrix(pi/8), center(img))\nAffineMap([0.92388 -0.382683; 0.382683 0.92388], [88.7786,-59.3199])\n\n# Apply it to the image\njulia> imgrot = warp(img, tfm);\n\njulia> summary(img)\n\"386×386 Array{Gray{N0f8},2}\"\n\njulia> summary(imgrot)\n\"-59:446×-59:446 OffsetArray{Gray{Float64},2}\"While img has indices that start with the conventional 1, the summary of imgrot reports that it has indices (-59:446, -59:446). This means that the first element of imgrot is indexed with imgrot[-59,-59] and the last element with imgrot[446,446].What is the meaning of these indices that extend beyond those of the original array in both directions? Displaying the rotated image–-especially when overlaid on the original–-reveals why:julia> imgov = colorview(RGB, paddedviews(0, img, imgrot, zeroarray)...)(Image: rot_overlay)The padding on all sides of the array leaves space for the fact that the rotated image (green) contains some pixels out of the region covered by the original image (red).  The fact that Julia allows these indices to be negative means that we have no trouble adding appropriate \"padding\" to the original image: we just copy the original over to the padded array, using its original indices.We can test whether imgrot aligns well with the original unrotated image imgref at the top of this page:julia> imgov_ref = colorview(RGB, paddedviews(0, imgref, imgrot, zeroarray)...)(Image: ref_overlay)The fact that the overlapping portion looks yellow–-the combination of red and green–-indicates that we have perfect alignment.You can learn more about Julia's support for arbitrary indices in this blog post."
 },
 
 {
@@ -529,59 +545,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "function_reference.html#ImageCore.colorview",
-    "page": "Summary and function reference",
-    "title": "ImageCore.colorview",
-    "category": "Function",
-    "text": "colorview(C, A)\n\nreturns a view of the numeric array A, interpreting successive elements of A as if they were channels of Colorant C. This is almost identical to ColorView{C}(A), except that if A is a ChannelView, it will simply return the parent of A, or use reinterpret when appropriate. Consequently, the output may not be a ColorView array.\n\nExample\n\nA = rand(3, 10, 10)\nimg = colorview(RGB, A)\n\n\n\ncolorview(C, gray1, gray2, ...) -> imgC\n\nCombine numeric/grayscale images gray1, gray2, etc., into the separate color channels of an array imgC with element type C<:Colorant.\n\nAs a convenience, the constant zeroarray fills in an array of matched size with all zeros.\n\nExample\n\nimgC = colorview(RGB, r, zeroarray, b)\n\ncreates an image with r in the red chanel, b in the blue channel, and nothing in the green channel.\n\nSee also: StackedView.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#ImageCore.channelview",
-    "page": "Summary and function reference",
-    "title": "ImageCore.channelview",
-    "category": "Function",
-    "text": "channelview(A)\n\nreturns a view of A, splitting out (if necessary) the color channels of A into a new first dimension. This is almost identical to ChannelView(A), except that if A is a ColorView, it will simply return the parent of A, or will use reinterpret when appropriate. Consequently, the output may not be a ChannelView array.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#ImageCore.normedview",
-    "page": "Summary and function reference",
-    "title": "ImageCore.normedview",
-    "category": "Function",
-    "text": "normedview([T], img::AbstractArray{Unsigned})\n\nreturns a \"view\" of img where the values are interpreted in terms of Normed number types. For example, if img is an Array{UInt8}, the view will act like an Array{N0f8}.  Supply T if the element type of img is UInt16, to specify whether you want a N6f10, N4f12, N2f14, or N0f16 result.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#ImageCore.rawview",
-    "page": "Summary and function reference",
-    "title": "ImageCore.rawview",
-    "category": "Function",
-    "text": "rawview(img::AbstractArray{FixedPoint})\n\nreturns a \"view\" of img where the values are interpreted in terms of their raw underlying storage. For example, if img is an Array{N0f8}, the view will act like an Array{UInt8}.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#ImageCore.permuteddimsview",
-    "page": "Summary and function reference",
-    "title": "ImageCore.permuteddimsview",
-    "category": "Function",
-    "text": "permuteddimsview(A, perm)\n\nreturns a \"view\" of A with its dimensions permuted as specified by perm. This is like permutedims, except that it produces a view rather than a copy of A; consequently, any manipulations you make to the output will be mirrored in A. Compared to the copy, the view is much faster to create, but generally slower to use.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#ImageCore.StackedView",
-    "page": "Summary and function reference",
-    "title": "ImageCore.StackedView",
-    "category": "Type",
-    "text": "StackedView(B, C, ...) -> A\n\nPresent arrays B, C, etc, as if they are separate channels along the first dimension of A. In particular,\n\nB == A[1,:,:...]\nC == A[2,:,:...]\n\nand so on. Combined with colorview, this allows one to combine two or more grayscale images into a single color image.\n\nSee also: colorview.\n\n\n\n"
-},
-
-{
     "location": "function_reference.html#Image-construction,-conversion,-and-views-1",
     "page": "Summary and function reference",
     "title": "Image construction, conversion, and views",
     "category": "section",
-    "text": "Any array can be treated as an Image.  In graphical environments, only arrays with Colorant element types (Gray, RGB, ARGB, etc.) are automatically displayed as images.colorview\nchannelview\nnormedview\nrawview\npermuteddimsview\nStackedViewImages with defined geometry and axis meaning can be constructed using the AxisArrays package:using AxisArrays\nimg = AxisArray(A, (:y, :x, :time), (0.25μm, 0.25μm, 0.125s))  # see Unitful.jl for unitsCustom metadata can be added as follows:img = ImageMeta(A, date=now(), patientID=12345)Any of these operations may be composed together, e.g., if you have an m×n×3 UInt8 array, you can put it in canonical RGB format and add metadata:img = ImageMeta(colorview(RGB, normedview(permuteddimsview(A, (3,1,2)))), sample=\"control\")"
+    "text": "Any array can be treated as an Image.  In graphical environments, only arrays with Colorant element types (Gray, RGB, ARGB, etc.) are automatically displayed as images.colorview\nColorView\nchannelview\nChannelView\nnormedview\nrawview\npermuteddimsview\nStackedView\npaddedviewsImages with defined geometry and axis meaning can be constructed using the AxisArrays package:using AxisArrays\nimg = AxisArray(A, (:y, :x, :time), (0.25μm, 0.25μm, 0.125s))  # see Unitful.jl for unitsCustom metadata can be added as follows:img = ImageMeta(A, date=now(), patientID=12345)Any of these operations may be composed together, e.g., if you have an m×n×3 UInt8 array, you can put it in canonical RGB format and add metadata:img = ImageMeta(colorview(RGB, normedview(permuteddimsview(A, (3,1,2)))), sample=\"control\")"
 },
 
 {
@@ -1297,99 +1265,43 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "function_reference.html#Images.imhist",
-    "page": "Summary and function reference",
-    "title": "Images.imhist",
-    "category": "Function",
-    "text": "edges, count = imhist(img, nbins)\nedges, count = imhist(img, nbins, minval, maxval)\n\nGenerates a histogram for the image over nbins spread between (minval, maxval]. If minval and maxval are not given, then the minimum and maximum values present in the image are taken.\n\nedges is a vector that specifies how the range is divided; count[i+1] is the number of values x that satisfy edges[i] <= x < edges[i+1]. count[1] is the number satisfying x < edges[1], and count[end] is the number satisfying x >= edges[end]. Consequently, length(count) == length(edges)+1.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#Images.cliphist",
-    "page": "Summary and function reference",
-    "title": "Images.cliphist",
-    "category": "Function",
-    "text": "clipped_hist = cliphist(hist, clip)\n\nClips the histogram above a certain value clip. The excess left in the bins exceeding clip is redistributed among the remaining bins.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#Images.histeq",
-    "page": "Summary and function reference",
-    "title": "Images.histeq",
-    "category": "Function",
-    "text": "hist_equalised_img = histeq(img, nbins)\nhist_equalised_img = histeq(img, nbins, minval, maxval)\n\nReturns a histogram equalised image with a granularity of approximately nbins number of bins.\n\nThe histeq function can handle a variety of input types. The returned image depends on the input type. If the input is an Image then the resulting image is of the same type and has the same properties.\n\nFor coloured images, the input is converted to YIQ type and the Y channel is equalised. This is the combined with the I and Q channels and the resulting image converted to the same type as the input.\n\nIf minval and maxval are specified then intensities are equalized to the range (minval, maxval). The default values are 0 and 1.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#Images.adjust_gamma",
-    "page": "Summary and function reference",
-    "title": "Images.adjust_gamma",
-    "category": "Function",
-    "text": "gamma_corrected_img = adjust_gamma(img, gamma)\n\nReturns a gamma corrected image.\n\nThe adjust_gamma function can handle a variety of input types. The returned image depends on the input type. If the input is an Image then the resulting image is of the same type and has the same properties.\n\nFor coloured images, the input is converted to YIQ type and the Y channel is gamma corrected. This is the combined with the I and Q channels and the resulting image converted to the same type as the input.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#Images.imstretch",
-    "page": "Summary and function reference",
-    "title": "Images.imstretch",
-    "category": "Function",
-    "text": "imgs = imstretch(img, m, slope) enhances or reduces (for slope > 1 or < 1, respectively) the contrast near saturation (0 and 1). This is essentially a symmetric gamma-correction. For a pixel of brightness p, the new intensity is 1/(1+(m/(p+eps))^slope).\n\nThis assumes the input img has intensities between 0 and 1.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#Images.imadjustintensity",
-    "page": "Summary and function reference",
-    "title": "Images.imadjustintensity",
-    "category": "Function",
-    "text": "imadjustintensity(img [, (minval,maxval)]) -> Image\n\nMap intensities over the interval (minval,maxval) to the interval    [0,1]. This is equivalent to map(ScaleMinMax(eltype(img), minval,    maxval), img).  (minval,maxval) defaults to extrema(img).\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#Images.imcomplement",
-    "page": "Summary and function reference",
-    "title": "Images.imcomplement",
-    "category": "Function",
-    "text": "complement_img = imcomplement(img)\n\nReturns the complement of an image.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#Images.histmatch",
-    "page": "Summary and function reference",
-    "title": "Images.histmatch",
-    "category": "Function",
-    "text": "hist_matched_img = histmatch(img, oimg, nbins)\n\nReturns a grayscale histogram matched image with a granularity of nbins number of bins. img is the image to be matched and oimg is the image having the desired histogram to be matched to.\n\n\n\n"
-},
-
-{
-    "location": "function_reference.html#Images.clahe",
-    "page": "Summary and function reference",
-    "title": "Images.clahe",
-    "category": "Function",
-    "text": "hist_equalised_img = clahe(img, nbins, xblocks = 8, yblocks = 8, clip = 3)\n\n\nPerforms Contrast Limited Adaptive Histogram Equalisation (CLAHE) on the input image. It differs from ordinary histogram equalization in the respect that the adaptive method computes several histograms, each corresponding to a distinct section of the image, and uses them to redistribute the lightness values of the image. It is therefore suitable for improving the local contrast and enhancing the definitions of edges in each region of an image.\n\nIn the straightforward form, CLAHE is done by calculation a histogram of a window around each pixel and using the transformation function of the equalised histogram to rescale the pixel. Since this is computationally expensive, we use interpolation which gives a significant rise in efficiency without compromising the result. The image is divided into a grid and equalised histograms are calculated for each block. Then, each pixel is interpolated using the closest histograms.\n\nThe xblocks and yblocks specify the number of blocks to divide the input image into in each direction. nbins specifies the granularity of histogram calculation of each local region. clip specifies the value at which the histogram is clipped. The excess in the histogram bins with value exceeding clip is redistributed among the other bins.\n\n\n\n"
-},
-
-{
     "location": "function_reference.html#Exposure-1",
     "page": "Summary and function reference",
     "title": "Exposure",
     "category": "section",
-    "text": "imhist\ncliphist\nhisteq\nadjust_gamma\nimstretch\nimadjustintensity\nimcomplement\nhistmatch\nclahe"
+    "text": "imhist\ncliphist\nhisteq\nadjust_gamma\nimstretch\nimadjustintensity\ncomplement\nhistmatch\nclahe"
 },
 
 {
-    "location": "function_reference.html#Images.restrict",
+    "location": "function_reference.html#ImageTransformations.imresize",
     "page": "Summary and function reference",
-    "title": "Images.restrict",
+    "title": "ImageTransformations.imresize",
     "category": "Function",
-    "text": "imgr = restrict(img[, region]) performs two-fold reduction in size along the dimensions listed in region, or all spatial coordinates if region is not specified.  It anti-aliases the image as it goes, so is better than a naive summation over 2x2 blocks.\n\n\n\n"
+    "text": "imresize(img, sz) -> imgr\nimresize(img, inds) -> imgr\n\nChange img to be of size sz (or to have indices inds). This interpolates the values at sub-pixel locations. If you are shrinking the image, you risk aliasing unless you low-pass filter img first. For example:\n\nσ = map((o,n)->0.75*o/n, size(img), sz)\nkern = KernelFactors.gaussian(σ)   # from ImageFiltering\nimgr = imresize(imfilter(img, kern, NA()), sz)\n\nSee also restrict.\n\n\n\n"
 },
 
 {
-    "location": "function_reference.html#Resizing-1",
+    "location": "function_reference.html#ImageTransformations.restrict",
     "page": "Summary and function reference",
-    "title": "Resizing",
+    "title": "ImageTransformations.restrict",
+    "category": "Function",
+    "text": "restrict(img[, region]) -> imgr\n\nReduce the size of img by two-fold along the dimensions listed in region, or all spatial coordinates if region is not specified.  It anti-aliases the image as it goes, so is better than a naive summation over 2x2 blocks.\n\nSee also imresize.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageTransformations.warp",
+    "page": "Summary and function reference",
+    "title": "ImageTransformations.warp",
+    "category": "Function",
+    "text": "warp(img, tform) -> imgw\n\nTransform the coordinates of img, returning a new imgw satisfying imgw[x] = img[tform(x)]. tform should be defined using CoordinateTransformations.jl.\n\nInterpolation scheme\n\nAt off-grid points, imgw is calculated by interpolation. The default is linear interpolation, used when img is a plain array, and NaN values are used to indicate locations for which tform(x) was outside the bounds of the input img. For more control over the interpolation scheme–-and how beyond-the-edge points are handled–-pass it in as an AbstractExtrapolation from Interpolations.jl.\n\nThe meaning of the coordinates\n\nThe output array imgw has indices that would result from applying tform to the indices of img. This can be very handy for keeping track of how pixels in imgw line up with pixels in img.\n\nIf you just want a plain array, you can \"strip\" the custom indices with parent(imgw).\n\nExamples: a 2d rotation (see JuliaImages documentation for pictures)\n\njulia> using Images, CoordinateTransformations, TestImages, OffsetArrays\n\njulia> img = testimage(\"lighthouse\");\n\njulia> indices(img)\n(Base.OneTo(512),Base.OneTo(768))\n\n# Rotate around the center of `img`\njulia> tfm = recenter(RotMatrix(pi/4), center(img))\nAffineMap([0.707107 -0.707107; 0.707107 0.707107], [347.01,-68.7554])\n\njulia> imgw = warp(img, tfm);\n\njulia> indices(imgw)\n(-196:709,-68:837)\n\n# Alternatively, specify the origin in the image itself\njulia> img0 = OffsetArray(img, -30:481, -384:383);  # origin near top of image\n\njulia> rot = LinearMap(RotMatrix(pi/4))\nLinearMap([0.707107 -0.707107; 0.707107 0.707107])\n\njulia> imgw = warp(img0, rot);\n\njulia> indices(imgw)\n(-293:612,-293:611)\n\njulia> imgr = parent(imgw);\n\njulia> indices(imgr)\n(Base.OneTo(906),Base.OneTo(905))\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Spatial-transformations-and-resizing-1",
+    "page": "Summary and function reference",
+    "title": "Spatial transformations and resizing",
     "category": "section",
-    "text": "restrict"
+    "text": "imresize\nrestrict\nwarp"
 },
 
 {
@@ -1741,7 +1653,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Comparison with other image processing frameworks",
     "title": "Comparison with other image processing frameworks",
     "category": "section",
-    "text": "The following table may be useful for people migrating from other frameworks, and for identifying missing functionality in JuliaImages. Note that there are packages like DICOM.jl which have not been integrated into more general frameworks; such functionality is not documented here.  This table is certainly not complete (corrections are welcome).Operation JuliaImages scikit-image + NumPy Matlab (ImageProcessing + ComputerVision)\nInput/output   \nRead image file load (FileIO.jl) imread imread\nWrite image file save (FileIO.jl) imsave imwrite\nImage file metadata magickinfo (ImageMagick.jl)  imfinfo\nTest images testimage (TestImages.jl) astronaut etc. “cameraman.tif” etc\n   \nElement type and color   \nChange numeric precision float32, float64, n0f8, etc. img_as_float etc im2double etc\nChange color space HSV.(img) etc. rgb2hsv etc. rgb2lab etc.\nWhitepoint adjustment map whitebalance (Colors.jl)  makecform\nHigh dynamic range   tonemap\n   \nIntensity & quantization   \nClamping clamp01, clamp01nan  \nLinear scaling scaleminmax, scalesigned, etc. rescale_intensity imadjust\nNonlinear scaling adjust_gamma, imstretch adjust_gamma imadjust\nCompute histogram imhist histogram imhist\nHistogram equalization histeq equalize_hist histeq\nAdaptive equalization clahe equalize_adapthist adapthisteq\nReference histogram matching histmatch  imhistmatch\nQuantization map anonymous function  imquantize\nThreshold estimation  threshold_otsu etc. graythresh etc.\n   \nVisualization and interactivity   \nVisualization imshow (ImageView.jl) imshow imshow, implay, etc.\nContrast adjustment ImageView.jl  imcontrast\nPixel information ImageView.jl  impixelinfo\nDistance measurement   imdistline\nText display of region   impixelregion\nZooming/scrolling ImageView.jl and GtkUtilities.jl imshow imscrollpanel etc.\nInteractive colormap   imcolormaptool\nRegion selection  RecatangleTool etc. imrect, imellipse, imfreehand, etc.\nImage comparison colorview  imshowpair, imfuse\nLabel colorization IndirectArray, ColorizedArray label2rgb label2rgb\n   \nAnnotation   \nDraw lines line, line! (ImageDraw.jl) line, polygon line (visualization only)\nDraw circles/ellipses circle!, ellipse! (ImageDraw.jl) circle, ellipse viscircles (visualization only)\n   \nTransformations   \nResize imresize, restrict resize imresize\nImage pyramids gaussian_pyramid (or use restrict) pyramid_gaussian etc. impyramid\nRotate warp rotate imrotate\nTranslate warp  imtranslate\nGeneral geometric transformation warp warp imwarp\nHough transform  hough_circle, etc. hough\nRadon transform  radon, iradon radon, iradon\nDistance transform feature_transform, distance_transform  bwdist, graydist\n   \nRegistration   \n   \nStatistics and image comparison   \nImage differences ssd, sad, etc.  immse, ssim\nMin/max/mean minfinite, maxfinite, meanfinite  nanmax, etc.\nEntropy entropy  entropy\n   \nFiltering and padding   \nLinear filtering imfilter gaussian, etc. imfilter\nMedian/max/quantile filtering mapwindow median/max etc. nlfilter, medfilt2, etc.\nOther nonlinear filtering (e.g., std) mapwindow  nlfilter, stdfilt\nGradients imgradients sobel_h etc. imgradientxy etc.\nIntegral image integral_image integral_image integralImage\nPadding padarray pad padarray\nDeconvolution weiner (Deconvolution.jl) richardson_lucy, weiner, etc. deconvlucy, deconvwnr, etc.\n   \nFeatures   \nEdge detection imedge, canny canny edge\nCorner detection imcorner, fastcorners corner_harris etc. detectFASTFeatures\nBlob detection blob_LoG blob_log etc. \nLocal binary patterns lbp etc. (ImageFeatures.jl) local_binary_pattern extractLBPFeatures\nHistogram of oriented gradients  hog extractHOGFeatures\nGray-level co-occurence glcm etc. (ImageFeatures.jl) greycomatrix graycomatrix\nPoint descriptors BRIEF, ORB, etc. (ImageFeatures.jl) BRIEF, ORB, etc. detectBRISK etc.\nFeature matching match_keypoints (ImageFeatures.jl) match_descriptors matchFeatures\n   \nSegmentation   \nConnected components label_components label bwconncomp, bwlabel\nForeground/background  active_contour activecontour\nClustering  quickshift \nMarker segmentation  random_walker imsegfmm\nWatershed  watershed watershed\n   \nMorphological operations   \nDilation dilate dilation, binary_dilation imdilate\nErosion erode  \nOpening opening opening imopen\nClosing closing closing imclose\nTop-hat filtering tophat tophat etc. imtophat\nBottom-hat filtering bothat bottomhat imbothat\nRegional max/min mapwindow filters.rank.maximum etc. imregionalmax etc.\nConvex hull  convex_hull_image bwconvhull\nBorders  clear_border imclearborder\nBoundaries  find_boundaries boundarymask\nFilling  remove_small_holes imfill, regionfill"
+    "text": "The following table may be useful for people migrating from other frameworks, and for identifying missing functionality in JuliaImages. Note that there are relevant packages which have not been integrated into more general frameworks or hosted at JuliaImages (e.g., DICOM.jl, etc.); such functionality is not documented here. This table is certainly not complete, and additions/corrections are welcome.Operation JuliaImages scikit-image + NumPy Matlab (ImageProcessing + ComputerVision)\nInput/output   \nRead image file load (FileIO.jl) imread imread\nWrite image file save (FileIO.jl) imsave imwrite\nImage file metadata magickinfo (ImageMagick.jl)  imfinfo\nTest images testimage (TestImages.jl) astronaut etc. “cameraman.tif” etc\n   \nElement type and color   \nChange numeric precision float32, float64, n0f8, etc. img_as_float etc im2double etc\nChange color space HSV.(img) etc. rgb2hsv etc. rgb2lab etc.\nWhitepoint adjustment map whitebalance (Colors.jl)  makecform\nHigh dynamic range   tonemap\n   \nIntensity & quantization   \nClamping clamp01, clamp01nan  \nLinear scaling scaleminmax, scalesigned, etc. rescale_intensity imadjust\nNonlinear scaling adjust_gamma, imstretch adjust_gamma imadjust\nCompute histogram imhist histogram imhist\nHistogram equalization histeq equalize_hist histeq\nAdaptive equalization clahe equalize_adapthist adapthisteq\nReference histogram matching histmatch  imhistmatch\nQuantization map anonymous function  imquantize\nThreshold estimation  threshold_otsu etc. graythresh etc.\n   \nVisualization and interactivity   \nVisualization imshow (ImageView.jl) imshow imshow, implay, etc.\nContrast adjustment ImageView.jl  imcontrast\nPixel information ImageView.jl  impixelinfo\nDistance measurement   imdistline\nText display of region   impixelregion\nZooming/scrolling ImageView.jl and GtkUtilities.jl imshow imscrollpanel etc.\nInteractive colormap   imcolormaptool\nRegion selection  RecatangleTool etc. imrect, imellipse, imfreehand, etc.\nImage comparison colorview  imshowpair, imfuse\nLabel colorization IndirectArray, ColorizedArray label2rgb label2rgb\n   \nAnnotation   \nDraw lines line, line! (ImageDraw.jl) line, polygon line (visualization only)\nDraw circles/ellipses circle!, ellipse! (ImageDraw.jl) circle, ellipse viscircles (visualization only)\n   \nTransformations   \nResize imresize, restrict resize imresize\nImage pyramids gaussian_pyramid (or use restrict) pyramid_gaussian etc. impyramid\nRotate warp rotate imrotate\nTranslate warp  imtranslate\nGeneral geometric transformation warp warp imwarp\nHough transform  hough_circle, etc. hough\nRadon transform  radon, iradon radon, iradon\nDistance transform feature_transform, distance_transform  bwdist, graydist\n   \nRegistration   \n   \nStatistics and image comparison   \nImage differences ssd, sad, etc.  immse, ssim\nMin/max/mean minfinite, maxfinite, meanfinite  nanmax, etc.\nEntropy entropy  entropy\n   \nFiltering and padding   \nLinear filtering imfilter gaussian, etc. imfilter\nMedian/max/quantile filtering mapwindow median/max etc. nlfilter, medfilt2, etc.\nOther nonlinear filtering (e.g., std) mapwindow  nlfilter, stdfilt\nGradients imgradients sobel_h etc. imgradientxy etc.\nIntegral image integral_image integral_image integralImage\nPadding padarray pad padarray\nDeconvolution weiner (Deconvolution.jl) richardson_lucy, weiner, etc. deconvlucy, deconvwnr, etc.\n   \nFeatures   \nEdge detection imedge, canny canny edge\nCorner detection imcorner, fastcorners corner_harris etc. detectFASTFeatures\nBlob detection blob_LoG blob_log etc. \nLocal binary patterns lbp etc. (ImageFeatures.jl) local_binary_pattern extractLBPFeatures\nHistogram of oriented gradients  hog extractHOGFeatures\nGray-level co-occurence glcm etc. (ImageFeatures.jl) greycomatrix graycomatrix\nPoint descriptors BRIEF, ORB, etc. (ImageFeatures.jl) BRIEF, ORB, etc. detectBRISK etc.\nFeature matching match_keypoints (ImageFeatures.jl) match_descriptors matchFeatures\n   \nSegmentation   \nConnected components label_components label bwconncomp, bwlabel\nForeground/background  active_contour activecontour\nClustering  quickshift \nMarker segmentation  random_walker imsegfmm\nWatershed  watershed watershed\n   \nMorphological operations   \nDilation dilate dilation, binary_dilation imdilate\nErosion erode  \nOpening opening opening imopen\nClosing closing closing imclose\nTop-hat filtering tophat tophat etc. imtophat\nBottom-hat filtering bothat bottomhat imbothat\nRegional max/min mapwindow filters.rank.maximum etc. imregionalmax etc.\nConvex hull  convex_hull_image bwconvhull\nBorders  clear_border imclearborder\nBoundaries  find_boundaries boundarymask\nFilling  remove_small_holes imfill, regionfill"
 },
 
 ]}
