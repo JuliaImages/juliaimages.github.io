@@ -1,6 +1,6 @@
 # juliaimages.github.io
 
-Documentation For JuliaImages
+Documentation For [JuliaImages](https://github.com/JuliaImages), the organization for image processing with Julia.
 
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliaimages.github.io/latest)
 
