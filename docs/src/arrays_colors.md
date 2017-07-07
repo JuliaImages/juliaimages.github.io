@@ -257,22 +257,40 @@ another way, `r` behaves as
 julia> r == 193/255
 true
 ```
-for essentailly all purposes (but see [A note on arithmetic overflow](@ref)).
+for essentially all purposes (but see [A note on arithmetic overflow](@ref)).
 
 This has a very important consequence: **in many other image
 frameworks, the "meaning" of an image depends on how it is stored, but
 in Julia the meaning can be assigned independently of storage
-representation.** In some other frameworks, if your image is stored
-with floating-point numbers, then "white" corresponds to all color
-channels having the value 1.0; conversely, if it is stored with
-unsigned 8-bit integers, then "white" corresponds to values of 255. In
-most number systems we would agree that `255 != 1.0`, and this fact
-means that you sometimes need to be quite careful when converting from
-one representation to another.  Conversely, using these Julia packages
-**there is no discrepancy in "meaning" between the encoding of images
-represented as floating point or 8-bit (or 16-bit) fixed-point
-numbers: 0 always means "black" and 1 always means "white" or
-"saturated."**
+representation.** For example, in a different language/framework, the
+following sequence:
+
+```
+img = uint8(255*rand(10, 10, 3));
+figure; image(img)
+imgd = double(img);   % convert to double-precision, but don't change the values
+figure; image(imgd)
+```
+
+might produce the following images:
+
+| img | imgd |
+|:------:|:---:|
+| ![checker](assets/arrays_colors/uint8.png) | ![checker2](assets/arrays_colors/uint8_to_double.png) |
+
+The one on the right looks white because floating-point types are
+interpreted on a 0-to-1 colorscale, whereas `uint8` is interpreted on
+a 0-to-255 colorscale.
+
+Many frameworks offer convenience functions for converting images from
+one representation to another, but this can be a source of bugs if we
+go to compare images: in most number systems we would agree that `255
+!= 1.0`, and this fact means that you sometimes need to be quite
+careful when converting from one representation to another.
+Conversely, using these Julia packages **there is no discrepancy in
+"meaning" between the encoding of images represented as floating point
+or 8-bit (or 16-bit) fixed-point numbers: 0 always means "black" and 1
+always means "white" or "saturated."**
 
 Now, this doesn't prevent you from constructing pixels with values out
 of this range:
