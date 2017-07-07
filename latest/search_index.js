@@ -157,7 +157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Arrays, Numbers, and Colors",
     "title": "A consistent scale for floating-point and \"integer\" colors: fixed-point numbers",
     "category": "section",
-    "text": "c24 does not have an r field, but we can still use red to extract the red channel:julia> r = red(c24)\n0.757N0f8This may look fairly strange at first, so let's unpack this carefully. Notice first that the \"floating-point\" portion of this number matches (to within the precision of the rounding) the value of red(c). The N0f8 means \"Normalized with 8 fractional bits, with 0 bits left for representing values higher than 1.\" This is a fixed-point number–-rather like floating-point numbers, except that the decimal does not \"float\". Internally, these are represented in terms of the 8-bit unsigned integer UInt8julia> dump(r)\nFixedPointNumbers.Normed{UInt8,8}\n  i: UInt8 193(Note that N0f8 is an abbreviation; the full typename is Normed{UInt8, 8}.) N0f8 interprets this 8-bit integer as a value lying between 0 and 1, with 0 corresponding to 0x00 and 1 corresponding to 0xff. This interpretation affects how the number is used for arithmetic and conversion to and from other values. Stated another way, r behaves asjulia> r == 193/255\ntruefor essentailly all purposes (but see A note on arithmetic overflow).This has a very important consequence: in many other image frameworks, the \"meaning\" of an image depends on how it is stored, but in Julia the meaning can be assigned independently of storage representation. In some other frameworks, if your image is stored with floating-point numbers, then \"white\" corresponds to all color channels having the value 1.0; conversely, if it is stored with unsigned 8-bit integers, then \"white\" corresponds to values of 255. In most number systems we would agree that 255 != 1.0, and this fact means that you sometimes need to be quite careful when converting from one representation to another.  Conversely, using these Julia packages there is no discrepancy in \"meaning\" between the encoding of images represented as floating point or 8-bit (or 16-bit) fixed-point numbers: 0 always means \"black\" and 1 always means \"white\" or \"saturated.\"Now, this doesn't prevent you from constructing pixels with values out of this range:(Image: saturated_spectrum)Notice that the first two yellows look identical, because both the red and green color channels are 1 or higher and consequently are saturated.However, you should be aware that for integer inputs, the default is to use the N0f8 element type, and this type cannot represent values outside the range from 0 to 1:julia> RGB(8,2,0)\nERROR: ArgumentError: (8,2,0) are integers in the range 0-255, but integer inputs are encoded with the N0f8\n  type, an 8-bit type representing 256 discrete values between 0 and 1.\n  Consider dividing your input values by 255, for example: RGB{N0f8}(8/255,2/255,0/255)\n  See the READMEs for FixedPointNumbers and ColorTypes for more information.\n in throw_colorerror(::Type{FixedPointNumbers.Normed{UInt8,8}}, ::Tuple{Int64,Int64,Int64}) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:639\n in throw_colorerror(::Type{FixedPointNumbers.Normed{UInt8,8}}, ::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:608\n in checkval at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:596 [inlined]\n in ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:90\n in ColorTypes.RGB{T<:Union{AbstractFloat,FixedPointNumbers.FixedPoint}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:437The error message here reminds you how to resolve a common mistake, trying to construct red as RGB(255, 0, 0). In Julia, that should always be RGB(1, 0, 0)."
+    "text": "c24 does not have an r field, but we can still use red to extract the red channel:julia> r = red(c24)\n0.757N0f8This may look fairly strange at first, so let's unpack this carefully. Notice first that the \"floating-point\" portion of this number matches (to within the precision of the rounding) the value of red(c). The N0f8 means \"Normalized with 8 fractional bits, with 0 bits left for representing values higher than 1.\" This is a fixed-point number–-rather like floating-point numbers, except that the decimal does not \"float\". Internally, these are represented in terms of the 8-bit unsigned integer UInt8julia> dump(r)\nFixedPointNumbers.Normed{UInt8,8}\n  i: UInt8 193(Note that N0f8 is an abbreviation; the full typename is Normed{UInt8, 8}.) N0f8 interprets this 8-bit integer as a value lying between 0 and 1, with 0 corresponding to 0x00 and 1 corresponding to 0xff. This interpretation affects how the number is used for arithmetic and conversion to and from other values. Stated another way, r behaves asjulia> r == 193/255\ntruefor essentially all purposes (but see A note on arithmetic overflow).This has a very important consequence: in many other image frameworks, the \"meaning\" of an image depends on how it is stored, but in Julia the meaning can be assigned independently of storage representation. For example, in a different language/framework, the following sequence:img = uint8(255*rand(10, 10, 3));\nfigure; image(img)\nimgd = double(img);   % convert to double-precision, but don't change the values\nfigure; image(imgd)might produce the following images:img imgd\n(Image: checker) (Image: checker2)The one on the right looks white because floating-point types are interpreted on a 0-to-1 colorscale, whereas uint8 is interpreted on a 0-to-255 colorscale.Many frameworks offer convenience functions for converting images from one representation to another, but this can be a source of bugs if we go to compare images: in most number systems we would agree that 255 != 1.0, and this fact means that you sometimes need to be quite careful when converting from one representation to another. Conversely, using these Julia packages there is no discrepancy in \"meaning\" between the encoding of images represented as floating point or 8-bit (or 16-bit) fixed-point numbers: 0 always means \"black\" and 1 always means \"white\" or \"saturated.\"Now, this doesn't prevent you from constructing pixels with values out of this range:(Image: saturated_spectrum)Notice that the first two yellows look identical, because both the red and green color channels are 1 or higher and consequently are saturated.However, you should be aware that for integer inputs, the default is to use the N0f8 element type, and this type cannot represent values outside the range from 0 to 1:julia> RGB(8,2,0)\nERROR: ArgumentError: (8,2,0) are integers in the range 0-255, but integer inputs are encoded with the N0f8\n  type, an 8-bit type representing 256 discrete values between 0 and 1.\n  Consider dividing your input values by 255, for example: RGB{N0f8}(8/255,2/255,0/255)\n  See the READMEs for FixedPointNumbers and ColorTypes for more information.\n in throw_colorerror(::Type{FixedPointNumbers.Normed{UInt8,8}}, ::Tuple{Int64,Int64,Int64}) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:639\n in throw_colorerror(::Type{FixedPointNumbers.Normed{UInt8,8}}, ::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:608\n in checkval at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:596 [inlined]\n in ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:90\n in ColorTypes.RGB{T<:Union{AbstractFloat,FixedPointNumbers.FixedPoint}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:437The error message here reminds you how to resolve a common mistake, trying to construct red as RGB(255, 0, 0). In Julia, that should always be RGB(1, 0, 0)."
 },
 
 {
@@ -542,6 +542,78 @@ var documenterSearchIndex = {"docs": [
     "title": "Image loading and saving",
     "category": "section",
     "text": "using FileIO\nimg = load(\"myimage.png\")\nsave(\"imagecopy.jpg\", img)Standard test images are available in the TestImages package:using TestImages\nimg = testimage(\"mandrill\")"
+},
+
+{
+    "location": "function_reference.html#ImageCore.colorview",
+    "page": "Summary and function reference",
+    "title": "ImageCore.colorview",
+    "category": "Function",
+    "text": "colorview(C, A)\n\nreturns a view of the numeric array A, interpreting successive elements of A as if they were channels of Colorant C. This is almost identical to ColorView{C}(A), except that if A is a ChannelView, it will simply return the parent of A, or use reinterpret when appropriate. Consequently, the output may not be a ColorView array.\n\nOf relevance for types like RGB and BGR, the elements of A are interpreted in constructor-argument order, not memory order (see reinterpret if you want to use memory order).\n\nExample\n\nA = rand(3, 10, 10)\nimg = colorview(RGB, A)\n\n\n\ncolorview(C, gray1, gray2, ...) -> imgC\n\nCombine numeric/grayscale images gray1, gray2, etc., into the separate color channels of an array imgC with element type C<:Colorant.\n\nAs a convenience, the constant zeroarray fills in an array of matched size with all zeros.\n\nExample\n\nimgC = colorview(RGB, r, zeroarray, b)\n\ncreates an image with r in the red chanel, b in the blue channel, and nothing in the green channel.\n\nSee also: StackedView.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageCore.ColorView",
+    "page": "Summary and function reference",
+    "title": "ImageCore.ColorView",
+    "category": "Type",
+    "text": "ColorView{C}(A)\n\ncreates a \"view\" of the numeric array A, interpreting the first dimension of A as if were the channels of a Colorant C. The first dimension must have the proper number of elements for the constructor of C. For example, if A is a 3-by-m-by-n N0f8 array, ColorView{RGB}(A) will create an m-by-n array with element type RGB{N0f8}. Color spaces with a single element (i.e., grayscale) do not \"consume\" the first dimension of A.\n\nOf relevance for types like RGB and BGR, the elements of A are interpreted in constructor-argument order, not memory order (see reinterpret if you want to use memory order).\n\nThe opposite transformation is implemented by ChannelView. See also colorview.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageCore.channelview",
+    "page": "Summary and function reference",
+    "title": "ImageCore.channelview",
+    "category": "Function",
+    "text": "channelview(A)\n\nreturns a view of A, splitting out (if necessary) the color channels of A into a new first dimension. This is almost identical to ChannelView(A), except that if A is a ColorView, it will simply return the parent of A, or will use reinterpret when appropriate. Consequently, the output may not be a ChannelView array.\n\nOf relevance for types like RGB and BGR, the channels of the returned array will be in constructor-argument order, not memory order (see reinterpret if you want to use memory order).\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageCore.ChannelView",
+    "page": "Summary and function reference",
+    "title": "ImageCore.ChannelView",
+    "category": "Type",
+    "text": "ChannelView(A)\n\ncreates a \"view\" of the Colorant array A, splitting out (if necessary) the separate color channels of eltype(A) into a new first dimension. For example, if A is a m-by-n RGB{N0f8} array, ChannelView(A) will return a 3-by-m-by-n N0f8 array. Color spaces with a single element (i.e., grayscale) do not add a new first dimension of A.\n\nOf relevance for types like RGB and BGR, the channels of the returned array will be in constructor-argument order, not memory order (see reinterpret if you want to use memory order).\n\nThe opposite transformation is implemented by ColorView. See also channelview.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageCore.normedview",
+    "page": "Summary and function reference",
+    "title": "ImageCore.normedview",
+    "category": "Function",
+    "text": "normedview([T], img::AbstractArray{Unsigned})\n\nreturns a \"view\" of img where the values are interpreted in terms of Normed number types. For example, if img is an Array{UInt8}, the view will act like an Array{N0f8}.  Supply T if the element type of img is UInt16, to specify whether you want a N6f10, N4f12, N2f14, or N0f16 result.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageCore.rawview",
+    "page": "Summary and function reference",
+    "title": "ImageCore.rawview",
+    "category": "Function",
+    "text": "rawview(img::AbstractArray{FixedPoint})\n\nreturns a \"view\" of img where the values are interpreted in terms of their raw underlying storage. For example, if img is an Array{N0f8}, the view will act like an Array{UInt8}.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageCore.permuteddimsview",
+    "page": "Summary and function reference",
+    "title": "ImageCore.permuteddimsview",
+    "category": "Function",
+    "text": "permuteddimsview(A, perm)\n\nreturns a \"view\" of A with its dimensions permuted as specified by perm. This is like permutedims, except that it produces a view rather than a copy of A; consequently, any manipulations you make to the output will be mirrored in A. Compared to the copy, the view is much faster to create, but generally slower to use.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageCore.StackedView",
+    "page": "Summary and function reference",
+    "title": "ImageCore.StackedView",
+    "category": "Type",
+    "text": "StackedView(B, C, ...) -> A\n\nPresent arrays B, C, etc, as if they are separate channels along the first dimension of A. In particular,\n\nB == A[1,:,:...]\nC == A[2,:,:...]\n\nand so on. Combined with colorview, this allows one to combine two or more grayscale images into a single color image.\n\nSee also: colorview.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#PaddedViews.paddedviews",
+    "page": "Summary and function reference",
+    "title": "PaddedViews.paddedviews",
+    "category": "Function",
+    "text": "Aspad = paddedviews(fillvalue, A1, A2, ....)\n\nPad the arrays A1, A2, ..., to a common size or set of indices, chosen as the span of indices enclosing all of the input arrays.\n\nExample:\n\njulia> a1 = reshape([1,2], 2, 1)\n2×1 Array{Int64,2}:\n 1\n 2\n\njulia> a2 = [1.0,2.0]'\n1×2 Array{Float64,2}:\n 1.0  2.0\n\njulia> a1p, a2p = paddedviews(0, a1, a2);\n\njulia> a1p\n2×2 PaddedViews.PaddedView{Int64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},Array{Int64,2}}:\n 1  0\n 2  0\n\njulia> a2p\n2×2 PaddedViews.PaddedView{Float64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},Array{Float64,2}}:\n 1.0  2.0\n 0.0  0.0\n\n\n\n"
 },
 
 {
@@ -1149,7 +1221,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Summary and function reference",
     "title": "Images.imedge",
     "category": "Function",
-    "text": "grad_x, grad_y, mag, orient = imedge(img, [method], [border])\n\nEdge-detection filtering. method is one of \"sobel\", \"prewitt\", \"ando3\", \"ando4\", \"ando4_sep\", \"ando5\", or \"ando5_sep\", defaulting to \"ando3\" (see the functions of the same name for more information).  border is any of the boundary conditions specified in padarray.\n\nReturns a tuple (grad_x, grad_y, mag, orient), which are the horizontal gradient, vertical gradient, and the magnitude and orientation of the strongest edge, respectively.\n\n\n\n"
+    "text": "grad_y, grad_x, mag, orient = imedge(img, kernelfun=KernelFactors.ando3, border=\"replicate\")\n\nEdge-detection filtering. kernelfun is a valid kernel function for imgradients, defaulting to KernelFactors.ando3. border is any of the boundary conditions specified in padarray.\n\nReturns a tuple (grad_x, grad_y, mag, orient), which are the horizontal gradient, vertical gradient, and the magnitude and orientation of the strongest edge, respectively.\n\n\n\n"
 },
 
 {
@@ -1165,7 +1237,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Summary and function reference",
     "title": "Images.canny",
     "category": "Function",
-    "text": "canny_edges = canny(img, sigma = 1.4, upperThreshold = 0.80, lowerThreshold = 0.20)\n\nPerforms Canny Edge Detection on the input image.\n\nParameters :\n\nsigma :           Specifies the standard deviation of the gaussian filter   upperThreshold :  Upper bound for hysteresis thresholding   lowerThreshold :  Lower bound for hysteresis thresholding   astype :          Specifies return type of result   percentile :      Specifies if upperThreshold and lowerThreshold should be used                     as quantiles or absolute values\n\n\n\n"
+    "text": "canny_edges = canny(img, sigma = 1.4, upperThreshold = 0.80, lowerThreshold = 0.20)\n\nPerforms Canny Edge Detection on the input image.\n\nParameters :\n\n(upper, lower) :  Bounds for hysteresis thresholding   sigma :           Specifies the standard deviation of the gaussian filter\n\n\n\n"
 },
 
 {
@@ -1265,6 +1337,78 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "function_reference.html#Images.imhist",
+    "page": "Summary and function reference",
+    "title": "Images.imhist",
+    "category": "Function",
+    "text": "edges, count = imhist(img, nbins)\nedges, count = imhist(img, nbins, minval, maxval)\n\nGenerates a histogram for the image over nbins spread between (minval, maxval]. If minval and maxval are not given, then the minimum and maximum values present in the image are taken.\n\nedges is a vector that specifies how the range is divided; count[i+1] is the number of values x that satisfy edges[i] <= x < edges[i+1]. count[1] is the number satisfying x < edges[1], and count[end] is the number satisfying x >= edges[end]. Consequently, length(count) == length(edges)+1.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.cliphist",
+    "page": "Summary and function reference",
+    "title": "Images.cliphist",
+    "category": "Function",
+    "text": "clipped_hist = cliphist(hist, clip)\n\nClips the histogram above a certain value clip. The excess left in the bins exceeding clip is redistributed among the remaining bins.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.histeq",
+    "page": "Summary and function reference",
+    "title": "Images.histeq",
+    "category": "Function",
+    "text": "hist_equalised_img = histeq(img, nbins)\nhist_equalised_img = histeq(img, nbins, minval, maxval)\n\nReturns a histogram equalised image with a granularity of approximately nbins number of bins.\n\nThe histeq function can handle a variety of input types. The returned image depends on the input type. If the input is an Image then the resulting image is of the same type and has the same properties.\n\nFor coloured images, the input is converted to YIQ type and the Y channel is equalised. This is the combined with the I and Q channels and the resulting image converted to the same type as the input.\n\nIf minval and maxval are specified then intensities are equalized to the range (minval, maxval). The default values are 0 and 1.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.adjust_gamma",
+    "page": "Summary and function reference",
+    "title": "Images.adjust_gamma",
+    "category": "Function",
+    "text": "gamma_corrected_img = adjust_gamma(img, gamma)\n\nReturns a gamma corrected image.\n\nThe adjust_gamma function can handle a variety of input types. The returned image depends on the input type. If the input is an Image then the resulting image is of the same type and has the same properties.\n\nFor coloured images, the input is converted to YIQ type and the Y channel is gamma corrected. This is the combined with the I and Q channels and the resulting image converted to the same type as the input.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.imstretch",
+    "page": "Summary and function reference",
+    "title": "Images.imstretch",
+    "category": "Function",
+    "text": "imgs = imstretch(img, m, slope) enhances or reduces (for slope > 1 or < 1, respectively) the contrast near saturation (0 and 1). This is essentially a symmetric gamma-correction. For a pixel of brightness p, the new intensity is 1/(1+(m/(p+eps))^slope).\n\nThis assumes the input img has intensities between 0 and 1.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.imadjustintensity",
+    "page": "Summary and function reference",
+    "title": "Images.imadjustintensity",
+    "category": "Function",
+    "text": "imadjustintensity(img [, (minval,maxval)]) -> Image\n\nMap intensities over the interval (minval,maxval) to the interval    [0,1]. This is equivalent to map(ScaleMinMax(eltype(img), minval,    maxval), img).  (minval,maxval) defaults to extrema(img).\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.complement",
+    "page": "Summary and function reference",
+    "title": "Images.complement",
+    "category": "Function",
+    "text": "y = complement(x)\n\nTake the complement 1-x of x.  If x is a color with an alpha channel, the alpha channel is left untouched.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.histmatch",
+    "page": "Summary and function reference",
+    "title": "Images.histmatch",
+    "category": "Function",
+    "text": "hist_matched_img = histmatch(img, oimg, nbins)\n\nReturns a grayscale histogram matched image with a granularity of nbins number of bins. img is the image to be matched and oimg is the image having the desired histogram to be matched to.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Images.clahe",
+    "page": "Summary and function reference",
+    "title": "Images.clahe",
+    "category": "Function",
+    "text": "hist_equalised_img = clahe(img, nbins, xblocks = 8, yblocks = 8, clip = 3)\n\n\nPerforms Contrast Limited Adaptive Histogram Equalisation (CLAHE) on the input image. It differs from ordinary histogram equalization in the respect that the adaptive method computes several histograms, each corresponding to a distinct section of the image, and uses them to redistribute the lightness values of the image. It is therefore suitable for improving the local contrast and enhancing the definitions of edges in each region of an image.\n\nIn the straightforward form, CLAHE is done by calculation a histogram of a window around each pixel and using the transformation function of the equalised histogram to rescale the pixel. Since this is computationally expensive, we use interpolation which gives a significant rise in efficiency without compromising the result. The image is divided into a grid and equalised histograms are calculated for each block. Then, each pixel is interpolated using the closest histograms.\n\nThe xblocks and yblocks specify the number of blocks to divide the input image into in each direction. nbins specifies the granularity of histogram calculation of each local region. clip specifies the value at which the histogram is clipped. The excess in the histogram bins with value exceeding clip is redistributed among the other bins.\n\n\n\n"
+},
+
+{
     "location": "function_reference.html#Exposure-1",
     "page": "Summary and function reference",
     "title": "Exposure",
@@ -1293,7 +1437,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Summary and function reference",
     "title": "ImageTransformations.warp",
     "category": "Function",
-    "text": "warp(img, tform) -> imgw\n\nTransform the coordinates of img, returning a new imgw satisfying imgw[x] = img[tform(x)]. tform should be defined using CoordinateTransformations.jl.\n\nInterpolation scheme\n\nAt off-grid points, imgw is calculated by interpolation. The default is linear interpolation, used when img is a plain array, and NaN values are used to indicate locations for which tform(x) was outside the bounds of the input img. For more control over the interpolation scheme–-and how beyond-the-edge points are handled–-pass it in as an AbstractExtrapolation from Interpolations.jl.\n\nThe meaning of the coordinates\n\nThe output array imgw has indices that would result from applying tform to the indices of img. This can be very handy for keeping track of how pixels in imgw line up with pixels in img.\n\nIf you just want a plain array, you can \"strip\" the custom indices with parent(imgw).\n\nExamples: a 2d rotation (see JuliaImages documentation for pictures)\n\njulia> using Images, CoordinateTransformations, TestImages, OffsetArrays\n\njulia> img = testimage(\"lighthouse\");\n\njulia> indices(img)\n(Base.OneTo(512),Base.OneTo(768))\n\n# Rotate around the center of `img`\njulia> tfm = recenter(RotMatrix(pi/4), center(img))\nAffineMap([0.707107 -0.707107; 0.707107 0.707107], [347.01,-68.7554])\n\njulia> imgw = warp(img, tfm);\n\njulia> indices(imgw)\n(-196:709,-68:837)\n\n# Alternatively, specify the origin in the image itself\njulia> img0 = OffsetArray(img, -30:481, -384:383);  # origin near top of image\n\njulia> rot = LinearMap(RotMatrix(pi/4))\nLinearMap([0.707107 -0.707107; 0.707107 0.707107])\n\njulia> imgw = warp(img0, rot);\n\njulia> indices(imgw)\n(-293:612,-293:611)\n\njulia> imgr = parent(imgw);\n\njulia> indices(imgr)\n(Base.OneTo(906),Base.OneTo(905))\n\n\n\n"
+    "text": "warp(img, tform, [indices], [degree = Linear()], [fill = NaN])\n\nwarp is transitioning to a different interpretation of the transformation, and you are using the old version.\n\nMore specifically, this method with the signature warp(img, tform, args...) is deprecated in favour of the new interpretation, which is equivalent to calling warp(img, inv(tform), args...) right now.\n\nTo change to the new behaviour, set const warp = ImageTransformations.warp_new right after package import.\n\n\n\n"
 },
 
 {
