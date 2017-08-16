@@ -310,3 +310,4 @@ copyproperties
 shareproperties
 spatialproperties
 ```
+## Image segmentation
