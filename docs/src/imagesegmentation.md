@@ -82,11 +82,18 @@ julia> seg = seeded_region_growing(img, seeds);
 
 #### Felzenswalb's Region Merging Algorithm
 
-This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is a node in the graph and adjacent pixels/regions have edges between them with weight measuring the dissimilarity between pixels/regions. The algorithm repeatedly merges similar regions till we get the final segmentation. The function can be used in two ways - directly on the image or on RAG corresponding to the image.
+This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is a node in the graph and adjacent pixels/regions have edges between them with weight measuring the dissimilarity between pixels/regions. The algorithm repeatedly merges similar regions till we get the final segmentation. It efficiently computes oversegmented “superpixels” in an image. The function can be directly called with an image (the implementation internally creates a RAG of the image first and then proceeds).
+
+###### Demo
 
 ```julia
+using Images, ImageSegmentation, TestImages;
 
+img = Gray.(testimage("house"));
+segments = felzenszwalb(img, 300, 100);
 ```
+
+![img1](assets/segmentation/house.jpg) ![img2](assets/segmentation/felzenszwalb.jpg)
 
 
 Fast Scanning
@@ -106,7 +113,7 @@ The watershed algorithm treats an image as a topographic surface where bright pi
 ###### Demo
 
 ```julia
-using Images, ImageView, ImageSegmentation;
+using Images, ImageSegmentation;
 
 img = load(download("http://docs.opencv.org/3.1.0/water_coins.jpg"));
 bw = Gray.(img).>0.5;
@@ -115,6 +122,6 @@ markers = label_components(dist.<-15);
 segments = watershed(dist, markers);
 ```
 
-![alt-text-1](assets/segmentation/water_coins.jpg) ![alt-text-2](assets/segmentation/watershed.jpg)
+![img1](assets/segmentation/water_coins.jpg) ![img2](assets/segmentation/watershed.jpg)
 
 
