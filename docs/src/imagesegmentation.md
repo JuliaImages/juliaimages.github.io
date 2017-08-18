@@ -1,6 +1,5 @@
 # ImageSegmentation.jl
 
-
 ## Introduction
 
 Image Segmentation is the process of partitioning the image into regions that have similar attributes. Image segmentation has various applications e.g, medical image segmentation, image compression and is used as a preprocessing step in higher level vision tasks like object detection and optical flow. This package is a collection of image segmentation algorithms written in Julia.
@@ -16,10 +15,10 @@ Pkg.add("ImageSegmentation")
 All the segmentation algorithms (except Fuzzy C-means) return a struct `SegmentedImage`
 that captures most of the details regarding the segments.
 
-* `image_indexmap` - An array conatining the assigned labels for each pixel
-* `segment_labels` - List of all the applied labels
-* `segment_means` - Dict(Label => Mean intensity)
-* `segment_pixel_count` - Dict(Label => Pixel Count)
+* `image_indexmap`      : An array conatining the assigned labels for each pixel
+* `segment_labels`      : List of all the applied labels
+* `segment_means`       : Dict(Label => Mean intensity)
+* `segment_pixel_count` : Dict(Label => Pixel Count)
 
 #### Seeded Region Growing
 
@@ -28,6 +27,7 @@ set of seeds in the form of a vector of tuples of `CartesianIndex` and label,
 the algorithm tries to assign these labels to each of the remaining points.
 
 ###### Inputs
+
 * `img`             :  N-D image to be segmented (arbitrary indices are allowed)
 * `seeds`           :  `Vector` containing seeds. Each seed is a Tuple of a
                        CartesianIndex{N} and a label. See below note for more
@@ -68,6 +68,24 @@ julia> seg = seeded_region_growing(img, seeds);
 
 #### Unseeded Region Growing
 
+This algorithm is similar to [Seeded Region Growing](@ref) but does not require
+any prior information about the seed points. This algorithm checks all the
+boundary points and tries to find the
+
+###### Inputs
+
+* `img`             :  N-D image to be segmented (arbitrary indices are allowed)
+* `threshold`       :  Upper bound of the difference measure (δ) for considering
+                       pixel into same segment
+* `kernel_dim`      :  (Optional) `Vector{Int}` having length N or a `NTuple{N,Int}`
+                       whose ith element is an odd positive integer representing
+                       the length of the ith edge of the N-orthotopic neighbourhood
+* `neighbourhood`   :  (Optional) Function taking CartesianIndex{N} as input and
+                       returning the neighbourhood of that point.
+* `diff_fn`         :  (Optional) Function that returns a difference measure (δ)
+                       between the mean color of a region and color of a point
+
+###### Demo
 
 | Threshold | Output | Compression percentage|
 | ------------- | ----------| -------------------------|
@@ -93,18 +111,80 @@ segments = felzenszwalb(img, 300, 100);
 
 ![img1](assets/segmentation/house.jpg) ![img2](assets/segmentation/felzenszwalb.jpg)
 
-
-Fast Scanning
-
 #### MeanShift Segmentation
 
 MeanShift is a clustering technique. It's primary advantages are that it doesn't assume a prior on the shape of the cluster (e.g, gaussian for k-means) and we also don't need to know the number of clusters beforehand. The algorithm doesn't scale well with size of image.
 
-Region Splitting using RegionTrees
+#### Fast Scanning
 
-K-means
+Fast scanning algorithm tries to segment the image in two pass by comparing
+each pixel to its left-neighbour and noting if it can be merged with them. If it
+can't be merged then a new label is assigned to it. If more than one labels can be
+assigned then all the applicable labels are merged together. Since it requires only
+two passes, it is very fast and can be used in real time applications.
+**Time Complexity:** O(n) where `n` is the number of pixels
 
-Fuzzy C-means
+
+###### Inputs
+
+* `img`         : N-D image to be segmented (arbitrary indices are allowed)
+* `threshold`   : Upper bound of the difference measure (δ) for considering
+                  pixel into same segment; an `AbstractArray` can be passed
+                  having same number of dimensions as that of `img` for adaptive
+                  thresholding
+* `diff_fn`     : (Optional) Function that returns a difference measure (δ)
+                  between the mean color of a region and color of a point
+
+###### Demo
+
+```julia
+julia> using ImageSegmentation, TestImages;
+julia> img = testimage("camera");
+julia> seg = fast_scanning(img, 0.1);
+julia> seg = prune_segments(seg, i->(seg.segment_pixel_count[i]<50), (i,j)->(-seg.segment_pixel_count[j]))
+```
+
+**Original:**
+
+![Original](assets/segmentation/camera.jpg)
+
+**Segmented Image:**
+
+![SegmentedImage](assets/segmentation/camera_seg.jpg)
+
+#### Mean Shift
+
+#### Region Splitting using RegionTrees
+
+This algorithm follows the divide and conquer methodology. If the input
+image is homogeneous then nothing is to be done. In the other case, the
+image is split into two across every dimension and the smaller parts are
+segmented recursively. This procedure generates a region tree which can
+be used to create a segmented image.
+
+**Time Complexity:** O(n * log(n)) where `n` is the number of pixels
+
+###### Demo
+
+```julia
+julia> using TestImages, ImageSegmentation;
+julia> img = testimage("lena_gray")
+julia> function homogeneous(img)
+           min, max = extrema(img)
+           max - min < 0.2
+       end
+julia> seg = region_splitting(img, homogeneous);
+```
+
+**Original:**
+
+![Original](assets/segmentation/lena.jpg)
+
+**Segmented Image with labels replaced by their intensity means:**
+
+![SegmentedImage](assets/segmentation/lena_seg.jpg)
+
+#### Fuzzy C-means
 
 #### Watershed
 
@@ -123,5 +203,3 @@ segments = watershed(dist, markers);
 ```
 
 ![img1](assets/segmentation/water_coins.jpg) ![img2](assets/segmentation/watershed.jpg)
-
-
