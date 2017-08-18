@@ -10,10 +10,10 @@ Image Segmentation is the process of partitioning the image into regions that ha
 Pkg.add("ImageSegmentation")
 ```
 
-## Functions
+## Algorithms
 
 All the segmentation algorithms (except Fuzzy C-means) return a struct `SegmentedImage`
-that captures most of the details regarding the segments.
+that captures most of the details regarding the segments. It has the following components:
 
 * `image_indexmap`      : An array conatining the assigned labels for each pixel
 * `segment_labels`      : List of all the applied labels
@@ -25,27 +25,6 @@ that captures most of the details regarding the segments.
 This algorithm segments an image with repsect to a set of *n* seeds. Given the
 set of seeds in the form of a vector of tuples of `CartesianIndex` and label,
 the algorithm tries to assign these labels to each of the remaining points.
-
-###### Inputs
-
-* `img`             :  N-D image to be segmented (arbitrary indices are allowed)
-* `seeds`           :  `Vector` containing seeds. Each seed is a Tuple of a
-                       CartesianIndex{N} and a label. See below note for more
-                       information on labels.
-* `kernel_dim`      :  (Optional) `Vector{Int}` having length N or a `NTuple{N,Int}`
-                       whose ith element is an odd positive integer representing
-                       the length of the ith edge of the N-orthotopic neighbourhood
-* `neighbourhood`   :  (Optional) Function taking CartesianIndex{N} as input and
-                       returning the neighbourhood of that point.
-* `diff_fn`         :  (Optional) Function that returns a difference measure(δ)
-                       between the mean color of a region and color of a point
-
-!!! note
-    The labels attached to points must be positive integers, although multiple
-    points can be assigned the same label. The output includes a labelled array
-    that has same indexing as that of input image. Every index is assigned to
-    either one of labels or a special label '0' indicating that the algorithm
-    was unable to assign that index to a unique label.
 
 ###### Demo
 
@@ -70,22 +49,17 @@ julia> seg = seeded_region_growing(img, seeds);
 
 This algorithm is similar to [Seeded Region Growing](@ref) but does not require
 any prior information about the seed points. This algorithm checks all the
-boundary points and tries to find the
-
-###### Inputs
-
-* `img`             :  N-D image to be segmented (arbitrary indices are allowed)
-* `threshold`       :  Upper bound of the difference measure (δ) for considering
-                       pixel into same segment
-* `kernel_dim`      :  (Optional) `Vector{Int}` having length N or a `NTuple{N,Int}`
-                       whose ith element is an odd positive integer representing
-                       the length of the ith edge of the N-orthotopic neighbourhood
-* `neighbourhood`   :  (Optional) Function taking CartesianIndex{N} as input and
-                       returning the neighbourhood of that point.
-* `diff_fn`         :  (Optional) Function that returns a difference measure (δ)
-                       between the mean color of a region and color of a point
+boundary points and tries to find the most suitable pixel-label pair. It then
+assigns that pixel to the label and updates the boundary points. If no such
+pair is found, a new label is assigned to that pixel and the list of labels is updated.
 
 ###### Demo
+
+```julia
+julia> using ImageSegmentation, Images;
+julia> img = load("scene.jpg");
+julia> seg = unseeded_region_growing(img, 0.08);
+```
 
 | Threshold | Output | Compression percentage|
 | ------------- | ----------| -------------------------|
@@ -122,18 +96,8 @@ each pixel to its left-neighbour and noting if it can be merged with them. If it
 can't be merged then a new label is assigned to it. If more than one labels can be
 assigned then all the applicable labels are merged together. Since it requires only
 two passes, it is very fast and can be used in real time applications.
-**Time Complexity:** O(n) where `n` is the number of pixels
 
-
-###### Inputs
-
-* `img`         : N-D image to be segmented (arbitrary indices are allowed)
-* `threshold`   : Upper bound of the difference measure (δ) for considering
-                  pixel into same segment; an `AbstractArray` can be passed
-                  having same number of dimensions as that of `img` for adaptive
-                  thresholding
-* `diff_fn`     : (Optional) Function that returns a difference measure (δ)
-                  between the mean color of a region and color of a point
+**Time Complexity:** ``O(n)`` where ``n`` is the number of pixels
 
 ###### Demo
 
@@ -152,8 +116,6 @@ julia> seg = prune_segments(seg, i->(seg.segment_pixel_count[i]<50), (i,j)->(-se
 
 ![SegmentedImage](assets/segmentation/camera_seg.jpg)
 
-#### Mean Shift
-
 #### Region Splitting using RegionTrees
 
 This algorithm follows the divide and conquer methodology. If the input
@@ -162,7 +124,7 @@ image is split into two across every dimension and the smaller parts are
 segmented recursively. This procedure generates a region tree which can
 be used to create a segmented image.
 
-**Time Complexity:** O(n * log(n)) where `n` is the number of pixels
+**Time Complexity:** ``O(n*log(n))`` where ``n`` is the number of pixels
 
 ###### Demo
 
@@ -186,6 +148,36 @@ julia> seg = region_splitting(img, homogeneous);
 
 #### Fuzzy C-means
 
+Fuzzy C-means clustering is widely used for unsupervised image segmentation. It is an
+iterative algorithm which tries to minimize the cost function:
+
+```math
+J = \displaystyle\sum_{i=1}^{N} \sum_{j=1}^{C} \delta_{ij} \| x_{i} - c_{j} \|^2
+```
+
+Unlike K-means, it allows pixels to belong to two or more clusters. It is widely used
+for medical imaging like in the soft segmentation of brain tissue model.
+
+**Time Complexity:** ``O(n*C^2*iter)`` where ``n`` is the number of pixels, ``C`` is
+number of clusters and ``iter`` is the number of iterations.
+
+###### Demo
+
+```julia
+julia> using ImageSegmentation, Images;
+julia> img = load("ring.jpg");
+julia> r = fuzzy_cmeans(img, 4, 1.8);
+```
+
+**Original**
+
+![Original](assets/segmentation/ring.jpg)
+
+**Output with pixel intensity = cluster center intensity * membership of pixel in that class**
+
+![SegmentedImage1](assets/segmentation/ring_s1.jpg) ![SegmentedImage2](assets/segmentation/ring_s3.jpg)
+![SegmentedImage3](assets/segmentation/ring_s4.jpg) ![SegmentedImage4](assets/segmentation/ring_s2.jpg)
+
 #### Watershed
 
 The watershed algorithm treats an image as a topographic surface where bright pixels correspond to peaks and dark pixels correspond to valleys. The algorithm starts flooding from valleys (local minima) of this topographic surface and region boundaries are formed when water from different sources merge. If the image is noisy, this approach leads to oversegmetation. To prevent oversegmentation, marker-based watershed is used i.e. the topographic surface is flooded from a predefined set of markers.  
@@ -203,3 +195,93 @@ segments = watershed(dist, markers);
 ```
 
 ![img1](assets/segmentation/water_coins.jpg) ![img2](assets/segmentation/watershed.jpg)
+
+## Some helpful functions
+
+#### Creating a Region Adjacency Graph (RAG)
+
+A region adjacency graph can directly be constructed from a `SegmentedImage`
+using the `region_adjacency_graph` function. Each segment is denoted by a vertex
+and edges are constructed between adjacent segments. The output is a tuple of
+`SimpleWeightedGraph` and a Dict(label=>vertex) with weights assigned according to `weight_fn`.
+
+```julia
+julia> using ImageSegmentation, Distances
+julia> weight_fn(i,j) = euclidean(seg.segment_pixel_count[i], seg.segment_pixel_count[j]);
+julia> G, vert_map = region_adjacency_graph(seg, weight_fn);    # `seg` is a `SegmentedImage`
+julia> G
+{2536, 6536} undirected simple Int64 graph with Float64 weights
+```
+
+#### Creating a Region Tree
+
+A region tree can be constructed from an image using `region_tree` function.
+If the image is not homogeneous, then it is split into half along each dimension and
+the function is called recursively for each portion of the image. The output is a
+`RegionTree`.
+
+```julia
+julia> using ImageSegmentation
+julia> function homogeneous(img)
+           min, max = extrema(img)
+           max - min < 0.2
+       end
+julia> t = region_tree(img, homogeneous)        # `img` is an image
+Cell: RegionTrees.HyperRectangle{2,Float64}([1.0, 1.0], [300.0, 300.0])
+```
+
+#### Pruning unnecessary segments
+
+All the unnecessary segments can be easily removed from a `SegmentedImage` using
+`prune_segments`. It removes a segment by replacing it with the neighbor which has
+the least value of `diff_fn`. A list of the segments to be removed can be supplied.
+Alternately, a function can be supplied that return true for the labels that must
+be removed.
+
+!!! note
+    The resultant `SegmentedImage` might have the different labels compared to
+    the original `SegmentedImage`.
+
+```julia
+julia> seg.image_indexmap
+4×4 Array{Int64,2}:
+ 1  1  3  3
+ 1  1  3  3
+ 2  2  2  2
+ 2  2  2  2
+julia> diff_fn(rem_label, neigh_label) = seg.segment_pixel_count[rem_label] - seg.segment_pixel_count[neigh_label];
+julia> new_seg = prune_segments(seg, [3], diff_fn);
+julia> new_seg.image_indexmap
+4×4 Array{Int64,2}:
+ 1  1  2  2
+ 1  1  2  2
+ 2  2  2  2
+ 2  2  2  2
+```
+
+#### Removing a segment
+
+If only one segment is to be removed, then `rem_segment!` can be used.
+It removes a segment from a `SegmentedImage` in place, replacing it with the
+neighbouring segment having least `diff_fn` value.
+
+!!! note
+    If multiple segments need to be removed then [`prune_segments`](@ref) should be
+    preferred as it is much more time efficient than calling `rem_segment!` multiple times.
+
+```julia
+julia> seg.image_indexmap
+4×4 Array{Int64,2}:
+ 1  1  3  3
+ 1  1  3  3
+ 2  2  2  2
+ 2  2  2  2
+julia> diff_fn(rem_label, neigh_label) = seg.segment_pixel_count[rem_label] - seg.segment_pixel_count[neigh_label];
+julia> rem_segment!(seg, 3, diff_fn);
+julia> seg.image_indexmap
+4×4 Array{Int64,2}:
+ 1  1  2  2
+ 1  1  2  2
+ 2  2  2  2
+ 2  2  2  2
+```

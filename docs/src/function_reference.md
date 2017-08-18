@@ -310,4 +310,22 @@ copyproperties
 shareproperties
 spatialproperties
 ```
+
 ## Image segmentation
+
+```@docs
+SegmentedImage
+ImageEdge
+seeded_region_growing
+unseeded_region_growing
+felzenszwalb
+fast_scanning
+watershed
+hmin_transform
+region_adjacency_graph
+rem_segment
+rem_segment!
+prune_segments
+region_tree
+region_splitting
+```
