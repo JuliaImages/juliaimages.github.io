@@ -80,7 +80,14 @@ julia> seg = seeded_region_growing(img, seeds);
 | 0.2 | ![seg4](https://user-images.githubusercontent.com/15063205/27088449-4ed7774a-5075-11e7-91bd-f18438ca57a0.jpg) | 79.2% |
 
 
-Felzenswalb's Region Splitting
+#### Felzenswalb's Region Merging Algorithm
+
+This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is a node in the graph and adjacent pixels/regions have edges between them with weight measuring the dissimilarity between pixels/regions. The algorithm repeatedly merges similar regions till we get the final segmentation. The function can be used in two ways - directly on the image or on RAG corresponding to the image.
+
+```julia
+
+```
+
 
 Fast Scanning
 
@@ -92,4 +99,22 @@ K-means
 
 Fuzzy C-means
 
-Watershed segmentation
+#### Watershed
+
+The watershed algorithm treats an image as a topographic surface where bright pixels correspond to peaks and dark pixels correspond to valleys. The algorithm starts flooding from valleys (local minima) of this topographic surface and region boundaries are formed when water from different sources merge. If the image is noisy, this approach leads to oversegmetation. To prevent oversegmentation, marker-based watershed is used i.e. the topographic surface is flooded from a predefined set of markers.  
+
+###### Demo
+
+```julia
+using Images, ImageView, ImageSegmentation;
+
+img = load(download("http://docs.opencv.org/3.1.0/water_coins.jpg"));
+bw = Gray.(img).>0.5;
+dist = 1.-distance_transform(feature_transform(bw));
+markers = label_components(dist.<-15);
+segments = watershed(dist, markers);
+```
+
+![alt-text-1](assets/segmentation/water_coins.jpg) ![alt-text-2](assets/segmentation/watershed.jpg)
+
+
