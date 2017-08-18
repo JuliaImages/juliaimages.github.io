@@ -3,9 +3,7 @@
 
 ## Introduction
 
-Image segmentation is the process of dividing an image into its salient parts.
-Due to the different
-This package features multiple segmentation algorithms that can be used
+Image Segmentation is the process of partitioning the image into regions that have similar attributes. Image segmentation has various applications e.g, medical image segmentation, image compression and is used as a preprocessing step in higher level vision tasks like object detection and optical flow. This package is a collection of image segmentation algorithms written in Julia.
 
 ## Installation
 
@@ -98,7 +96,9 @@ segments = felzenszwalb(img, 300, 100);
 
 Fast Scanning
 
-Mean Shift
+#### MeanShift Segmentation
+
+MeanShift is a clustering technique. It's primary advantages are that it doesn't assume a prior on the shape of the cluster (e.g, gaussian for k-means) and we also don't need to know the number of clusters beforehand. The algorithm doesn't scale well with size of image.
 
 Region Splitting using RegionTrees
 
