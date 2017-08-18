@@ -1,4 +1,4 @@
-using Documenter, Images, ImageFiltering
+using Documenter, Images, ImageFiltering, ImageSegmentation
 
 makedocs(format   = :html,
          sitename = "JuliaImages",
