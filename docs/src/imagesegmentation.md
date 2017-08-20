@@ -10,15 +10,45 @@ Image Segmentation is the process of partitioning the image into regions that ha
 Pkg.add("ImageSegmentation")
 ```
 
+## Example
+
+Let's see an example on how to use the segmentation algorithms in this package. We will try to seperate the deer, the ground and the sky in the image below using seeded region growing algorithm. This algorithm initializes the regions as the user-provided seed points and iteratively adds pixels to each region.
+
+![Original](assets/segmentation/deer.jpg) 
+
+```julia
+using Images, ImageSegmentation, ImageView
+
+img = load("deer.jpg")
+seeds = [(CartesianIndex(75, 250), 1), (CartesianIndex(150,165), 2), (CartesianIndex(200, 300), 3)]
+segments = seeded_region_growing(img, seeds)
+imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+```
+
+![Original](assets/segmentation/deer_seg1.jpg) 
+
+All the segmentation algorithm (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels and an array containing the assigned label for each pixel. `seeded_region_growing` needs the initial seed points from the user. Some algorithms only need to know the number of segments or level of detail in segmentation. For example, `felzenszwalb` only needs a single parameter k which controls the size of segments. Larger k will result in bigger segments.
+
+```julia
+using Images, ImageSegmentation, ImageView
+
+img = load("deer.jpg")
+segments = felzenszwalb(img, 100)
+imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+
+segments = felzenszwalb(img, 5)  #smaller segments but noisy segmentation
+imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+
+segments = felzenszwalb(img, 5, 100)  #removes small segments
+imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+```
+
+![Original](assets/segmentation/deer_seg2.jpg)  ![Original](assets/segmentation/deer_seg3.jpg)  ![Original](assets/segmentation/deer_seg4.jpg)
+
+`felzenzwalb` takes an optional argument `min_size` - it removes all segments smaller with less the `min_size` pixels. Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.
+
+
 ## Algorithms
-
-All the segmentation algorithms (except Fuzzy C-means) return a struct `SegmentedImage`
-that captures most of the details regarding the segments. It has the following components:
-
-* `image_indexmap`      : An array conatining the assigned labels for each pixel
-* `segment_labels`      : List of all the applied labels
-* `segment_means`       : Dict(Label => Mean intensity)
-* `segment_pixel_count` : Dict(Label => Pixel Count)
 
 #### Seeded Region Growing
 
