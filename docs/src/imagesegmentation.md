@@ -12,22 +12,46 @@ Pkg.add("ImageSegmentation")
 
 ## Example
 
-Let's see an example on how to use the segmentation algorithms in this package. We will try to seperate the deer, the ground and the sky in the image below using seeded region growing algorithm. This algorithm initializes the regions as the user-provided seed points and iteratively adds pixels to each region.
+Image segmentation is not a mathematically well-defined problem: for example, the only lossless representation of the input image would be to say that each pixel is its own segment. Yet this does not correspond to our own intuitive notion that some pixels are naturally grouped together. As a consequence, many algorithms require parameters, often some kind of threshold expressing your willingness to tolerate a certain amount of variation among the pixels within a single segment.
+
+Let's see an example on how to use the segmentation algorithms in this package. We will try to seperate the deer, the ground and the sky in the image below. We will explore two algorithms - seeded region growing and felzenszwalb. Seeded region growing requires us to know the number of segments and some points on each segment beforehand whereas felzenszwalb uses a more abstract parameter controlling degree of within-segment similarity.
 
 ![Original](assets/segmentation/deer.jpg) 
 
+The documentation for seeded_region_growing says that it needs two arguments - the image to be segmented and a set of seed points for each region. The seed points have to be stored as a vector of (position, label) tuples, where position is a CartesianIndex and label is an integer. We will start by opening the image using ImageView and reading the coordinates of the seed points.
+
 ```julia
-using Images, ImageSegmentation, ImageView
+using Images, ImageView
 
 img = load("deer.jpg")
-seeds = [(CartesianIndex(75, 250), 1), (CartesianIndex(150,165), 2), (CartesianIndex(200, 300), 3)]
-segments = seeded_region_growing(img, seeds)
-imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+imshow(img)
 ```
 
+Now we can use `seeded_region_growing` with the seed points. For this example, we will use one seed point per segment. We can use more seed points to improve segmentation.
+
+```julia
+using ImageSegmentation
+
+seeds = [(CartesianIndex(75, 250), 1), (CartesianIndex(150,165), 2), (CartesianIndex(200, 300), 3)]
+segments = seeded_region_growing(img, seeds)
+```
+
+All the segmentation algorithm (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels, an array containing the assigned label for each pixel and mean color and number of pixels in each segment.
+
+```julia
+length(segments.segment_labels)   # number of segments = 3
+
+segments.segment_means
+#first segment's color = RGB(0.926717,0.959906,0.991948) = white
+#second segment's color = RGB(0.445402,0.419814,0.278071) = brown
+#third segment's color = RGB(0.445402,0.419814,0.278071) = light brown
+
+# for visualizing the segmentation, create an image by replacing each each label in segments.image_indexmap with it's mean color
+imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+```
 ![Original](assets/segmentation/deer_seg1.jpg) 
 
-All the segmentation algorithm (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels and an array containing the assigned label for each pixel. `seeded_region_growing` needs the initial seed points from the user. Some algorithms only need to know the number of segments or level of detail in segmentation. For example, `felzenszwalb` only needs a single parameter k which controls the size of segments. Larger k will result in bigger segments.
+Let's segment this image using felzenszwalb algorithm. `felzenswalb` only needs a single parameter k which controls the size of segments. Larger k will result in bigger segments. Using k=5 to k=500 generally gives good results.
 
 ```julia
 using Images, ImageSegmentation, ImageView
@@ -38,14 +62,18 @@ imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 
 segments = felzenszwalb(img, 5)  #smaller segments but noisy segmentation
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+```
 
+![Original](assets/segmentation/deer_seg2.jpg)  ![Original](assets/segmentation/deer_seg3.jpg)
+
+We only got two segments with k = 100. Setting k = 5 resulted in smaller but rather noisy segments. `felzenzwalb` also takes an optional argument `min_size` - it removes all segments smaller with less the `min_size` pixels. Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.
+
+```julia
 segments = felzenszwalb(img, 5, 100)  #removes small segments
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 ```
 
-![Original](assets/segmentation/deer_seg2.jpg)  ![Original](assets/segmentation/deer_seg3.jpg)  ![Original](assets/segmentation/deer_seg4.jpg)
-
-`felzenzwalb` takes an optional argument `min_size` - it removes all segments smaller with less the `min_size` pixels. Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.
+![Original](assets/segmentation/deer_seg4.jpg)
 
 
 ## Algorithms
