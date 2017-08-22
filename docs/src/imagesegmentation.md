@@ -16,14 +16,14 @@ Image segmentation is not a mathematically well-defined problem: for example, th
 
 Let's see an example on how to use the segmentation algorithms in this package. We will try to seperate the deer, the ground and the sky in the image below. We will explore two algorithms - seeded region growing and felzenszwalb. Seeded region growing requires us to know the number of segments and some points on each segment beforehand whereas felzenszwalb uses a more abstract parameter controlling degree of within-segment similarity.
 
-![Original](assets/segmentation/deer.jpg) 
+![Original](assets/segmentation/horse.jpg)
 
 The documentation for seeded_region_growing says that it needs two arguments - the image to be segmented and a set of seed points for each region. The seed points have to be stored as a vector of (position, label) tuples, where position is a CartesianIndex and label is an integer. We will start by opening the image using ImageView and reading the coordinates of the seed points.
 
 ```julia
 using Images, ImageView
 
-img = load("deer.jpg")
+img = load("horse.jpg")
 imshow(img)
 ```
 
@@ -31,8 +31,7 @@ Now we can use `seeded_region_growing` with the seed points. For this example, w
 
 ```julia
 using ImageSegmentation
-
-seeds = [(CartesianIndex(75, 250), 1), (CartesianIndex(150,165), 2), (CartesianIndex(200, 300), 3)]
+seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex(213,97),3)]
 segments = seeded_region_growing(img, seeds)
 ```
 
@@ -49,14 +48,14 @@ segments.segment_means
 # for visualizing the segmentation, create an image by replacing each each label in segments.image_indexmap with it's mean color
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 ```
-![Original](assets/segmentation/deer_seg1.jpg) 
+![Original](assets/segmentation/horse_seg1.jpg)
 
 Let's segment this image using felzenszwalb algorithm. `felzenswalb` only needs a single parameter k which controls the size of segments. Larger k will result in bigger segments. Using k=5 to k=500 generally gives good results.
 
 ```julia
 using Images, ImageSegmentation, ImageView
 
-img = load("deer.jpg")
+img = load("horse.jpg")
 segments = felzenszwalb(img, 100)
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 
@@ -64,7 +63,7 @@ segments = felzenszwalb(img, 5)  #smaller segments but noisy segmentation
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 ```
 
-![Original](assets/segmentation/deer_seg2.jpg)  ![Original](assets/segmentation/deer_seg3.jpg)
+![Original](assets/segmentation/horse_seg2.jpg)  ![Original](assets/segmentation/horse_seg3.jpg)
 
 We only got two segments with k = 100. Setting k = 5 resulted in smaller but rather noisy segments. `felzenzwalb` also takes an optional argument `min_size` - it removes all segments smaller with less the `min_size` pixels. Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.
 
@@ -73,7 +72,7 @@ segments = felzenszwalb(img, 5, 100)  #removes small segments
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 ```
 
-![Original](assets/segmentation/deer_seg4.jpg)
+![Original](assets/segmentation/horse_seg4.jpg)
 
 
 ## Algorithms
@@ -121,11 +120,10 @@ julia> seg = unseeded_region_growing(img, 0.08);
 
 | Threshold | Output | Compression percentage|
 | ------------- | ----------| -------------------------|
-| Original    | ![scene](https://user-images.githubusercontent.com/15063205/27087931-ecf2490c-5073-11e7-902f-e28b68975979.jpg) | 0 % |
-| 0.02 | ![seg1](https://user-images.githubusercontent.com/15063205/27088052-41996c74-5074-11e7-9ff1-1941d1be88c4.jpg) | 50% |
-| 0.05 | ![seg2](https://user-images.githubusercontent.com/15063205/27088179-9761458c-5074-11e7-9305-91411d862b22.jpg) | 62.5% |
-| 0.1 | ![seg3](https://user-images.githubusercontent.com/15063205/27088318-f556be88-5074-11e7-9b1e-271963060e90.jpg) | 70.8% |
-| 0.2 | ![seg4](https://user-images.githubusercontent.com/15063205/27088449-4ed7774a-5075-11e7-91bd-f18438ca57a0.jpg) | 79.2% |
+| Original    | ![scene](assets/segmentation/tree.jpg) | 0 % |
+| 0.05 | ![seg1](assets/segmentation/tree_seg1.jpg) | 60.63% |
+| 0.1 | ![seg2](assets/segmentation/tree_seg2.jpg) | 71.27% |
+| 0.2 | ![seg3](assets/segmentation/tree_seg3.jpg) | 79.96% |
 
 
 #### Felzenswalb's Region Merging Algorithm
@@ -223,18 +221,18 @@ number of clusters and ``iter`` is the number of iterations.
 
 ```julia
 julia> using ImageSegmentation, Images;
-julia> img = load("ring.jpg");
-julia> r = fuzzy_cmeans(img, 4, 1.8);
+julia> img = load("flower.jpg");
+julia> r = fuzzy_cmeans(img, 3, 2);
 ```
 
 **Original**
 
-![Original](assets/segmentation/ring.jpg)
+![Original](assets/segmentation/flower.jpg)
 
 **Output with pixel intensity = cluster center intensity * membership of pixel in that class**
 
-![SegmentedImage1](assets/segmentation/ring_s1.jpg) ![SegmentedImage2](assets/segmentation/ring_s3.jpg)
-![SegmentedImage3](assets/segmentation/ring_s4.jpg) ![SegmentedImage4](assets/segmentation/ring_s2.jpg)
+![SegmentedImage1](assets/segmentation/flower_s1.jpg) ![SegmentedImage2](assets/segmentation/flower_s2.jpg)
+![SegmentedImage3](assets/segmentation/flower_s3.jpg)
 
 #### Watershed
 
