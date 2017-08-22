@@ -18,7 +18,7 @@ Let's see an example on how to use the segmentation algorithms in this package. 
 
 ![Original](assets/segmentation/horse.jpg)
 
-The documentation for seeded_region_growing says that it needs two arguments - the image to be segmented and a set of seed points for each region. The seed points have to be stored as a vector of (position, label) tuples, where position is a CartesianIndex and label is an integer. We will start by opening the image using ImageView and reading the coordinates of the seed points.
+The documentation for seeded_region_growing says that it needs two arguments - the image to be segmented and a set of seed points for each region. The seed points have to be stored as a vector of (position, label) tuples, where position is a [CartesianIndex](https://docs.julialang.org/en/stable/manual/arrays/#Cartesian-indices-1) and label is an integer. We will start by opening the image using ImageView and reading the coordinates of the seed points.
 
 ```julia
 using Images, ImageView
