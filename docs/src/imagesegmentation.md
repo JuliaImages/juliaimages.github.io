@@ -14,9 +14,11 @@ Pkg.add("ImageSegmentation")
 
 Image segmentation is not a mathematically well-defined problem: for example, the only lossless representation of the input image would be to say that each pixel is its own segment. Yet this does not correspond to our own intuitive notion that some pixels are naturally grouped together. As a consequence, many algorithms require parameters, often some kind of threshold expressing your willingness to tolerate a certain amount of variation among the pixels within a single segment.
 
-Let's see an example on how to use the segmentation algorithms in this package. We will try to seperate the deer, the ground and the sky in the image below. We will explore two algorithms - seeded region growing and felzenszwalb. Seeded region growing requires us to know the number of segments and some points on each segment beforehand whereas felzenszwalb uses a more abstract parameter controlling degree of within-segment similarity.
+Let's see an example on how to use the segmentation algorithms in this package. We will try to seperate the horse, the ground and the sky in the image below. We will explore two algorithms - seeded region growing and felzenszwalb. Seeded region growing requires us to know the number of segments and some points on each segment beforehand whereas felzenszwalb uses a more abstract parameter controlling degree of within-segment similarity.
 
 ![Original](assets/segmentation/horse.jpg)
+
+[source](https://ibb.co/hUQMnQ)
 
 The documentation for seeded_region_growing says that it needs two arguments - the image to be segmented and a set of seed points for each region. The seed points have to be stored as a vector of (position, label) tuples, where position is a [CartesianIndex](https://docs.julialang.org/en/stable/manual/arrays/#Cartesian-indices-1) and label is an integer. We will start by opening the image using ImageView and reading the coordinates of the seed points.
 
@@ -80,8 +82,9 @@ imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 #### Seeded Region Growing
 
 This algorithm segments an image with repsect to a set of *n* seeds. Given the
-set of seeds in the form of a vector of tuples of `CartesianIndex` and label,
-the algorithm tries to assign these labels to each of the remaining points.
+set of seeds in the form of a vector of `(position, label)` tuples, where `position`
+is a [`CartesianIndex`](https://docs.julialang.org/en/stable/manual/arrays/#Cartesian-indices-1)
+and `label` is an integer. The algorithm tries to assign these labels to each of the remaining points.
 
 ###### Demo
 
@@ -94,7 +97,7 @@ julia> seeds = [(CartesianIndex(104, 48), 1), (CartesianIndex( 49, 40), 1),
                 (CartesianIndex(104, 72), 2), (CartesianIndex( 86,138), 2)];
 julia> seg = seeded_region_growing(img, seeds);
 ```
-**Original:**
+**Original** [(source)](https://ibb.co/hR2aWk):
 
 ![Original](assets/segmentation/worm.jpg)
 
@@ -114,16 +117,16 @@ pair is found, a new label is assigned to that pixel and the list of labels is u
 
 ```julia
 julia> using ImageSegmentation, Images;
-julia> img = load("scene.jpg");
+julia> img = load("tree.jpg");
 julia> seg = unseeded_region_growing(img, 0.08);
 ```
 
 | Threshold | Output | Compression percentage|
 | ------------- | ----------| -------------------------|
-| Original    | ![scene](assets/segmentation/tree.jpg) | 0 % |
-| 0.05 | ![seg1](assets/segmentation/tree_seg1.jpg) | 60.63% |
-| 0.1 | ![seg2](assets/segmentation/tree_seg2.jpg) | 71.27% |
-| 0.2 | ![seg3](assets/segmentation/tree_seg3.jpg) | 79.96% |
+| Original [(source)](http://maxpixel.freegreatpicture.com/static/photo/1x/Plant-Wood-Tissue-Leaves-Nature-Green-Tree-2387626.jpg)  | ![tree](assets/segmentation/tree.jpg) | 0 % |
+| 0.05 | ![tree_seg1](assets/segmentation/tree_seg1.jpg) | 60.63% |
+| 0.1 | ![tree_seg2](assets/segmentation/tree_seg2.jpg) | 71.27% |
+| 0.2 | ![tree_seg3](assets/segmentation/tree_seg3.jpg) | 79.96% |
 
 
 #### Felzenswalb's Region Merging Algorithm
@@ -225,7 +228,8 @@ julia> img = load("flower.jpg");
 julia> r = fuzzy_cmeans(img, 3, 2);
 ```
 
-**Original**
+**Original** [(source)](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flower-631765_960_720.jpg/800px-Flower-631765_960_720.jpg)
+
 
 ![Original](assets/segmentation/flower.jpg)
 
