@@ -43,9 +43,9 @@ All the segmentation algorithm (except Fuzzy C-means) return a struct `Segmented
 length(segments.segment_labels)   # number of segments = 3
 
 segments.segment_means
-#first segment's color = RGB(0.926717,0.959906,0.991948) = white
-#second segment's color = RGB(0.445402,0.419814,0.278071) = brown
-#third segment's color = RGB(0.445402,0.419814,0.278071) = light brown
+#first segment's color (horse) = RGB(0.0647831,0.0588508,0.074473) = black
+#second segment's color (sky) = RGB(0.793598,0.839543,0.932374) = light blue
+#third segment's color (grass) = RGB(0.329876,0.357805,0.23745) = green
 
 # for visualizing the segmentation, create an image by replacing each each label in segments.image_indexmap with it's mean color
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
@@ -61,16 +61,16 @@ img = load("horse.jpg")
 segments = felzenszwalb(img, 100)
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 
-segments = felzenszwalb(img, 5)  #smaller segments but noisy segmentation
+segments = felzenszwalb(img, 10)  #smaller segments but noisy segmentation
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 ```
 
 ![Original](assets/segmentation/horse_seg2.jpg)  ![Original](assets/segmentation/horse_seg3.jpg)
 
-We only got two segments with k = 100. Setting k = 5 resulted in smaller but rather noisy segments. `felzenzwalb` also takes an optional argument `min_size` - it removes all segments smaller with less the `min_size` pixels. Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.
+We only got two segments with k = 100. Setting k = 10 resulted in smaller but rather noisy segments. `felzenzwalb` also takes an optional argument `min_size` - it removes all segments smaller with less than `min_size` pixels. Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.
 
 ```julia
-segments = felzenszwalb(img, 5, 100)  #removes small segments
+segments = felzenszwalb(img, 10, 100)  #removes small segments
 imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 ```
 
