@@ -146,7 +146,18 @@ segments = felzenszwalb(img, 300, 100);
 
 #### MeanShift Segmentation
 
-MeanShift is a clustering technique. It's primary advantages are that it doesn't assume a prior on the shape of the cluster (e.g, gaussian for k-means) and we also don't need to know the number of clusters beforehand. The algorithm doesn't scale well with size of image.
+MeanShift is a clustering technique. Its primary advantages are that it doesn't assume a prior on the shape of the cluster (e.g, gaussian for k-means) and we don't need to know the number of clusters beforehand. The algorithm doesn't scale well with size of image.
+
+###### Demo
+
+```julia
+using Images, ImageSegmentation, TestImages;
+
+img = Gray.(testimage("house"));
+img = imresize(img, (256, 256))
+segments = meanshift(img, 16, 8/255);
+```
+![img1](assets/segmentation/small_house.jpg) ![img2](assets/segmentation/meanshift.jpg)
 
 #### Fast Scanning
 
