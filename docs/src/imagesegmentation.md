@@ -20,7 +20,7 @@ Let's see an example on how to use the segmentation algorithms in this package. 
 
 [source](https://ibb.co/hUQMnQ)
 
-The documentation for seeded_region_growing says that it needs two arguments - the image to be segmented and a set of seed points for each region. The seed points have to be stored as a vector of (position, label) tuples, where position is a [CartesianIndex](https://docs.julialang.org/en/stable/manual/arrays/#Cartesian-indices-1) and label is an integer. We will start by opening the image using ImageView and reading the coordinates of the seed points.
+The documentation for `seeded_region_growing` says that it needs two arguments - the image to be segmented and a set of seed points for each region. The seed points have to be stored as a vector of `(position, label)` tuples, where `position` is a [`CartesianIndex`](https://docs.julialang.org/en/stable/manual/arrays/#Cartesian-indices-1) and `label` is an integer. We will start by opening the image using ImageView and reading the coordinates of the seed points.
 
 ```julia
 using Images, ImageView
@@ -76,6 +76,51 @@ imshow(map(i->segment_means(segments,i), labels_map(segments)))
 
 ![Original](assets/segmentation/horse_seg4.jpg)
 
+## Result
+
+All segmentation algorithms (except Fuzzy C-Means) return a struct [`SegmentedImage`](@ref) as its
+output. `SegmentedImage` contains all the necessary information about the segments. The following
+functions can be used to get the information about the segments:
+
+1) [`labels_map`](@ref) : It returns an array containing the labels assigned to each pixel
+2) [`segment_labels`](@ref) : It returns a list of all the assigned labels
+3) [`segment_mean`](@ref) : It returns the mean intensity of the supplied label.
+4) [`segment_pixel_count`](@ref) : It returns the count of the pixels that are assigned the supplied label.
+
+###### Demo
+
+```julia
+julia> img = fill(1, 4, 4);
+
+julia> img[1:2,1:2] = 2;
+
+julia> img
+4×4 Array{Int64,2}:
+ 2  2  1  1
+ 2  2  1  1
+ 1  1  1  1
+ 1  1  1  1
+
+julia> seg = fast_scanning(img, 0.5);
+
+julia> labels_map(seg) # returns the assigned labels map
+4×4 Array{Int64,2}:
+ 1  1  3  3
+ 1  1  3  3
+ 3  3  3  3
+ 3  3  3  3
+
+julia> segment_labels(seg) # returns a list of all assigned labels
+2-element Array{Int64,1}:
+ 1
+ 3
+
+julia> segment_mean(seg, 1) # returns the mean intensity of label 1
+2
+
+julia> segment_pixel_count(seg, 1) # returns the pixel count of label 1
+4
+```
 
 ## Algorithms
 
@@ -122,7 +167,7 @@ where ``j \in [ \, 1,n ] \,`` such that
 ```
 where `` \delta ( \, x, A_i ) \, = | img ( \, x ) \, - mean_{y \in A_i} [ \, img ( \, y ) \, ] \, |``
 
-If ``\delta ( \, z, A_j ) \,`` is less than `threshold` then the pixel `z` is added to A_j.
+If ``\delta ( \, z, A_j ) \,`` is less than `threshold` then the pixel `z` is added to ``A_j``.
 Otherwise we choose the most similar region ``\alpha`` such that
 
 ```math
@@ -131,7 +176,7 @@ Otherwise we choose the most similar region ``\alpha`` such that
 If ``\delta ( \, z, \alpha ) \,`` is less than `threshold` then the pixel `z` is added to ``\alpha``.
 If neither of the two conditions is satisfied, then the pixel is assigned a new region ``A_{n+1}``.
 After assignment of ``z``, we update the statistic of the assigned region. The algorithm halts when
-all the pixels have been assigned to a region.
+all the pixels have been assigned to some region.
 
 `unseeded_region_growing` requires the image `img` and `threshold` as its parameters.
 
@@ -183,11 +228,19 @@ segments = meanshift(img, 16, 8/255);
 
 #### Fast Scanning
 
-Fast scanning algorithm tries to segment the image in two pass by comparing
-each pixel to its left-neighbour and noting if it can be merged with them. If it
-can't be merged then a new label is assigned to it. If more than one label can be
-assigned then all the applicable labels are merged together. Since it requires only
-two passes, it is very fast and can be used in real time applications.
+Fast scanning algorithm segments the image by scanning it once and comparing each
+pixel to its upper and left neighbor. The algorithm starts from the first pixel
+and assigns it to a new segment ``A_1``. Label count `lc` is assigned 1. Then it starts a column-wise traversal
+of the image and for every pixel, it computes the difference measure `diff_fn`
+between the pixel and its left neighbor, say ``\delta_{l}`` and between the pixel and
+its top neighbor, say ``\delta_{t}``. Four cases arise:
+1) ``\delta_{l}`` >= `threshold` and ``\delta_{t}`` < `threshold` : We can say that the point has similar intensity to that its top neighbor. Hence, we assign the point to the segment that contains its top neighbor.
+2) ``\delta_{l}`` < `threshold` and ``\delta_{t}`` >= `threshold` : Similar to case 1, we assign the point to the segment that contains its left neighbor.
+3) ``\delta_{l}`` >= `threshold` and ``\delta_{t}`` >= `threshold` : Point is significantly different from its top and left neighbors and is assigned a new label ``A_{lc+1}`` and `lc` is incremented.
+4) ``\delta_{l}`` < `threshold` and ``\delta_{t}`` < `threshold` : In this case, we merge the top and left semgents together and assign the point under consideration to this merged segment.
+
+This algorithm segments the image in just two passes (one for segmenting and other for
+merging), hence it is very fast and can be used in real time applications.
 
 **Time Complexity:** ``O(n)`` where ``n`` is the number of pixels
 
@@ -196,7 +249,7 @@ two passes, it is very fast and can be used in real time applications.
 ```julia
 julia> using ImageSegmentation, TestImages;
 julia> img = testimage("camera");
-julia> seg = fast_scanning(img, 0.1);
+julia> seg = fast_scanning(img, 0.1);  # threshold = 0.1
 julia> seg = prune_segments(seg, i->(segment_pixel_count(seg,i)<50), (i,j)->(-segment_pixel_count(seg,j)))
 ```
 

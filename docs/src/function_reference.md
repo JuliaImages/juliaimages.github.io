@@ -316,6 +316,10 @@ spatialproperties
 ```@docs
 SegmentedImage
 ImageEdge
+labels_map
+segment_labels
+segment_pixel_count
+segment_mean
 seeded_region_growing
 unseeded_region_growing
 felzenszwalb
