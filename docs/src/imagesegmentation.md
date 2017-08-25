@@ -40,15 +40,15 @@ segments = seeded_region_growing(img, seeds)
 All the segmentation algorithm (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels, an array containing the assigned label for each pixel and mean color and number of pixels in each segment.
 
 ```julia
-length(segments.segment_labels)   # number of segments = 3
+length(segment_labels(segments))   # number of segments = 3
 
-segments.segment_means
+segment_means(segments)
 #first segment's color (horse) = RGB(0.0647831,0.0588508,0.074473) = black
 #second segment's color (sky) = RGB(0.793598,0.839543,0.932374) = light blue
 #third segment's color (grass) = RGB(0.329876,0.357805,0.23745) = green
 
 # for visualizing the segmentation, create an image by replacing each each label in segments.image_indexmap with it's mean color
-imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+imshow(map(i->segment_means(segments,i), labels_map(segments)))
 ```
 ![Original](assets/segmentation/horse_seg1.jpg)
 
@@ -59,10 +59,10 @@ using Images, ImageSegmentation, ImageView
 
 img = load("horse.jpg")
 segments = felzenszwalb(img, 100)
-imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+imshow(map(i->segment_means(segments,i), labels_map(segments)))
 
 segments = felzenszwalb(img, 10)  #smaller segments but noisy segmentation
-imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+imshow(map(i->segment_means(segments,i), labels_map(segments)))
 ```
 
 ![Original](assets/segmentation/horse_seg2.jpg)  ![Original](assets/segmentation/horse_seg3.jpg)
@@ -71,7 +71,7 @@ We only got two segments with k = 100. Setting k = 10 resulted in smaller but ra
 
 ```julia
 segments = felzenszwalb(img, 10, 100)  #removes small segments
-imshow(map(i->segments.segment_means[i], segments.image_indexmap))
+imshow(map(i->segment_means(segments,i), labels_map(segments)))
 ```
 
 ![Original](assets/segmentation/horse_seg4.jpg)
@@ -81,10 +81,12 @@ imshow(map(i->segments.segment_means[i], segments.image_indexmap))
 
 #### Seeded Region Growing
 
-This algorithm segments an image with repsect to a set of *n* seeds. Given the
-set of seeds in the form of a vector of `(position, label)` tuples, where `position`
-is a [`CartesianIndex`](https://docs.julialang.org/en/stable/manual/arrays/#Cartesian-indices-1)
-and `label` is an integer. The algorithm tries to assign these labels to each of the remaining points.
+Seeded region growing segments an image with respect to some user-defined seeds.
+Each seed is a `(position, label)` tuple, where `position` is a
+[`CartesianIndex`](https://docs.julialang.org/en/stable/manual/arrays/#Cartesian-indices-1) and
+`label` is a positive integer. Each label corresponds to a unique partition of the image.
+The algorithm tries to assign these labels to each of the remaining points.
+If more than one point has the same label then they will be contribute to the same segment.
 
 ###### Demo
 
@@ -97,7 +99,7 @@ julia> seeds = [(CartesianIndex(104, 48), 1), (CartesianIndex( 49, 40), 1),
                 (CartesianIndex(104, 72), 2), (CartesianIndex( 86,138), 2)];
 julia> seg = seeded_region_growing(img, seeds);
 ```
-**Original** [(source)](https://ibb.co/hR2aWk):
+**Original** [(source)](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Davidraju_Worm_Snake.jpg/275px-Davidraju_Worm_Snake.jpg):
 
 ![Original](assets/segmentation/worm.jpg)
 
@@ -108,17 +110,37 @@ julia> seg = seeded_region_growing(img, seeds);
 #### Unseeded Region Growing
 
 This algorithm is similar to [Seeded Region Growing](@ref) but does not require
-any prior information about the seed points. This algorithm checks all the
-boundary points and tries to find the most suitable pixel-label pair. It then
-assigns that pixel to the label and updates the boundary points. If no such
-pair is found, a new label is assigned to that pixel and the list of labels is updated.
+any prior information about the seed points. The segmentation process initializes
+with region ``A_1`` containing a single pixel of the image. Let an intermediate state
+of the algorithm consist of a set of identified regions ``A_1, A_2, ..., A_n``.
+Let ``T`` be the set of all unallocated pixels which borders at least one of these
+regions. The growing process involves selecting a point ``z \in T`` and region ``A_j``
+where ``j \in [ \, 1,n ] \,`` such that
+
+```math
+\delta ( \, z, A_j ) \, = min_{x \in T, k \in [ \, 1,n ] \, } \{ \delta ( \, x, A_k ) \, \}
+```
+where `` \delta ( \, x, A_i ) \, = | img ( \, x ) \, - mean_{y \in A_i} [ \, img ( \, y ) \, ] \, |``
+
+If ``\delta ( \, z, A_j ) \,`` is less than `threshold` then the pixel `z` is added to A_j.
+Otherwise we choose the most similar region ``\alpha`` such that
+
+```math
+\alpha = argmin_{A_k} \{ \delta ( \, z, A_k) \, \}
+```
+If ``\delta ( \, z, \alpha ) \,`` is less than `threshold` then the pixel `z` is added to ``\alpha``.
+If neither of the two conditions is satisfied, then the pixel is assigned a new region ``A_{n+1}``.
+After assignment of ``z``, we update the statistic of the assigned region. The algorithm halts when
+all the pixels have been assigned to a region.
+
+`unseeded_region_growing` requires the image `img` and `threshold` as its parameters.
 
 ###### Demo
 
 ```julia
 julia> using ImageSegmentation, Images;
 julia> img = load("tree.jpg");
-julia> seg = unseeded_region_growing(img, 0.08);
+julia> seg = unseeded_region_growing(img, 0.05); # here 0.05 is the threshold
 ```
 
 | Threshold | Output | Compression percentage|
@@ -163,7 +185,7 @@ segments = meanshift(img, 16, 8/255);
 
 Fast scanning algorithm tries to segment the image in two pass by comparing
 each pixel to its left-neighbour and noting if it can be merged with them. If it
-can't be merged then a new label is assigned to it. If more than one labels can be
+can't be merged then a new label is assigned to it. If more than one label can be
 assigned then all the applicable labels are merged together. Since it requires only
 two passes, it is very fast and can be used in real time applications.
 
@@ -175,7 +197,7 @@ two passes, it is very fast and can be used in real time applications.
 julia> using ImageSegmentation, TestImages;
 julia> img = testimage("camera");
 julia> seg = fast_scanning(img, 0.1);
-julia> seg = prune_segments(seg, i->(seg.segment_pixel_count[i]<50), (i,j)->(-seg.segment_pixel_count[j]))
+julia> seg = prune_segments(seg, i->(segment_pixel_count(seg,i)<50), (i,j)->(-segment_pixel_count(seg,j)))
 ```
 
 **Original:**
@@ -277,12 +299,20 @@ and edges are constructed between adjacent segments. The output is a tuple of
 `SimpleWeightedGraph` and a Dict(label=>vertex) with weights assigned according to `weight_fn`.
 
 ```julia
-julia> using ImageSegmentation, Distances
-julia> weight_fn(i,j) = euclidean(seg.segment_pixel_count[i], seg.segment_pixel_count[j]);
-julia> G, vert_map = region_adjacency_graph(seg, weight_fn);    # `seg` is a `SegmentedImage`
+julia> using ImageSegmentation, Distances, TestImages
+julia> img = testimage("camera");
+julia> seg = felzenszwalb(img, 10, 100);
+julia> weight_fn(i,j) = euclidean(segment_pixel_count(seg,i), segment_pixel_count(seg,j));
+julia> G, vert_map = region_adjacency_graph(seg, weight_fn);
 julia> G
-{2536, 6536} undirected simple Int64 graph with Float64 weights
+{70, 139} undirected simple Int64 graph with Float64 weights
 ```
+
+Here, the difference in pixel count has been used as the weight of the connecting edges.
+This difference measure can be useful if one wants to use this region adjacency graph to
+remove smaller segments by merging them with their neighbouring largest segment.
+Another useful difference measure is the euclidean distance between the mean intensities
+of the two segments.
 
 #### Creating a Region Tree
 
@@ -301,6 +331,8 @@ julia> t = region_tree(img, homogeneous)        # `img` is an image
 Cell: RegionTrees.HyperRectangle{2,Float64}([1.0, 1.0], [300.0, 300.0])
 ```
 
+For more information regarding `RegionTrees`, see [this](https://github.com/rdeits/RegionTrees.jl#regiontreesjl-quadtrees-octrees-and-their-n-dimensional-cousins).
+
 #### Pruning unnecessary segments
 
 All the unnecessary segments can be easily removed from a `SegmentedImage` using
@@ -313,6 +345,22 @@ be removed.
     The resultant `SegmentedImage` might have the different labels compared to
     the original `SegmentedImage`.
 
+For this example and the next one (in [Removing a segment](@ref)), a sample
+`SegmentedImage` has been used. It can be generated as:
+
+```julia
+julia> img = fill(1, 4, 4);
+julia> img[3:4,:] = 2;
+julia> img[1:2,3:4] = 3;
+julia> seg = fast_scanning(img, 0.5);
+julia> labels_map(seg)
+4×4 Array{Int64,2}:
+ 1  1  3  3
+ 1  1  3  3
+ 2  2  2  2
+ 2  2  2  2
+```
+
 ```julia
 julia> seg.image_indexmap
 4×4 Array{Int64,2}:
@@ -320,9 +368,9 @@ julia> seg.image_indexmap
  1  1  3  3
  2  2  2  2
  2  2  2  2
-julia> diff_fn(rem_label, neigh_label) = seg.segment_pixel_count[rem_label] - seg.segment_pixel_count[neigh_label];
+julia> diff_fn(rem_label, neigh_label) = segment_pixel_count(seg,rem_label) - segment_pixel_count(seg,neigh_label);
 julia> new_seg = prune_segments(seg, [3], diff_fn);
-julia> new_seg.image_indexmap
+julia> labels_map(new_seg)
 4×4 Array{Int64,2}:
  1  1  2  2
  1  1  2  2
@@ -347,9 +395,9 @@ julia> seg.image_indexmap
  1  1  3  3
  2  2  2  2
  2  2  2  2
-julia> diff_fn(rem_label, neigh_label) = seg.segment_pixel_count[rem_label] - seg.segment_pixel_count[neigh_label];
+julia> diff_fn(rem_label, neigh_label) = segment_pixel_count(seg,rem_label) - segment_pixel_count(seg,neigh_label);
 julia> rem_segment!(seg, 3, diff_fn);
-julia> seg.image_indexmap
+julia> labels_map(new_seg)
 4×4 Array{Int64,2}:
  1  1  2  2
  1  1  2  2
