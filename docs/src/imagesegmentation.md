@@ -14,7 +14,7 @@ Pkg.add("ImageSegmentation")
 
 Image segmentation is not a mathematically well-defined problem: for example, the only lossless representation of the input image would be to say that each pixel is its own segment. Yet this does not correspond to our own intuitive notion that some pixels are naturally grouped together. As a consequence, many algorithms require parameters, often some kind of threshold expressing your willingness to tolerate a certain amount of variation among the pixels within a single segment.
 
-Let's see an example on how to use the segmentation algorithms in this package. We will try to seperate the horse, the ground and the sky in the image below. We will explore two algorithms - seeded region growing and felzenszwalb. Seeded region growing requires us to know the number of segments and some points on each segment beforehand whereas felzenszwalb uses a more abstract parameter controlling degree of within-segment similarity.
+Let's see an example on how to use the segmentation algorithms in this package. We will try to separate the horse, the ground and the sky in the image below. We will explore two algorithms - seeded region growing and felzenszwalb. Seeded region growing requires us to know the number of segments and some points on each segment beforehand whereas felzenszwalb uses a more abstract parameter controlling degree of within-segment similarity.
 
 ![Original](assets/segmentation/horse.jpg)
 
@@ -29,7 +29,7 @@ img = load("horse.jpg")
 imshow(img)
 ```
 
-Now we can use `seeded_region_growing` with the seed points. For this example, we will use one seed point per segment. We can use more seed points to improve segmentation.
+Hover over the different objects you'd like to segment, and read out the coordinates of one or more points inside each object. We will store the seed points a vector of `(seed position, label)` tuples and use `seeded_region_growing` with the recorded seed points.
 
 ```julia
 using ImageSegmentation
@@ -37,7 +37,7 @@ seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex
 segments = seeded_region_growing(img, seeds)
 ```
 
-All the segmentation algorithm (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels, an array containing the assigned label for each pixel and mean color and number of pixels in each segment.
+All the segmentation algorithm (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels, an array containing the assigned label for each pixel and mean color and number of pixels in each segment. [This section](##Result) explains how to access information about the segments. 
 
 ```julia
 length(segment_labels(segments))   # number of segments = 3
@@ -47,12 +47,23 @@ segment_means(segments)
 #second segment's color (sky) = RGB(0.793598,0.839543,0.932374) = light blue
 #third segment's color (grass) = RGB(0.329876,0.357805,0.23745) = green
 
-# for visualizing the segmentation, create an image by replacing each each label in segments.image_indexmap with it's mean color
+# for visualizing the segmentation, create an image by replacing each each label in label_map(segments) with it's mean color
 imshow(map(i->segment_means(segments,i), labels_map(segments)))
 ```
 ![Original](assets/segmentation/horse_seg1.jpg)
 
-Let's segment this image using felzenszwalb algorithm. `felzenswalb` only needs a single parameter k which controls the size of segments. Larger k will result in bigger segments. Using k=5 to k=500 generally gives good results.
+You can see that the algorithm did a fairly good job of segmenting the three objects. The only obvious error is the fact that elements of the sky that were "framed" by the horse ended up being grouped with the ground. This is because seeded_region_growing always returns connected regions, and there is no path connecting those portions of sky to the larger image. If we add some additional seed points in those regions, and give them the same label 2 that we used for the rest of the sky, we will get a result that is more or less perfect.
+
+```julia
+seeds = [(CartesianIndex(126,81), 1), (CartesianIndex(93,255), 2), (CartesianIndex(171,103), 2), 
+         (CartesianIndex(172,142), 2), (CartesianIndex(182,72), 2), (CartesianIndex(213,97), 3)]
+segments = seeded_region_growing(img, seeds)
+imshow(map(i->segment_means(segments,i), labels_map(segments)))
+```
+
+![Original](assets/segmentation/horse_seg5.jpg)
+
+Now let's segment this image using felzenszwalb algorithm. `felzenswalb` only needs a single parameter k which controls the size of segments. Larger k will result in bigger segments. Using k=5 to k=500 generally gives good results.
 
 ```julia
 using Images, ImageSegmentation, ImageView
@@ -65,19 +76,21 @@ segments = felzenszwalb(img, 10)  #smaller segments but noisy segmentation
 imshow(map(i->segment_means(segments,i), labels_map(segments)))
 ```
 
-![Original](assets/segmentation/horse_seg2.jpg)  ![Original](assets/segmentation/horse_seg3.jpg)
+| k = 100 | k = 10 |
+|:------:|:---:|
+| ![Original](assets/segmentation/horse_seg2.jpg) | ![Original](assets/segmentation/horse_seg3.jpg) |
 
 We only got two segments with k = 100. Setting k = 10 resulted in smaller but rather noisy segments. `felzenzwalb` also takes an optional argument `min_size` - it removes all segments smaller with less than `min_size` pixels. Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.
 
 ```julia
-segments = felzenszwalb(img, 10, 100)  #removes small segments
+segments = felzenszwalb(img, 10, 100)  # removes segments with fewer than 100 pixels
 imshow(map(i->segment_means(segments,i), labels_map(segments)))
 ```
 
 ![Original](assets/segmentation/horse_seg4.jpg)
 
 ## Result
-
+ 
 All segmentation algorithms (except Fuzzy C-Means) return a struct [`SegmentedImage`](@ref) as its
 output. `SegmentedImage` contains all the necessary information about the segments. The following
 functions can be used to get the information about the segments:
@@ -206,7 +219,11 @@ This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is 
 using Images, ImageSegmentation, TestImages;
 
 img = Gray.(testimage("house"));
-segments = felzenszwalb(img, 300, 100);
+segments = felzenszwalb(img, 300, 100); # k=300 (the merging threshold), min_size = 100 (smallest number of pixels/region)
+
+# visualize segmentation by creating an image with each label replaced by a random color
+get_random_color(seed) = begin RNG = MersenneTwister(seed); RGB(rand(RNG, Uniform(-1, 1)), rand(RNG, Uniform(-1, 1)), rand(RNG, Uniform(-1, 1)) end
+imshow(map(i->get_random_color(i), labels_map(segments)))
 ```
 
 ![img1](assets/segmentation/house.jpg) ![img2](assets/segmentation/felzenszwalb.jpg)
@@ -222,7 +239,7 @@ using Images, ImageSegmentation, TestImages;
 
 img = Gray.(testimage("house"));
 img = imresize(img, (256, 256))
-segments = meanshift(img, 16, 8/255);
+segments = meanshift(img, 16, 8/255); # parameters are smoothing radii: spatial=16, intensity-wise=8/255
 ```
 ![img1](assets/segmentation/small_house.jpg) ![img2](assets/segmentation/meanshift.jpg)
 
@@ -326,7 +343,9 @@ julia> r = fuzzy_cmeans(img, 3, 2);
 
 #### Watershed
 
-The watershed algorithm treats an image as a topographic surface where bright pixels correspond to peaks and dark pixels correspond to valleys. The algorithm starts flooding from valleys (local minima) of this topographic surface and region boundaries are formed when water from different sources merge. If the image is noisy, this approach leads to oversegmetation. To prevent oversegmentation, marker-based watershed is used i.e. the topographic surface is flooded from a predefined set of markers.  
+The watershed algorithm treats an image as a topographic surface where bright pixels correspond to peaks and dark pixels correspond to valleys. The algorithm starts flooding from valleys (local minima) of this topographic surface and region boundaries are formed when water from different sources merge. If the image is noisy, this approach leads to oversegmetation. To prevent oversegmentation, marker-based watershed is used i.e. the topographic surface is flooded from a predefined set of markers.
+
+Let's see an example on how to use watershed to segment touching objects. To use watershed, we need to modify the image such that in the new image flooding the topographic surface from the markers separates each coin. If this modified image is noisy, flooding from local minima may lead to oversegmentation and so we also need a way to find the marker positions. In this example, the inverted distance transform of the thresholded image (dist image) has the required topographic structure ([This page](https://in.mathworks.com/company/newsletters/articles/the-watershed-transform-strategies-for-image-segmentation.html) explains why this works). We can threshold the 'dist' image to get the marker positions.
 
 ###### Demo
 
@@ -340,7 +359,19 @@ markers = label_components(dist.<-15);
 segments = watershed(dist, markers);
 ```
 
-![img1](assets/segmentation/water_coins.jpg) ![img2](assets/segmentation/watershed.jpg)
+| Original Image | Thresholded Image |
+|:------:|:---:|
+| ![img1](assets/segmentation/water_coins.jpg) | ![img1](assets/segmentation/coins2.jpg) |
+
+| Inverted Distance Transform Image | Markers |
+|:------:|:---:|
+| ![img1](assets/segmentation/coins3.jpg) |![img1](assets/segmentation/coins4.jpg) |
+
+| Segmented Image |
+|:------:|
+| ![img2](assets/segmentation/watershed.jpg) |
+
+
 
 ## Some helpful functions
 
