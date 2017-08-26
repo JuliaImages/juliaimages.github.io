@@ -73,7 +73,7 @@ The fact that the overlapping portion looks yellow---the combination
 of red and green---indicates that we have perfect alignment.
 
 You can learn more about Julia's support for arbitrary indices in
-[this blog post]().
+[this blog post](https://julialang.org/blog/2017/04/offset-arrays).
 
 ## Keeping track of orientation with named axes
 
