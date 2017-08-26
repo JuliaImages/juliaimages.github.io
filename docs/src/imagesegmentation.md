@@ -37,7 +37,7 @@ seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex
 segments = seeded_region_growing(img, seeds)
 ```
 
-All the segmentation algorithms (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels, an array containing the assigned label for each pixel, and mean color and number of pixels in each segment. The Result section explains how to access information about the segments. 
+All the segmentation algorithms (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels, an array containing the assigned label for each pixel, and mean color and number of pixels in each segment. [This section](#Result-1) explains how to access information about the segments.
 
 ```julia
 length(segment_labels(segments))   # number of segments = 3
@@ -52,10 +52,10 @@ imshow(map(i->segment_means(segments,i), labels_map(segments)))
 ```
 ![Original](assets/segmentation/horse_seg1.jpg)
 
-You can see that the algorithm did a fairly good job of segmenting the three objects. The only obvious error is the fact that elements of the sky that were "framed" by the horse ended up being grouped with the ground. This is because `seeded_region_growing` always returns connected regions, and there is no path connecting those portions of sky to the larger image. If we add some additional seed points in those regions, and give them the same label 2 that we used for the rest of the sky, we will get a result that is more or less perfect.
+You can see that the algorithm did a fairly good job of segmenting the three objects. The only obvious error is the fact that elements of the sky that were "framed" by the horse ended up being grouped with the ground. This is because `seeded_region_growing` always returns connected regions, and there is no path connecting those portions of sky to the larger image. If we add some additional seed points in those regions, and give them the same label `2` that we used for the rest of the sky, we will get a result that is more or less perfect.
 
 ```julia
-seeds = [(CartesianIndex(126,81), 1), (CartesianIndex(93,255), 2), (CartesianIndex(171,103), 2), 
+seeds = [(CartesianIndex(126,81), 1), (CartesianIndex(93,255), 2), (CartesianIndex(171,103), 2),
          (CartesianIndex(172,142), 2), (CartesianIndex(182,72), 2), (CartesianIndex(213,97), 3)]
 segments = seeded_region_growing(img, seeds)
 imshow(map(i->segment_means(segments,i), labels_map(segments)))
@@ -90,7 +90,7 @@ imshow(map(i->segment_means(segments,i), labels_map(segments)))
 ![Original](assets/segmentation/horse_seg4.jpg)
 
 ## Result
- 
+
 All segmentation algorithms (except Fuzzy C-Means) return a struct [`SegmentedImage`](@ref) as its
 output. `SegmentedImage` contains all the necessary information about the segments. The following
 functions can be used to get the information about the segments:
@@ -222,7 +222,10 @@ img = Gray.(testimage("house"));
 segments = felzenszwalb(img, 300, 100); # k=300 (the merging threshold), min_size = 100 (smallest number of pixels/region)
 
 # visualize segmentation by creating an image with each label replaced by a random color
-get_random_color(seed) = begin RNG = MersenneTwister(seed); RGB(rand(RNG, Uniform(-1, 1)), rand(RNG, Uniform(-1, 1)), rand(RNG, Uniform(-1, 1)) end
+function get_random_color(seed)
+    srand(seed)
+    rand(RGB{N0f8})
+end
 imshow(map(i->get_random_color(i), labels_map(segments)))
 ```
 
@@ -338,14 +341,15 @@ julia> r = fuzzy_cmeans(img, 3, 2);
 
 **Output with pixel intensity = cluster center intensity * membership of pixel in that class**
 
-![SegmentedImage1](assets/segmentation/flower_s1.jpg) ![SegmentedImage2](assets/segmentation/flower_s2.jpg)
-![SegmentedImage3](assets/segmentation/flower_s3.jpg)
+| Magenta petals | Greenish Leaves | White background |
+|----------------|-----------------|------------------|
+| ![SegmentedImage1](assets/segmentation/flower_s1.jpg) |![SegmentedImage2](assets/segmentation/flower_s2.jpg) | ![SegmentedImage3](assets/segmentation/flower_s3.jpg) |
 
 #### Watershed
 
 The watershed algorithm treats an image as a topographic surface where bright pixels correspond to peaks and dark pixels correspond to valleys. The algorithm starts flooding from valleys (local minima) of this topographic surface and region boundaries are formed when water from different sources merge. If the image is noisy, this approach leads to oversegmetation. To prevent oversegmentation, marker-based watershed is used i.e. the topographic surface is flooded from a predefined set of markers.
 
-Let's see an example on how to use watershed to segment touching objects. To use watershed, we need to modify the image such that in the new image flooding the topographic surface from the markers separates each coin. If this modified image is noisy, flooding from local minima may lead to oversegmentation and so we also need a way to find the marker positions. In this example, the inverted distance transform of the thresholded image (`dist` image) has the required topographic structure ([This page](https://in.mathworks.com/company/newsletters/articles/the-watershed-transform-strategies-for-image-segmentation.html) explains why this works). We can threshold the `dist` image to get the marker positions.
+Let's see an example on how to use watershed to segment touching objects. To use watershed, we need to modify the image such that in the new image flooding the topographic surface from the markers separates each coin. If this modified image is noisy, flooding from local minima may lead to oversegmentation and so we also need a way to find the marker positions. In this example, the inverted [`distance_transform`](@ref) of the thresholded image (`dist` image) has the required topographic structure ([This page](https://in.mathworks.com/company/newsletters/articles/the-watershed-transform-strategies-for-image-segmentation.html) explains why this works). We can threshold the `dist` image to get the marker positions.
 
 ###### Demo
 
@@ -422,7 +426,7 @@ For more information regarding `RegionTrees`, see [this](https://github.com/rdei
 All the unnecessary segments can be easily removed from a `SegmentedImage` using
 `prune_segments`. It removes a segment by replacing it with the neighbor which has
 the least value of `diff_fn`. A list of the segments to be removed can be supplied.
-Alternately, a function can be supplied that returns true for the labels that must
+Alternately, a function can be supplied that returns `true` for the labels that must
 be removed.
 
 !!! note
