@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "JuliaImages: image processing and machine vision for Julia",
     "category": "section",
-    "text": "JuliaImages (source code) hosts the major Julia packages for image processing. Julia is well-suited to image processing because it is a modern and elegant high-level language that is a pleasure to use, while also allowing you to write \"inner loops\" that compile to efficient machine code (i.e., it is as fast as C).  Julia supports multithreading and, through add-on packages, GPU processing.JuliaImages is a collection of packages specifically focused on image processing.  It is not yet as complete as some toolkits for other programming languages, but it has many useful algorithms.  It is focused on clean architecture and is designed to unify \"machine vision\" and \"biomedical 3d image processing\" communities.These pages are designed to help you get started with image analysis in Julia.Pages = [\"install.md\", \"quickstart.md\", \"arrays_colors.md\", \"conversions_views.md\", \"indexing.md\", \"imageaxes.md\", \"imagefiltering.md\", \"imagemetadata.md\", \"function_reference.md\", \"api_comparison.md\"]"
+    "text": "JuliaImages (source code) hosts the major Julia packages for image processing. Julia is well-suited to image processing because it is a modern and elegant high-level language that is a pleasure to use, while also allowing you to write \"inner loops\" that compile to efficient machine code (i.e., it is as fast as C).  Julia supports multithreading and, through add-on packages, GPU processing.JuliaImages is a collection of packages specifically focused on image processing.  It is not yet as complete as some toolkits for other programming languages, but it has many useful algorithms.  It is focused on clean architecture and is designed to unify \"machine vision\" and \"biomedical 3d image processing\" communities.These pages are designed to help you get started with image analysis in Julia.Pages = [\"install.md\", \"quickstart.md\", \"arrays_colors.md\", \"conversions_views.md\", \"indexing.md\", \"imageaxes.md\", \"imagefiltering.md\", \"imagemetadata.md\", \"imagesegmentation.md\", \"function_reference.md\", \"api_comparison.md\"]"
 },
 
 {
@@ -478,6 +478,238 @@ var documenterSearchIndex = {"docs": [
     "title": "spatialproperties",
     "category": "section",
     "text": "Occasionally you may have a property that is linked to the spatial axes of the image. In such cases, one source for potential confusion is permutedims, which swaps the order of the dimensions in the array: if the order is not also swapped in the appropriate properties, chaos could result.You can declare that certain properties are coupled to spatial axes using \"spatialproperties\":julia> using ImageMetadata\n\njulia> A = reshape(1:15, 3, 5)\n3×5 Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}:\n 1  4  7  10  13\n 2  5  8  11  14\n 3  6  9  12  15\n\njulia> img = ImageMeta(A, spatialproperties=Set([\"maxsum\"]), maxsum=[maximum(sum(A,1)), maximum(sum(A,2))])\nInt64 ImageMeta with:\n  data: 3×5 Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}\n  properties:\n    maxsum: [42,45]\n    spatialproperties: Set(String[\"maxsum\"])\n\njulia> imgp = permutedims(img, (2,1))\nInt64 ImageMeta with:\n  data: 5×3 Array{Int64,2}\n  properties:\n    maxsum: [45,42]\n    spatialproperties: Set(String[\"maxsum\"])\n\njulia> maximum(sum(imgp,1))\n45It's not possible to anticipate all the possible transformations that might be necessary, but at least simple swaps are handled automatically."
+},
+
+{
+    "location": "imagesegmentation.html#",
+    "page": "ImageSegmentation.jl",
+    "title": "ImageSegmentation.jl",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "imagesegmentation.html#ImageSegmentation.jl-1",
+    "page": "ImageSegmentation.jl",
+    "title": "ImageSegmentation.jl",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "imagesegmentation.html#Introduction-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Introduction",
+    "category": "section",
+    "text": "Image Segmentation is the process of partitioning the image into regions that have similar attributes. Image segmentation has various applications e.g, medical image segmentation, image compression and is used as a preprocessing step in higher level vision tasks like object detection and optical flow. This package is a collection of image segmentation algorithms written in Julia."
+},
+
+{
+    "location": "imagesegmentation.html#Installation-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Installation",
+    "category": "section",
+    "text": "Pkg.add(\"ImageSegmentation\")"
+},
+
+{
+    "location": "imagesegmentation.html#Example-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Example",
+    "category": "section",
+    "text": "Image segmentation is not a mathematically well-defined problem: for example, the only lossless representation of the input image would be to say that each pixel is its own segment. Yet this does not correspond to our own intuitive notion that some pixels are naturally grouped together. As a consequence, many algorithms require parameters, often some kind of threshold expressing your willingness to tolerate a certain amount of variation among the pixels within a single segment.Let's see an example on how to use the segmentation algorithms in this package. We will try to separate the horse, the ground and the sky in the image below. We will explore two algorithms - seeded region growing and felzenszwalb. Seeded region growing requires us to know the number of segments and some points on each segment beforehand whereas felzenszwalb uses a more abstract parameter controlling degree of within-segment similarity.(Image: Original)sourceThe documentation for seeded_region_growing says that it needs two arguments - the image to be segmented and a set of seed points for each region. The seed points have to be stored as a vector of (position, label) tuples, where position is a CartesianIndex and label is an integer. We will start by opening the image using ImageView and reading the coordinates of the seed points.using Images, ImageView\n\nimg = load(\"horse.jpg\")\nimshow(img)Hover over the different objects you'd like to segment, and read out the coordinates of one or more points inside each object. We will store the seed points as a vector of (seed position, label) tuples and use seeded_region_growing with the recorded seed points.using ImageSegmentation\nseeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex(213,97),3)]\nsegments = seeded_region_growing(img, seeds)All the segmentation algorithms (except Fuzzy C-means) return a struct SegmentedImage that stores the segmentation result. SegmentedImage contains a list of applied labels, an array containing the assigned label for each pixel, and mean color and number of pixels in each segment. This section explains how to access information about the segments.length(segment_labels(segments))   # number of segments = 3\n\nsegment_means(segments)\n#first segment's color (horse) = RGB(0.0647831,0.0588508,0.074473) = black\n#second segment's color (sky) = RGB(0.793598,0.839543,0.932374) = light blue\n#third segment's color (grass) = RGB(0.329876,0.357805,0.23745) = green\n\n# for visualizing the segmentation, create an image by replacing each each label in label_map(segments) with it's mean color\nimshow(map(i->segment_means(segments,i), labels_map(segments)))(Image: Original)You can see that the algorithm did a fairly good job of segmenting the three objects. The only obvious error is the fact that elements of the sky that were \"framed\" by the horse ended up being grouped with the ground. This is because seeded_region_growing always returns connected regions, and there is no path connecting those portions of sky to the larger image. If we add some additional seed points in those regions, and give them the same label 2 that we used for the rest of the sky, we will get a result that is more or less perfect.seeds = [(CartesianIndex(126,81), 1), (CartesianIndex(93,255), 2), (CartesianIndex(171,103), 2),\n         (CartesianIndex(172,142), 2), (CartesianIndex(182,72), 2), (CartesianIndex(213,97), 3)]\nsegments = seeded_region_growing(img, seeds)\nimshow(map(i->segment_means(segments,i), labels_map(segments)))(Image: Original)Now let's segment this image using felzenszwalb algorithm. felzenswalb only needs a single parameter k which controls the size of segments. Larger k will result in bigger segments. Using k=5 to k=500 generally gives good results.using Images, ImageSegmentation, ImageView\n\nimg = load(\"horse.jpg\")\nsegments = felzenszwalb(img, 100)\nimshow(map(i->segment_means(segments,i), labels_map(segments)))\n\nsegments = felzenszwalb(img, 10)  #smaller segments but noisy segmentation\nimshow(map(i->segment_means(segments,i), labels_map(segments)))k = 100 k = 10\n(Image: Original) (Image: Original)We only got two segments with k = 100. Setting k = 10 resulted in smaller but rather noisy segments. felzenzwalb also takes an optional argument min_size - it removes all segments smaller than min_size pixels. (Most methods don't remove small segments in their core algorithm. We can use the prune_segments method to postprocess the segmentation result and remove small segments.)segments = felzenszwalb(img, 10, 100)  # removes segments with fewer than 100 pixels\nimshow(map(i->segment_means(segments,i), labels_map(segments)))(Image: Original)"
+},
+
+{
+    "location": "imagesegmentation.html#Result-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Result",
+    "category": "section",
+    "text": "All segmentation algorithms (except Fuzzy C-Means) return a struct SegmentedImage as its output. SegmentedImage contains all the necessary information about the segments. The following functions can be used to get the information about the segments:labels_map : It returns an array containing the labels assigned to each pixel\nsegment_labels : It returns a list of all the assigned labels\nsegment_mean : It returns the mean intensity of the supplied label.\nsegment_pixel_count : It returns the count of the pixels that are assigned the supplied label."
+},
+
+{
+    "location": "imagesegmentation.html#Demo-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "julia> img = fill(1, 4, 4);\n\njulia> img[1:2,1:2] = 2;\n\njulia> img\n4×4 Array{Int64,2}:\n 2  2  1  1\n 2  2  1  1\n 1  1  1  1\n 1  1  1  1\n\njulia> seg = fast_scanning(img, 0.5);\n\njulia> labels_map(seg) # returns the assigned labels map\n4×4 Array{Int64,2}:\n 1  1  3  3\n 1  1  3  3\n 3  3  3  3\n 3  3  3  3\n\njulia> segment_labels(seg) # returns a list of all assigned labels\n2-element Array{Int64,1}:\n 1\n 3\n\njulia> segment_mean(seg, 1) # returns the mean intensity of label 1\n2\n\njulia> segment_pixel_count(seg, 1) # returns the pixel count of label 1\n4"
+},
+
+{
+    "location": "imagesegmentation.html#Algorithms-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Algorithms",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "imagesegmentation.html#Seeded-Region-Growing-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Seeded Region Growing",
+    "category": "section",
+    "text": "Seeded region growing segments an image with respect to some user-defined seeds. Each seed is a (position, label) tuple, where position is a CartesianIndex and label is a positive integer. Each label corresponds to a unique partition of the image. The algorithm tries to assign these labels to each of the remaining points. If more than one point has the same label then they will be contribute to the same segment."
+},
+
+{
+    "location": "imagesegmentation.html#Demo-2",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "julia> using ImageSegmentation, Images;\njulia> img = load(\"worm.jpg\");\njulia> seeds = [(CartesianIndex(104, 48), 1), (CartesianIndex( 49, 40), 1),\n                (CartesianIndex( 72,131), 1), (CartesianIndex(109,217), 1),\n                (CartesianIndex( 28, 87), 2), (CartesianIndex( 64,201), 2),\n                (CartesianIndex(104, 72), 2), (CartesianIndex( 86,138), 2)];\njulia> seg = seeded_region_growing(img, seeds);Original (source):(Image: Original)Segmented Image with labels replaced by their intensity means:(Image: SegmentedImage)"
+},
+
+{
+    "location": "imagesegmentation.html#Unseeded-Region-Growing-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Unseeded Region Growing",
+    "category": "section",
+    "text": "This algorithm is similar to Seeded Region Growing but does not require any prior information about the seed points. The segmentation process initializes with region A_1 containing a single pixel of the image. Let an intermediate state of the algorithm consist of a set of identified regions A_1 A_2  A_n. Let T be the set of all unallocated pixels which borders at least one of these regions. The growing process involves selecting a point z in T and region A_j where j in   1n   such thatdelta (  z A_j )  = min_x in T k in   1n     delta (  x A_k )  where delta (  x A_i )  =  img (  x )  - mean_y in A_i   img (  y )    If delta (  z A_j )  is less than threshold then the pixel z is added to A_j. Otherwise we choose the most similar region alpha such thatalpha = argmin_A_k  delta (  z A_k)  If delta (  z alpha )  is less than threshold then the pixel z is added to alpha. If neither of the two conditions is satisfied, then the pixel is assigned a new region A_n+1. After assignment of z, we update the statistic of the assigned region. The algorithm halts when all the pixels have been assigned to some region.unseeded_region_growing requires the image img and threshold as its parameters."
+},
+
+{
+    "location": "imagesegmentation.html#Demo-3",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "julia> using ImageSegmentation, Images;\njulia> img = load(\"tree.jpg\");\njulia> seg = unseeded_region_growing(img, 0.05); # here 0.05 is the thresholdThreshold Output Compression percentage\nOriginal (source) (Image: tree) 0 %\n0.05 (Image: tree_seg1) 60.63%\n0.1 (Image: tree_seg2) 71.27%\n0.2 (Image: tree_seg3) 79.96%"
+},
+
+{
+    "location": "imagesegmentation.html#Felzenswalb's-Region-Merging-Algorithm-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Felzenswalb's Region Merging Algorithm",
+    "category": "section",
+    "text": "This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is a node in the graph and adjacent pixels/regions have edges between them with weight measuring the dissimilarity between pixels/regions. The algorithm repeatedly merges similar regions till we get the final segmentation. It efficiently computes oversegmented “superpixels” in an image. The function can be directly called with an image (the implementation internally creates a RAG of the image first and then proceeds)."
+},
+
+{
+    "location": "imagesegmentation.html#Demo-4",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "using Images, ImageSegmentation, TestImages;\n\nimg = Gray.(testimage(\"house\"));\nsegments = felzenszwalb(img, 300, 100); # k=300 (the merging threshold), min_size = 100 (smallest number of pixels/region)\n\n# visualize segmentation by creating an image with each label replaced by a random color\nfunction get_random_color(seed)\n    srand(seed)\n    rand(RGB{N0f8})\nend\nimshow(map(i->get_random_color(i), labels_map(segments)))(Image: img1) (Image: img2)"
+},
+
+{
+    "location": "imagesegmentation.html#MeanShift-Segmentation-1",
+    "page": "ImageSegmentation.jl",
+    "title": "MeanShift Segmentation",
+    "category": "section",
+    "text": "MeanShift is a clustering technique. Its primary advantages are that it doesn't assume a prior on the shape of the cluster (e.g, gaussian for k-means) and we don't need to know the number of clusters beforehand. The algorithm doesn't scale well with size of image."
+},
+
+{
+    "location": "imagesegmentation.html#Demo-5",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "using Images, ImageSegmentation, TestImages;\n\nimg = Gray.(testimage(\"house\"));\nimg = imresize(img, (256, 256))\nsegments = meanshift(img, 16, 8/255); # parameters are smoothing radii: spatial=16, intensity-wise=8/255(Image: img1) (Image: img2)"
+},
+
+{
+    "location": "imagesegmentation.html#Fast-Scanning-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Fast Scanning",
+    "category": "section",
+    "text": "Fast scanning algorithm segments the image by scanning it once and comparing each pixel to its upper and left neighbor. The algorithm starts from the first pixel and assigns it to a new segment A_1. Label count lc is assigned 1. Then it starts a column-wise traversal of the image and for every pixel, it computes the difference measure diff_fn between the pixel and its left neighbor, say delta_l and between the pixel and its top neighbor, say delta_t. Four cases arise:delta_l >= threshold and delta_t < threshold : We can say that the point has similar intensity to that its top neighbor. Hence, we assign the point to the segment that contains its top neighbor.\ndelta_l < threshold and delta_t >= threshold : Similar to case 1, we assign the point to the segment that contains its left neighbor.\ndelta_l >= threshold and delta_t >= threshold : Point is significantly different from its top and left neighbors and is assigned a new label A_lc+1 and lc is incremented.\ndelta_l < threshold and delta_t < threshold : In this case, we merge the top and left semgents together and assign the point under consideration to this merged segment.This algorithm segments the image in just two passes (one for segmenting and other for merging), hence it is very fast and can be used in real time applications.Time Complexity: O(n) where n is the number of pixels"
+},
+
+{
+    "location": "imagesegmentation.html#Demo-6",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "julia> using ImageSegmentation, TestImages;\njulia> img = testimage(\"camera\");\njulia> seg = fast_scanning(img, 0.1);  # threshold = 0.1\njulia> seg = prune_segments(seg, i->(segment_pixel_count(seg,i)<50), (i,j)->(-segment_pixel_count(seg,j)))Original:(Image: Original)Segmented Image:(Image: SegmentedImage)"
+},
+
+{
+    "location": "imagesegmentation.html#Region-Splitting-using-RegionTrees-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Region Splitting using RegionTrees",
+    "category": "section",
+    "text": "This algorithm follows the divide and conquer methodology. If the input image is homogeneous then nothing is to be done. In the other case, the image is split into two across every dimension and the smaller parts are segmented recursively. This procedure generates a region tree which can be used to create a segmented image.Time Complexity: O(n*log(n)) where n is the number of pixels"
+},
+
+{
+    "location": "imagesegmentation.html#Demo-7",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "julia> using TestImages, ImageSegmentation;\njulia> img = testimage(\"lena_gray\")\njulia> function homogeneous(img)\n           min, max = extrema(img)\n           max - min < 0.2\n       end\njulia> seg = region_splitting(img, homogeneous);Original:(Image: Original)Segmented Image with labels replaced by their intensity means:(Image: SegmentedImage)"
+},
+
+{
+    "location": "imagesegmentation.html#Fuzzy-C-means-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Fuzzy C-means",
+    "category": "section",
+    "text": "Fuzzy C-means clustering is widely used for unsupervised image segmentation. It is an iterative algorithm which tries to minimize the cost function:J = displaystylesum_i=1^N sum_j=1^C delta_ij  x_i - c_j ^2Unlike K-means, it allows pixels to belong to two or more clusters. It is widely used for medical imaging like in the soft segmentation of brain tissue model.Time Complexity: O(n*C^2*iter) where n is the number of pixels, C is number of clusters and iter is the number of iterations."
+},
+
+{
+    "location": "imagesegmentation.html#Demo-8",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "julia> using ImageSegmentation, Images;\njulia> img = load(\"flower.jpg\");\njulia> r = fuzzy_cmeans(img, 3, 2);Original (source)(Image: Original)Output with pixel intensity = cluster center intensity * membership of pixel in that classMagenta petals Greenish Leaves White background\n(Image: SegmentedImage1) (Image: SegmentedImage2) (Image: SegmentedImage3)"
+},
+
+{
+    "location": "imagesegmentation.html#Watershed-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Watershed",
+    "category": "section",
+    "text": "The watershed algorithm treats an image as a topographic surface where bright pixels correspond to peaks and dark pixels correspond to valleys. The algorithm starts flooding from valleys (local minima) of this topographic surface and region boundaries are formed when water from different sources merge. If the image is noisy, this approach leads to oversegmetation. To prevent oversegmentation, marker-based watershed is used i.e. the topographic surface is flooded from a predefined set of markers.Let's see an example on how to use watershed to segment touching objects. To use watershed, we need to modify the image such that in the new image flooding the topographic surface from the markers separates each coin. If this modified image is noisy, flooding from local minima may lead to oversegmentation and so we also need a way to find the marker positions. In this example, the inverted distance_transform of the thresholded image (dist image) has the required topographic structure (This page explains why this works). We can threshold the dist image to get the marker positions."
+},
+
+{
+    "location": "imagesegmentation.html#Demo-9",
+    "page": "ImageSegmentation.jl",
+    "title": "Demo",
+    "category": "section",
+    "text": "using Images, ImageSegmentation;\n\nimg = load(download(\"http://docs.opencv.org/3.1.0/water_coins.jpg\"));\nbw = Gray.(img).>0.5;\ndist = 1.-distance_transform(feature_transform(bw));\nmarkers = label_components(dist.<-15);\nsegments = watershed(dist, markers);Original Image Thresholded Image\n(Image: img1) (Image: img1)Inverted Distance Transform Image Markers\n(Image: img1) (Image: img1)Segmented Image\n(Image: img2)"
+},
+
+{
+    "location": "imagesegmentation.html#Some-helpful-functions-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Some helpful functions",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "imagesegmentation.html#Creating-a-Region-Adjacency-Graph-(RAG)-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Creating a Region Adjacency Graph (RAG)",
+    "category": "section",
+    "text": "A region adjacency graph can directly be constructed from a SegmentedImage using the region_adjacency_graph function. Each segment is denoted by a vertex and edges are constructed between adjacent segments. The output is a tuple of SimpleWeightedGraph and a Dict(label=>vertex) with weights assigned according to weight_fn.julia> using ImageSegmentation, Distances, TestImages\njulia> img = testimage(\"camera\");\njulia> seg = felzenszwalb(img, 10, 100);\njulia> weight_fn(i,j) = euclidean(segment_pixel_count(seg,i), segment_pixel_count(seg,j));\njulia> G, vert_map = region_adjacency_graph(seg, weight_fn);\njulia> G\n{70, 139} undirected simple Int64 graph with Float64 weightsHere, the difference in pixel count has been used as the weight of the connecting edges. This difference measure can be useful if one wants to use this region adjacency graph to remove smaller segments by merging them with their neighbouring largest segment. Another useful difference measure is the euclidean distance between the mean intensities of the two segments."
+},
+
+{
+    "location": "imagesegmentation.html#Creating-a-Region-Tree-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Creating a Region Tree",
+    "category": "section",
+    "text": "A region tree can be constructed from an image using region_tree function. If the image is not homogeneous, then it is split into half along each dimension and the function is called recursively for each portion of the image. The output is a RegionTree.julia> using ImageSegmentation\njulia> function homogeneous(img)\n           min, max = extrema(img)\n           max - min < 0.2\n       end\njulia> t = region_tree(img, homogeneous)        # `img` is an image\nCell: RegionTrees.HyperRectangle{2,Float64}([1.0, 1.0], [300.0, 300.0])For more information regarding RegionTrees, see this."
+},
+
+{
+    "location": "imagesegmentation.html#Pruning-unnecessary-segments-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Pruning unnecessary segments",
+    "category": "section",
+    "text": "All the unnecessary segments can be easily removed from a SegmentedImage using prune_segments. It removes a segment by replacing it with the neighbor which has the least value of diff_fn. A list of the segments to be removed can be supplied. Alternately, a function can be supplied that returns true for the labels that must be removed.note: Note\nThe resultant SegmentedImage might have the different labels compared to the original SegmentedImage.For this example and the next one (in Removing a segment), a sample SegmentedImage has been used. It can be generated as:julia> img = fill(1, 4, 4);\njulia> img[3:4,:] = 2;\njulia> img[1:2,3:4] = 3;\njulia> seg = fast_scanning(img, 0.5);\njulia> labels_map(seg)\n4×4 Array{Int64,2}:\n 1  1  3  3\n 1  1  3  3\n 2  2  2  2\n 2  2  2  2julia> seg.image_indexmap\n4×4 Array{Int64,2}:\n 1  1  3  3\n 1  1  3  3\n 2  2  2  2\n 2  2  2  2\njulia> diff_fn(rem_label, neigh_label) = segment_pixel_count(seg,rem_label) - segment_pixel_count(seg,neigh_label);\njulia> new_seg = prune_segments(seg, [3], diff_fn);\njulia> labels_map(new_seg)\n4×4 Array{Int64,2}:\n 1  1  2  2\n 1  1  2  2\n 2  2  2  2\n 2  2  2  2"
+},
+
+{
+    "location": "imagesegmentation.html#Removing-a-segment-1",
+    "page": "ImageSegmentation.jl",
+    "title": "Removing a segment",
+    "category": "section",
+    "text": "If only one segment is to be removed, then rem_segment! can be used. It removes a segment from a SegmentedImage in place, replacing it with the neighbouring segment having least diff_fn value.note: Note\nIf multiple segments need to be removed then prune_segments should be preferred as it is much more time efficient than calling rem_segment! multiple times.julia> seg.image_indexmap\n4×4 Array{Int64,2}:\n 1  1  3  3\n 1  1  3  3\n 2  2  2  2\n 2  2  2  2\njulia> diff_fn(rem_label, neigh_label) = segment_pixel_count(seg,rem_label) - segment_pixel_count(seg,neigh_label);\njulia> rem_segment!(seg, 3, diff_fn);\njulia> labels_map(new_seg)\n4×4 Array{Int64,2}:\n 1  1  2  2\n 1  1  2  2\n 2  2  2  2\n 2  2  2  2"
 },
 
 {
@@ -1301,7 +1533,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Summary and function reference",
     "title": "Images.blob_LoG",
     "category": "Function",
-    "text": "blob_LoG(img, σs, [edges]) -> Vector{BlobLoG}\n\nFind \"blobs\" in an N-D image using the negative Lapacian of Gaussians with the specifed vector or tuple of σ values. The algorithm searches for places where the filtered image (for a particular σ) is at a peak compared to all spatially- and σ-adjacent voxels.\n\nThe optional edges argument controls whether peaks on the edges are included. edges can be true or false, or a N+1-tuple in which the first entry controls whether edge-σ values are eligible to serve as peaks, and the remaining N entries control each of the N dimensions of img.\n\nCitation:\n\nLindeberg T (1998), \"Feature Detection with Automatic Scale Selection\", International Journal of Computer Vision, 30(2), 79–116.\n\nSee also: BlobLoG.\n\n\n\n"
+    "text": "blob_LoG(img, σscales, [edges], [σshape]) -> Vector{BlobLoG}\n\nFind \"blobs\" in an N-D image using the negative Lapacian of Gaussians with the specifed vector or tuple of σ values. The algorithm searches for places where the filtered image (for a particular σ) is at a peak compared to all spatially- and σ-adjacent voxels, where σ is σscales[i] * σshape for some i. By default, σshape is an ntuple of 1s.\n\nThe optional edges argument controls whether peaks on the edges are included. edges can be true or false, or a N+1-tuple in which the first entry controls whether edge-σ values are eligible to serve as peaks, and the remaining N entries control each of the N dimensions of img.\n\nCitation:\n\nLindeberg T (1998), \"Feature Detection with Automatic Scale Selection\", International Journal of Computer Vision, 30(2), 79–116.\n\nSee also: BlobLoG.\n\n\n\n"
 },
 
 {
@@ -1437,7 +1669,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Summary and function reference",
     "title": "ImageTransformations.warp",
     "category": "Function",
-    "text": "warp(img, tform, [indices], [degree = Linear()], [fill = NaN])\n\nwarp is transitioning to a different interpretation of the transformation, and you are using the old version.\n\nMore specifically, this method with the signature warp(img, tform, args...) is deprecated in favour of the new interpretation, which is equivalent to calling warp(img, inv(tform), args...) right now.\n\nTo change to the new behaviour, set const warp = ImageTransformations.warp_new right after package import.\n\n\n\n"
+    "text": "warp(img, tform, [indices], [degree = Linear()], [fill = NaN]) -> imgw\n\nTransform the coordinates of img, returning a new imgw satisfying imgw[I] = img[tform(I)]. This approach is known as backward mode warping. The transformation tform must accept a SVector as input. A useful package to create a wide variety of such transformations is CoordinateTransformations.jl.\n\nReconstruction scheme\n\nDuring warping, values for img must be reconstructed at arbitrary locations tform(I) which do not lie on to the lattice of pixels. How this reconstruction is done depends on the type of img and the optional parameter degree.\n\nWhen img is a plain array, then on-grid b-spline interpolation will be used. It is possible to configure what degree of b-spline to use with the parameter degree. For example one can use degree = Linear() for linear interpolation, degree = Constant() for nearest neighbor interpolation, or degree = Quadratic(Flat()) for quadratic interpolation.\n\nIn the case tform(I) maps to indices outside the original img, those locations are set to a value fill (which defaults to NaN if the element type supports it, and 0 otherwise). The parameter fill also accepts extrapolation schemes, such as Flat(), Periodic() or Reflect().\n\nFor more control over the reconstruction scheme –- and how beyond-the-edge points are handled –- pass img as an AbstractInterpolation or AbstractExtrapolation from Interpolations.jl.\n\nThe meaning of the coordinates\n\nThe output array imgw has indices that would result from applying inv(tform) to the indices of img. This can be very handy for keeping track of how pixels in imgw line up with pixels in img.\n\nIf you just want a plain array, you can \"strip\" the custom indices with parent(imgw).\n\nExamples: a 2d rotation (see JuliaImages documentation for pictures)\n\njulia> using Images, CoordinateTransformations, TestImages, OffsetArrays\n\njulia> img = testimage(\"lighthouse\");\n\njulia> indices(img)\n(Base.OneTo(512),Base.OneTo(768))\n\n# Rotate around the center of `img`\njulia> tfm = recenter(RotMatrix(-pi/4), center(img))\nAffineMap([0.707107 0.707107; -0.707107 0.707107], [-196.755,293.99])\n\njulia> imgw = warp(img, tfm);\n\njulia> indices(imgw)\n(-196:709,-68:837)\n\n# Alternatively, specify the origin in the image itself\njulia> img0 = OffsetArray(img, -30:481, -384:383);  # origin near top of image\n\njulia> rot = LinearMap(RotMatrix(-pi/4))\nLinearMap([0.707107 -0.707107; 0.707107 0.707107])\n\njulia> imgw = warp(img0, rot);\n\njulia> indices(imgw)\n(-293:612,-293:611)\n\njulia> imgr = parent(imgw);\n\njulia> indices(imgr)\n(Base.OneTo(906),Base.OneTo(905))\n\n\n\n"
 },
 
 {
@@ -1521,65 +1753,65 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "function_reference.html#Images.dilate",
+    "location": "function_reference.html#ImageMorphology.dilate",
     "page": "Summary and function reference",
-    "title": "Images.dilate",
+    "title": "ImageMorphology.dilate",
     "category": "Function",
     "text": "imgd = dilate(img, [region])\n\nperform a max-filter over nearest-neighbors. The default is 8-connectivity in 2d, 27-connectivity in 3d, etc. You can specify the list of dimensions that you want to include in the connectivity, e.g., region = [1,2] would exclude the third dimension from filtering.\n\n\n\n"
 },
 
 {
-    "location": "function_reference.html#Images.erode",
+    "location": "function_reference.html#ImageMorphology.erode",
     "page": "Summary and function reference",
-    "title": "Images.erode",
+    "title": "ImageMorphology.erode",
     "category": "Function",
     "text": "imge = erode(img, [region])\n\nperform a min-filter over nearest-neighbors. The default is 8-connectivity in 2d, 27-connectivity in 3d, etc. You can specify the list of dimensions that you want to include in the connectivity, e.g., region = [1,2] would exclude the third dimension from filtering.\n\n\n\n"
 },
 
 {
-    "location": "function_reference.html#Images.opening",
+    "location": "function_reference.html#ImageMorphology.opening",
     "page": "Summary and function reference",
-    "title": "Images.opening",
+    "title": "ImageMorphology.opening",
     "category": "Function",
     "text": "imgo = opening(img, [region]) performs the opening morphology operation, equivalent to dilate(erode(img)). region allows you to control the dimensions over which this operation is performed.\n\n\n\n"
 },
 
 {
-    "location": "function_reference.html#Images.closing",
+    "location": "function_reference.html#ImageMorphology.closing",
     "page": "Summary and function reference",
-    "title": "Images.closing",
+    "title": "ImageMorphology.closing",
     "category": "Function",
     "text": "imgc = closing(img, [region]) performs the closing morphology operation, equivalent to erode(dilate(img)). region allows you to control the dimensions over which this operation is performed.\n\n\n\n"
 },
 
 {
-    "location": "function_reference.html#Images.tophat",
+    "location": "function_reference.html#ImageMorphology.tophat",
     "page": "Summary and function reference",
-    "title": "Images.tophat",
+    "title": "ImageMorphology.tophat",
     "category": "Function",
     "text": "imgth = tophat(img, [region]) performs top hat of an image, which is defined as the image minus its morphological opening. region allows you to control the dimensions over which this operation is performed.\n\n\n\n"
 },
 
 {
-    "location": "function_reference.html#Images.bothat",
+    "location": "function_reference.html#ImageMorphology.bothat",
     "page": "Summary and function reference",
-    "title": "Images.bothat",
+    "title": "ImageMorphology.bothat",
     "category": "Function",
     "text": "imgbh = bothat(img, [region]) performs bottom hat of an image, which is defined as its morphological closing minus the original image. region allows you to control the dimensions over which this operation is performed.\n\n\n\n"
 },
 
 {
-    "location": "function_reference.html#Images.morphogradient",
+    "location": "function_reference.html#ImageMorphology.morphogradient",
     "page": "Summary and function reference",
-    "title": "Images.morphogradient",
+    "title": "ImageMorphology.morphogradient",
     "category": "Function",
     "text": "imgmg = morphogradient(img, [region]) returns morphological gradient of the image, which is the difference between the dilation and the erosion of a given image. region allows you to control the dimensions over which this operation is performed.\n\n\n\n"
 },
 
 {
-    "location": "function_reference.html#Images.morpholaplace",
+    "location": "function_reference.html#ImageMorphology.morpholaplace",
     "page": "Summary and function reference",
-    "title": "Images.morpholaplace",
+    "title": "ImageMorphology.morpholaplace",
     "category": "Function",
     "text": "imgml = morpholaplace(img, [region]) performs Morphological Laplacian of an image, which is defined as the arithmetic difference between the internal and the external gradient. region allows you to control the dimensions over which this operation is performed.\n\n\n\n"
 },
@@ -1782,6 +2014,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Image metadata utilities",
     "category": "section",
     "text": "ImageMeta\ndata\nproperties\ncopyproperties\nshareproperties\nspatialproperties"
+},
+
+{
+    "location": "function_reference.html#Image-segmentation-1",
+    "page": "Summary and function reference",
+    "title": "Image segmentation",
+    "category": "section",
+    "text": "SegmentedImage\nImageEdge\nlabels_map\nsegment_labels\nsegment_pixel_count\nsegment_mean\nseeded_region_growing\nunseeded_region_growing\nfelzenszwalb\nfast_scanning\nwatershed\nhmin_transform\nregion_adjacency_graph\nrem_segment\nrem_segment!\nprune_segments\nregion_tree\nregion_splitting"
 },
 
 {
