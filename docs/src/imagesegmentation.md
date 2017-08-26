@@ -380,7 +380,7 @@ segments = watershed(dist, markers);
 A region adjacency graph can directly be constructed from a `SegmentedImage`
 using the `region_adjacency_graph` function. Each segment is denoted by a vertex
 and edges are constructed between adjacent segments. The output is a tuple of
-`SimpleWeightedGraph` and a Dict(label=>vertex) with weights assigned according to `weight_fn`.
+`SimpleWeightedGraph` and a `Dict(label=>vertex)` with weights assigned according to `weight_fn`.
 
 ```julia
 julia> using ImageSegmentation, Distances, TestImages
@@ -422,7 +422,7 @@ For more information regarding `RegionTrees`, see [this](https://github.com/rdei
 All the unnecessary segments can be easily removed from a `SegmentedImage` using
 `prune_segments`. It removes a segment by replacing it with the neighbor which has
 the least value of `diff_fn`. A list of the segments to be removed can be supplied.
-Alternately, a function can be supplied that return true for the labels that must
+Alternately, a function can be supplied that returns true for the labels that must
 be removed.
 
 !!! note
