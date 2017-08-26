@@ -8,5 +8,5 @@ notifications:
   email: false
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.add("Documenter"); Pkg.add("Images"); Pkg.add("Unitful"); Pkg.add("TestImages"); Pkg.add("ImageMagick"); Pkg.clone("https://github.com/JuliaImages/ImageSegmentation.jl")'
+  - julia -e 'Pkg.add("Documenter"); Pkg.add("Images"); Pkg.add("Unitful"); Pkg.add("TestImages"); Pkg.add("ImageMagick"); Pkg.add("ImageFeatures"); Pkg.add("ImageDraw"); Pkg.clone("https://github.com/JuliaImages/ImageSegmentation.jl")'
   - julia -e 'cd(ENV["TRAVIS_BUILD_DIR"]); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
