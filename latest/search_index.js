@@ -713,6 +713,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "imagefeatures.html#",
+    "page": "ImageFeatures.jl",
+    "title": "ImageFeatures.jl",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "imagefeatures.html#ImageFeatures.jl-1",
+    "page": "ImageFeatures.jl",
+    "title": "ImageFeatures.jl",
+    "category": "section",
+    "text": "The ImageFeatures package allows you to compute compact \"descriptors\" of images or image regions.  These descriptors are in a form that permits comparison against similar descriptors in other images or other portions of the same image. This can be useful in many applications, such as object recognition, localization, or image registration.ImagesFeatures has its own documentation, and you should consult that for a comprehensive overview of the functionality of the package. Here, we'll briefly illustrate one type of feature and its application to image registration, the BRISK descriptor.The BRISK descriptor examines the structure of an image around a keypoint. Given a keypoint, the mean intensity (loosely-speaking) is computed in a set of patches surrounding the point:(Image: BRISK Sampling Pattern)BRISK then re-represents these intensities in a way that is invariant under rotations. This allows you to compare descriptors in two images, one of which might be a rotated version of the other.Let us take a look at a simple example where the BRISK descriptor is used to match two images where one has been translated by (50, 40) pixels and then rotated by an angle of 75 degrees. We will use the lighthouse image from the TestImages package for this example.First, let us create the two images we will match using BRISK.\nusing ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations\n\nimg = testimage(\"lighthouse\")\nimg1 = Gray.(img)\nrot = recenter(RotMatrix(5pi/6), [size(img1)...] .÷ 2)  # a rotation around the center\ntform = rot ∘ Translation(-50, -40)\nimg2 = warp(img1, tform, indices(img1))\nnothing # hideTo calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see fastcorners).features_1 = Features(fastcorners(img1, 12, 0.35))\nfeatures_2 = Features(fastcorners(img2, 12, 0.35))\nnothing # hideTo create the BRISK descriptor, we first need to define the parameters by calling the BRISK constructor.brisk_params = BRISK()\nnothing # hideNow pass the image with the keypoints and the parameters to the create_descriptor function.desc_1, ret_features_1 = create_descriptor(img1, features_1, brisk_params)\ndesc_2, ret_features_2 = create_descriptor(img2, features_2, brisk_params)\nnothing # hideThe obtained descriptors can be used to find the matches between the two images using the match_keypoints function.matches = match_keypoints(Keypoints(ret_features_1), Keypoints(ret_features_2), desc_1, desc_2, 0.1)\nnothing # hideWe can use the ImageDraw.jl package to view the results.\ngrid = hcat(img1, img2)\noffset = CartesianIndex(0, size(img1, 2))\nmap(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)\nsave(\"assets/features/brisk_example.jpg\", grid); nothing # hide\n(Image: )You can see that the points have been accurately matched despite the large magnitude of this rotation."
+},
+
+{
     "location": "troubleshooting.html#",
     "page": "Installation troubleshooting",
     "title": "Installation troubleshooting",
@@ -2017,11 +2033,355 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "function_reference.html#ImageSegmentation.SegmentedImage",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.SegmentedImage",
+    "category": "Type",
+    "text": "SegmentedImage type contains the index-label mapping, assigned labels, segment mean intensity and pixel count of each segment.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.ImageEdge",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.ImageEdge",
+    "category": "Type",
+    "text": "edge = ImageEdge(index1, index2, weight)\n\nConstruct an edge in a Region Adjacency Graph. index1 and index2 are the integers corresponding to individual pixels/voxels (in the sense of linear indexing via sub2ind), and weight is the edge weight (measures the dissimilarity between pixels/voxels).\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.labels_map",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.labels_map",
+    "category": "Function",
+    "text": "img_labeled = labels_map(seg)\n\nReturn an array containing the label assigned to each pixel.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.segment_labels",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.segment_labels",
+    "category": "Function",
+    "text": "labels = segment_labels(seg)\n\nReturns the list of assigned labels\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.segment_pixel_count",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.segment_pixel_count",
+    "category": "Function",
+    "text": "c = segment_pixel_count(seg, l)\n\nReturns the count of pixels that are assigned label l. If no label is supplied, it returns a Dict(label=>pixel_count) of all the labels.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.segment_mean",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.segment_mean",
+    "category": "Function",
+    "text": "m = segment_mean(seg, l)\n\nReturns the mean intensity of label l. If no label is supplied, it returns a Dict(label=>mean) of all the labels.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.seeded_region_growing",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.seeded_region_growing",
+    "category": "Function",
+    "text": "seg_img = seeded_region_growing(img, seeds, [kernel_dim], [diff_fn])\nseg_img = seeded_region_growing(img, seeds, [neighbourhood], [diff_fn])\n\nSegments the N-D image img using the seeded region growing algorithm and returns a SegmentedImage containing information about the segments.\n\nArguments:\n\nimg             :  N-D image to be segmented (arbitrary indices are allowed)\nseeds           :  Vector containing seeds. Each seed is a Tuple of a                      CartesianIndex{N} and a label. See below note for more                      information on labels.\nkernel_dim      :  (Optional) Vector{Int} having length N or a NTuple{N,Int}                      whose ith element is an odd positive integer representing                      the length of the ith edge of the N-orthotopic neighbourhood\nneighbourhood   :  (Optional) Function taking CartesianIndex{N} as input and                      returning the neighbourhood of that point.\ndiff_fn         :  (Optional) Function that returns a difference measure(δ)                      between the mean color of a region and color of a point\n\nnote: Note\nThe labels attached to points must be positive integers, although multiple points can be assigned the same label. The output includes a labelled array that has same indexing as that of input image. Every index is assigned to either one of labels or a special label '0' indicating that the algorithm was unable to assign that index to a unique label.\n\nExamples\n\njulia> img = zeros(Gray{N0f8},4,4);\njulia> img[2:4,2:4] = 1;\njulia> seeds = [(CartesianIndex(3,1),1),(CartesianIndex(2,2),2)];\njulia> seg = seeded_region_growing(img, seeds);\njulia> labels_map(seg)\n4×4 Array{Int64,2}:\n 1  1  1  1\n 1  2  2  2\n 1  2  2  2\n 1  2  2  2\n\n\nCitation:\n\nAlbert Mehnert, Paul Jackaway (1997), \"An improved seeded region growing algorithm\", Pattern Recognition Letters 18 (1997), 1065-1071\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.unseeded_region_growing",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.unseeded_region_growing",
+    "category": "Function",
+    "text": "seg_img = unseeded_region_growing(img, threshold, [kernel_dim], [diff_fn])\nseg_img = unseeded_region_growing(img, threshold, [neighbourhood], [diff_fn])\n\nSegments the N-D image using automatic (unseeded) region growing algorithm and returns a SegmentedImage containing information about the segments.\n\nArguments:\n\nimg             :  N-D image to be segmented (arbitrary indices are allowed)\nthreshold       :  Upper bound of the difference measure (δ) for considering                      pixel into same segment\nkernel_dim      :  (Optional) Vector{Int} having length N or a NTuple{N,Int}                      whose ith element is an odd positive integer representing                      the length of the ith edge of the N-orthotopic neighbourhood\nneighbourhood   :  (Optional) Function taking CartesianIndex{N} as input and                      returning the neighbourhood of that point.\ndiff_fn         :  (Optional) Function that returns a difference measure (δ)                      between the mean color of a region and color of a point\n\nExamples\n\njulia> img = zeros(Gray{N0f8},4,4);\njulia> img[2:4,2:4] = 1;\njulia> seg = unseeded_region_growing(img, 0.2);\njulia> labels_map(seg)\n4×4 Array{Int64,2}:\n 1  1  1  1\n 1  2  2  2\n 1  2  2  2\n 1  2  2  2\n\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.felzenszwalb",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.felzenszwalb",
+    "category": "Function",
+    "text": "segments                = felzenszwalb(img, k, [min_size])\nindex_map, num_segments = felzenszwalb(edges, num_vertices, k, [min_size])\n\nSegments an image using Felzenszwalb's graph-based algorithm. The function can be used in either of two ways -   \n\nsegments = felzenszwalb(img, k, [min_size])\n\nSegments an image using Felzenszwalb's segmentation algorithm and returns the result as SegmentedImage. The algorithm uses euclidean distance in color space as edge weights for the region adjacency graph.  \n\nParameters:  \n\nimg            = input image\nk              = Threshold for region merging step. Larger threshold will result in bigger segments.\nmin_size       = Minimum segment size\n\nindex_map, num_segments = felzenszwalb(edges, num_vertices, k, [min_size])\n\nSegments an image represented as Region Adjacency Graph(RAG) using Felzenszwalb's segmentation algorithm. Each pixel/region  corresponds to a node in the graph and weights on each edge measure the dissimilarity between pixels.  The function returns the number of segments and index mapping from nodes of the RAG to segments.    \n\nParameters:  \n\nedges          = Array of edges in RAG. Each edge is represented as ImageEdge.\nnum_vertices   = Number of vertices in RAG\nk              = Threshold for region merging step. Larger threshold will result in bigger segments.\nmin_size       = Minimum segment size \n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.fast_scanning",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.fast_scanning",
+    "category": "Function",
+    "text": "seg_img = fast_scanning(img, threshold, [diff_fn])\n\nSegments the N-D image using a fast scanning algorithm and returns a SegmentedImage containing information about the segments.\n\nArguments:\n\nimg         : N-D image to be segmented (arbitrary indices are allowed)\nthreshold   : Upper bound of the difference measure (δ) for considering                 pixel into same segment; an AbstractArray can be passed                 having same number of dimensions as that of img for adaptive                 thresholding\ndiff_fn     : (Optional) Function that returns a difference measure (δ)                 between the mean color of a region and color of a point\n\nExamples:\n\njulia> img = zeros(Float64, (3,3));\njulia> img[2,:] = 0.5;\njulia> img[:,2] = 0.6;\njulia> seg = fast_scanning(img, 0.2);\njulia> labels_map(seg)\n3×3 Array{Int64,2}:\n 1  4  5\n 4  4  4\n 3  4  6\n\nCitation:\n\nJian-Jiun Ding, Cheng-Jin Kuo, Wen-Chih Hong, \"An efficient image segmentation technique by fast scanning and adaptive merging\"\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.watershed",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.watershed",
+    "category": "Function",
+    "text": "segments                = watershed(img, markers)\n\nSegments the image using watershed transform. Each basin formed by watershed transform corresponds to a segment. If you are using image local minimas as markers, consider using hmin_transform to avoid oversegmentation.\n\nParameters:  \n\nimg            = input grayscale image\nmarkers        = An array (same size as img) with each region's marker assigned a index starting from 1. Zero means not a marker.                     If two markers have the same index, their regions will be merged into a single region.                     If you have markers as a boolean array, use label_components.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.hmin_transform",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.hmin_transform",
+    "category": "Function",
+    "text": "out = hmin_transform(img, h)\n\nSuppresses all minima in grayscale image whose depth is less than h.  \n\nH-minima transform is defined as the reconstruction by erosion of (img + h) by img. See Morphological image analysis by Soille pg 170-172.  \n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.region_adjacency_graph",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.region_adjacency_graph",
+    "category": "Function",
+    "text": "G, vert_map = region_adjacency_graph(seg, weight_fn)\n\nConstructs a region adjacency graph (RAG) from the SegmentedImage. It returns the RAG along with a Dict(label=>vertex) map. weight_fn is used to assign weights to the edges.\n\nweight_fn(label1, label2)\n\nReturns a real number corresponding to the weight of the edge between label1 and label2.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.rem_segment",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.rem_segment",
+    "category": "Function",
+    "text": "new_seg = rem_segment(seg, label, diff_fn)\n\nRemoves the segment having label label and returns the new SegmentedImage. For more info, see remove_segment!\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.rem_segment!",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.rem_segment!",
+    "category": "Function",
+    "text": "rem_segment!(seg, label, diff_fn)\n\nIn place removal of the segment having label label, replacing it with the neighboring segment having least diff_fn value.\n\nd = diff_fn(rem_label, neigh_label)\n\nA difference measure between label to be removed and its neighbors. isless must be defined for objects of the type of d.\n\nExamples\n\n    # This removes the label `l` and replaces it with the label of\n    # neighbor having maximum pixel count.\n    julia> rem_segment!(seg, l, (i,j)->(-seg.segment_pixel_count[j]))\n\n    # This removes the label `l` and replaces it with the label of\n    # neighbor having the least value of euclidian metric.\n    julia> rem_segment!(seg, l, (i,j)->sum(abs2, seg.segment_means[i]-seg.segment_means[j]))\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.prune_segments",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.prune_segments",
+    "category": "Function",
+    "text": "new_seg = prune_segments(seg, rem_labels, diff_fn)\n\nRemoves all segments that have labels in rem_labels replacing them with their neighbouring segment having least diff_fn. rem_labels is a Vector of labels.\n\nnew_seg = prune_segments(seg, is_rem, diff_fn)\n\nRemoves all segments for which is_rem returns true replacing them with their neighbouring segment having least diff_fn.\n\nis_rem(label) -> Bool\n\nReturns true if label label is to be removed otherwise false.\n\nd = diff_fn(rem_label, neigh_label)\n\nA difference measure between label to be removed and its neighbors. isless must be defined for objects of the type of d.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.region_tree",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.region_tree",
+    "category": "Function",
+    "text": "t = region_tree(img, homogeneous)\n\nCreates a region tree from img by splitting it recursively until all the regions are homogeneous.\n\nb = homogeneous(img)\n\nReturns true if img is homogeneous.\n\nExamples\n\n# img is an array with elements of type `Float64`\njulia> function homogeneous(img)\n           min, max = extrema(img)\n           max - min < 0.2\n       end\n       \njulia> t = region_tree(img, homogeneous);\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageSegmentation.region_splitting",
+    "page": "Summary and function reference",
+    "title": "ImageSegmentation.region_splitting",
+    "category": "Function",
+    "text": "seg = region_splitting(img, homogeneous)\n\nSegments img by recursively splitting it until all the segments are homogeneous.\n\nb = homogeneous(img)\n\nReturns true if img is homogeneous.\n\nExamples\n\n# img is an array with elements of type `Float64`\njulia> function homogeneous(img)\n           min, max = extrema(img)\n           max - min < 0.2\n       end\n\njulia> seg = region_splitting(img, homogeneous);\n\n\n\n"
+},
+
+{
     "location": "function_reference.html#Image-segmentation-1",
     "page": "Summary and function reference",
     "title": "Image segmentation",
     "category": "section",
     "text": "SegmentedImage\nImageEdge\nlabels_map\nsegment_labels\nsegment_pixel_count\nsegment_mean\nseeded_region_growing\nunseeded_region_growing\nfelzenszwalb\nfast_scanning\nwatershed\nhmin_transform\nregion_adjacency_graph\nrem_segment\nrem_segment!\nprune_segments\nregion_tree\nregion_splitting"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures-1",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.Feature",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.Feature",
+    "category": "Type",
+    "text": "feature = Feature(keypoint, orientation = 0.0, scale = 0.0)\n\nThe Feature type has the keypoint, its orientation and its scale.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.Features",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.Features",
+    "category": "Type",
+    "text": "features = Features(boolean_img)\nfeatures = Features(keypoints)\n\nReturns a Vector{Feature} of features generated from the true values in a boolean image or from a list of keypoints.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.Keypoint",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.Keypoint",
+    "category": "Type",
+    "text": "keypoint = Keypoint(y, x)\nkeypoint = Keypoint(feature)\n\nA Keypoint may be created by passing the coordinates of the point or from a feature.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.Keypoints",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.Keypoints",
+    "category": "Type",
+    "text": "keypoints = Keypoints(boolean_img)\nkeypoints = Keypoints(features)\n\nCreates a Vector{Keypoint} of the true values in a boolean image or from a list of features.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.BRIEF",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.BRIEF",
+    "category": "Type",
+    "text": "brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_type = gaussian], [seed = 123])\n\nArgument Type Description\nsize Int Size of the descriptor\nwindow Int Size of sampling window\nsigma Float64 Value of sigma used for inital gaussian smoothing of image\nsampling_type Function Type of sampling used for building the descriptor (See BRIEF Sampling Patterns)\nseed Int Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.ORB",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.ORB",
+    "category": "Type",
+    "text": "orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harris_factor = 0.04], [downsample = 1.3], [levels = 8], [sigma = 1.2])\n\nArgument Type Description\nnum_keypoints Int Number of keypoints to extract and size of the descriptor calculated\nn_fast Int Number of consecutive pixels used for finding corners with FAST. See [fastcorners]\nthreshold Float64 Threshold used to find corners in FAST. See [fastcorners]\nharris_factor Float64 Harris factor k used to rank keypoints by harris responses and extract the best ones\ndownsample Float64 Downsampling parameter used while building the gaussian pyramid. See [gaussian_pyramid] in Images.jl\nlevels Int Number of levels in the gaussian pyramid.  See [gaussian_pyramid] in Images.jl\nsigma Float64 Used for gaussian smoothing in each level of the gaussian pyramid.  See [gaussian_pyramid] in Images.jl\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.FREAK",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.FREAK",
+    "category": "Type",
+    "text": "freak_params = FREAK([pattern_scale = 22.0])\n\nArgument Type Description\npattern_scale Float64 Scaling factor for the sampling window\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.BRISK",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.BRISK",
+    "category": "Type",
+    "text": "brisk_params = BRISK([pattern_scale = 1.0])\n\nArgument Type Description\npattern_scale Float64 Scaling factor for the sampling window\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Types-1",
+    "page": "Summary and function reference",
+    "title": "Types",
+    "category": "section",
+    "text": "Feature\nFeatures\nKeypoint\nKeypoints\nBRIEF\nORB\nFREAK\nBRISK"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.corner_orientations",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.corner_orientations",
+    "category": "Function",
+    "text": "orientations = corner_orientations(img)\norientations = corner_orientations(img, corners)\norientations = corner_orientations(img, corners, kernel)\n\nReturns the orientations of corner patches in an image. The orientation of a corner patch is denoted by the orientation of the vector between intensity centroid and the corner. The intensity centroid can be calculated as C = (m01/m00, m10/m00) where mpq is defined as -\n\n`mpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch`\n\nThe kernel used for the patch can be given through the kernel argument. The default kernel used is a gaussian kernel of size 5x5.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Corners-1",
+    "page": "Summary and function reference",
+    "title": "Corners",
+    "category": "section",
+    "text": "corner_orientations"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.random_uniform",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.random_uniform",
+    "category": "Function",
+    "text": "sample_one, sample_two = random_uniform(size, window, seed)\n\nBuilds sampling pairs using random uniform sampling.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.random_coarse",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.random_coarse",
+    "category": "Function",
+    "text": "sample_one, sample_two = random_coarse(size, window, seed)\n\nBuilds sampling pairs using random sampling over a coarse grid.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.gaussian",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.gaussian",
+    "category": "Function",
+    "text": "sample_one, sample_two = gaussian(size, window, seed)\n\nBuilds sampling pairs using gaussian sampling.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.gaussian_local",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.gaussian_local",
+    "category": "Function",
+    "text": "sample_one, sample_two = gaussian_local(size, window, seed)\n\nPairs (Xi, Yi) are randomly sampled using a Gaussian distribution where first X is sampled with a standard deviation of 0.04*S^2 and then the Yi’s are sampled using a Gaussian distribution – Each Yi is sampled with mean Xi and standard deviation of 0.01 * S^2\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.center_sample",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.center_sample",
+    "category": "Function",
+    "text": "sample_one, sample_two = center_sample(size, window, seed)\n\nBuilds sampling pairs (Xi, Yi) where Xi is (0, 0) and Yi is sampled uniformly from the window.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#BRIEF-Sampling-Patterns-1",
+    "page": "Summary and function reference",
+    "title": "BRIEF Sampling Patterns",
+    "category": "section",
+    "text": "random_uniform\nrandom_coarse\ngaussian\ngaussian_local\ncenter_sample"
+},
+
+{
+    "location": "function_reference.html#Feature-Description-1",
+    "page": "Summary and function reference",
+    "title": "Feature Description",
+    "category": "section",
+    "text": "create_descriptor"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.hamming_distance",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.hamming_distance",
+    "category": "Function",
+    "text": "distance = hamming_distance(desc_1, desc_2)\n\nCalculates the hamming distance between two descriptors.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#ImageFeatures.match_keypoints",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.match_keypoints",
+    "category": "Function",
+    "text": "matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2, threshold = 0.1)\n\nFinds matched keypoints using the hamming_distance function having distance value less than threshold.\n\n\n\n"
+},
+
+{
+    "location": "function_reference.html#Feature-Matching-1",
+    "page": "Summary and function reference",
+    "title": "Feature Matching",
+    "category": "section",
+    "text": "hamming_distance\nmatch_keypoints"
+},
+
+{
+    "location": "function_reference.html#Texture-Matching-1",
+    "page": "Summary and function reference",
+    "title": "Texture Matching",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "function_reference.html#Gray-Level-Co-occurence-Matrix-1",
+    "page": "Summary and function reference",
+    "title": "Gray Level Co-occurence Matrix",
+    "category": "section",
+    "text": "glcm\nglcm_symmetric\nglcm_norm\nglcm_prop\nmax_prob\ncontrast\nASM\nIDM\nglcm_entropy\nenergy\ndissimilarity\ncorrelation\nglcm_mean_ref\nglcm_mean_neighbour\nglcm_var_ref\nglcm_var_neighbour"
+},
+
+{
+    "location": "function_reference.html#Local-Binary-Patterns-1",
+    "page": "Summary and function reference",
+    "title": "Local Binary Patterns",
+    "category": "section",
+    "text": "lbp\nmodified_lbp\ndirection_coded_lbp\nlbp_original\nlbp_uniform\nlbp_rotation_invariant\nmulti_block_lbp"
 },
 
 {
