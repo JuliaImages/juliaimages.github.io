@@ -22,7 +22,7 @@ julia> imgl = imfilter(img, Kernel.Laplacian());
 
 When displayed, these three images look like this:
 
-![filterintro](filterintro.png)
+![filterintro](assets/filtering/filterintro.png)
 
 The most commonly used function for filtering is [`imfilter`](@ref).
 
