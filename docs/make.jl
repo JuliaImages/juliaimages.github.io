@@ -2,6 +2,7 @@ using Documenter, Images, ImageFiltering, ImageSegmentation, ImageFeatures
 
 makedocs(format   = :html,
          sitename = "JuliaImages",
+         repo     = "https://github.com/JuliaImages/juliaimages.github.io/blob/source/{path}",
          pages    = [      "Home"=>"index.md",
                            "install.md",
                            "quickstart.md",
