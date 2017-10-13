@@ -2,7 +2,6 @@ using Documenter, Images, ImageFiltering, ImageSegmentation, ImageFeatures
 
 makedocs(format   = :html,
          sitename = "JuliaImages",
-         repo     = "https://github.com/JuliaImages/juliaimages.github.io/blob/source/{path}",
          pages    = [      "Home"=>"index.md",
                            "install.md",
                            "quickstart.md",
@@ -17,7 +16,8 @@ makedocs(format   = :html,
                            "troubleshooting.md",
                            "function_reference.md",
                            "api_comparison.md"
-                  ])
+                  ],
+         html_edit_branch = "source")
 
 deploydocs(repo    = "github.com/JuliaImages/juliaimages.github.io.git",
            target  = "build",
