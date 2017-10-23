@@ -42,13 +42,13 @@ All the segmentation algorithms (except Fuzzy C-means) return a struct `Segmente
 ```julia
 length(segment_labels(segments))   # number of segments = 3
 
-segment_means(segments)
+segment_mean(segments)
 #first segment's color (horse) = RGB(0.0647831,0.0588508,0.074473) = black
 #second segment's color (sky) = RGB(0.793598,0.839543,0.932374) = light blue
 #third segment's color (grass) = RGB(0.329876,0.357805,0.23745) = green
 
 # for visualizing the segmentation, create an image by replacing each each label in label_map(segments) with it's mean color
-imshow(map(i->segment_means(segments,i), labels_map(segments)))
+imshow(map(i->segment_mean(segments,i), labels_map(segments)))
 ```
 ![Original](assets/segmentation/horse_seg1.jpg)
 
@@ -58,7 +58,7 @@ You can see that the algorithm did a fairly good job of segmenting the three obj
 seeds = [(CartesianIndex(126,81), 1), (CartesianIndex(93,255), 2), (CartesianIndex(171,103), 2),
          (CartesianIndex(172,142), 2), (CartesianIndex(182,72), 2), (CartesianIndex(213,97), 3)]
 segments = seeded_region_growing(img, seeds)
-imshow(map(i->segment_means(segments,i), labels_map(segments)))
+imshow(map(i->segment_mean(segments,i), labels_map(segments)))
 ```
 
 ![Original](assets/segmentation/horse_seg5.jpg)
@@ -70,10 +70,10 @@ using Images, ImageSegmentation, ImageView
 
 img = load("horse.jpg")
 segments = felzenszwalb(img, 100)
-imshow(map(i->segment_means(segments,i), labels_map(segments)))
+imshow(map(i->segment_mean(segments,i), labels_map(segments)))
 
 segments = felzenszwalb(img, 10)  #smaller segments but noisy segmentation
-imshow(map(i->segment_means(segments,i), labels_map(segments)))
+imshow(map(i->segment_mean(segments,i), labels_map(segments)))
 ```
 
 | k = 100 | k = 10 |
@@ -84,7 +84,7 @@ We only got two segments with k = 100. Setting k = 10 resulted in smaller but ra
 
 ```julia
 segments = felzenszwalb(img, 10, 100)  # removes segments with fewer than 100 pixels
-imshow(map(i->segment_means(segments,i), labels_map(segments)))
+imshow(map(i->segment_mean(segments,i), labels_map(segments)))
 ```
 
 ![Original](assets/segmentation/horse_seg4.jpg)
