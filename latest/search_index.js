@@ -769,6 +769,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "demos/color_separations_svd.html#",
+    "page": "Color separations and the SVD",
+    "title": "Color separations and the SVD",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "demos/color_separations_svd.html#Color-separations-and-the-SVD-1",
+    "page": "Color separations and the SVD",
+    "title": "Color separations and the SVD",
+    "category": "section",
+    "text": "This demonstration shows how to work with color channels and build a simple GUI to explore image compression using the Singular Value Decomposition (SVD).using Images, TestImages, Interact\n\nimg = testimage(\"mandrill\")\n\nchannels = float(channelview(img))\n\nfunction rank_approx(M, k)\n    U, S, V = svd(M)\n    M = U[:, 1:k] * Diagonal(S[1:k]) * V[:, 1:k]'\n    M = min.(max.(M, 0.0), 1.)\nend\n\nn = 100\n@manipulate for k1 in 1:n, k2 in 1:n, k3 in 1:n\n    colorview(RGB,\n              rank_approx(channels[1,:,:], k1),\n              rank_approx(channels[2,:,:], k2),\n              rank_approx(channels[3,:,:], k3)\n              )\nendHere's the result in IJulia:(Image: mandrill)You can click on the slider bars to change the number of components used in each color channel."
+},
+
+{
     "location": "function_reference.html#",
     "page": "Summary and function reference",
     "title": "Summary and function reference",
