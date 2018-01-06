@@ -88,9 +88,9 @@ welcome.
 | **Segmentation**                      |                                           |                                   |                                           |
 | Connected components                  | `label_components`                        | `label`                           | `bwconncomp`, `bwlabel`                   |
 | Foreground/background                 |                                           | `active_contour`                  | `activecontour`                           |
-| Clustering                            |                                           | `quickshift`                      |                                           |
-| Marker segmentation                   |                                           | `random_walker`                   | `imsegfmm`                                |
-| Watershed                             |                                           | `watershed`                       | `watershed`                               |
+| Clustering                            | `kmeans`, `fuzzy_cmeans`, `mean_shift`    | `quickshift`, `slic`                      |                                           |
+| Marker segmentation                   | `seeded_region_growing`                   | `random_walker`                   | `imsegfmm`                                |
+| Watershed                             |  `watershed`                              | `watershed`                       | `watershed`                               |
 |                                       |                                           |                                   |                                           |
 | **Morphological operations**          |                                           |                                   |                                           |
 | Dilation                              | `dilate`                                  | `dilation`, `binary_dilation`     | `imdilate`                                |
