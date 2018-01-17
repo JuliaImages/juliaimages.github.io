@@ -31,7 +31,7 @@ welcome.
 | Adaptive equalization                 | `clahe`                                   | `equalize_adapthist`              | `adapthisteq`                             |
 | Reference histogram matching          | `histmatch`                               |                                   | `imhistmatch`                             |
 | Quantization                          | map anonymous function                    |                                   | `imquantize`                              |
-| Threshold estimation                  |                                           | `threshold_otsu` etc.             | `graythresh` etc.                         |
+| Threshold estimation                  | `otsu_threshold`                          | `threshold_otsu` etc.             | `graythresh` etc.                         |
 |                                       |                                           |                                   |                                           |
 | **Visualization and interactivity**   |                                           |                                   |                                           |
 | Visualization                         | `imshow` (ImageView.jl)                   | `imshow`                          | `imshow`, `implay`, etc.                  |
@@ -55,7 +55,7 @@ welcome.
 | Rotate                                | `warp`                                    | `rotate`                          | `imrotate`                                |
 | Translate                             | `warp`                                    |                                   | `imtranslate`                             |
 | General geometric transformation      | `warp`                                    | `warp`                            | `imwarp`                                  |
-| Hough transform                       |                                           | `hough_circle`, etc.              | `hough`                                   |
+| Hough transform                       | `hough_transform_standard`, `hough_circle_gradient` | `hough_circle`, etc.              | `hough`                                   |
 | Radon transform                       |                                           | `radon`, `iradon`                 | `radon`, `iradon`                         |
 | Distance transform                    | `feature_transform`, `distance_transform` |                                   | `bwdist`, `graydist`                      |
 |                                       |                                           |                                   |                                           |
@@ -80,7 +80,7 @@ welcome.
 | Corner detection                      | `imcorner`, `fastcorners`                 | `corner_harris` etc.              | `detectFASTFeatures`                      |
 | Blob detection                        | `blob_LoG`                                | `blob_log` etc.                   |                                           |
 | Local binary patterns                 | `lbp` etc. (ImageFeatures.jl)             | `local_binary_pattern`            | `extractLBPFeatures`                      |
-| Histogram of oriented gradients       |                                           | `hog`                             | `extractHOGFeatures`                      |
+| Histogram of oriented gradients       | `HOG` (ImageFeatures.jl)                  | `hog`                             | `extractHOGFeatures`                      |
 | Gray-level co-occurence               | `glcm` etc. (ImageFeatures.jl)            | `greycomatrix`                    | `graycomatrix`                            |
 | Point descriptors                     | `BRIEF`, `ORB`, etc. (ImageFeatures.jl)   | `BRIEF`, `ORB`, etc.              | `detectBRISK` etc.                        |
 | Feature matching                      | `match_keypoints` (ImageFeatures.jl)      | `match_descriptors`               | `matchFeatures`                           |
@@ -100,7 +100,7 @@ welcome.
 | Top-hat filtering                     | `tophat`                                  | `tophat` etc.                     | `imtophat`                                |
 | Bottom-hat filtering                  | `bothat`                                  | `bottomhat`                       | `imbothat`                                |
 | Regional max/min                      | `mapwindow`                               | `filters.rank.maximum` etc.       | `imregionalmax` etc.                      |
-| Convex hull                           |                                           | `convex_hull_image`               | `bwconvhull`                              |
+| Convex hull                           | `convexhull`                              | `convex_hull_image`               | `bwconvhull`                              |
 | Borders                               |                                           | `clear_border`                    | `imclearborder`                           |
 | Boundaries                            |                                           | `find_boundaries`                 | `boundarymask`                            |
 | Filling                               |                                           | `remove_small_holes`              | `imfill`, `regionfill`                    |
