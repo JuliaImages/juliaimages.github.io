@@ -2345,6 +2345,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "function_reference.html#ImageFeatures.create_descriptor",
+    "page": "Summary and function reference",
+    "title": "ImageFeatures.create_descriptor",
+    "category": "function",
+    "text": "desc, keypoints = create_descriptor(img, keypoints, params)\ndesc, keypoints = create_descriptor(img, params)\n\nCreate a descriptor for each entry in keypoints from the image img. params specifies the parameters for any of several descriptors:\n\nBRIEF\nORB\nBRISK\nFREAK\nHOG\n\nSome descriptors support discovery of the keypoints from fastcorners.\n\n\n\n"
+},
+
+{
     "location": "function_reference.html#Feature-Description-1",
     "page": "Summary and function reference",
     "title": "Feature Description",

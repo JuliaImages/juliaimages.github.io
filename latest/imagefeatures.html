@@ -9,10 +9,10 @@ img2 = warp(img1, tform, indices(img1))</code></pre><pre><code class="language-n
 INFO: Found lighthouse in the online repository. Downloading to the images directory.
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   145    0   145    0     0    999      0 --:--:-- --:--:-- --:--:--  1006
-100   156  100   156    0     0    514      0 --:--:-- --:--:-- --:--:--   514
-100  622k  100  622k    0     0  1474k      0 --:--:-- --:--:-- --:--:-- 1474k</code></pre></div><p>To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see <a href="function_reference.html#Images.fastcorners"><code>fastcorners</code></a>).</p><div><pre><code class="language-julia">features_1 = Features(fastcorners(img1, 12, 0.35))
-features_2 = Features(fastcorners(img2, 12, 0.35))</code></pre></div><p>To create the BRISK descriptor, we first need to define the parameters by calling the <a href="function_reference.html#ImageFeatures.BRISK"><code>BRISK</code></a> constructor.</p><div><pre><code class="language-julia">brisk_params = BRISK()</code></pre></div><p>Now pass the image with the keypoints and the parameters to the <a href="@ref"><code>create_descriptor</code></a> function.</p><div><pre><code class="language-julia">desc_1, ret_features_1 = create_descriptor(img1, features_1, brisk_params)
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   145    0   145    0     0   1000      0 --:--:-- --:--:-- --:--:--  1006
+100   156  100   156    0     0    483      0 --:--:-- --:--:-- --:--:--   483
+100  622k  100  622k    0     0  1298k      0 --:--:-- --:--:-- --:--:-- 1298k</code></pre></div><p>To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see <a href="function_reference.html#Images.fastcorners"><code>fastcorners</code></a>).</p><div><pre><code class="language-julia">features_1 = Features(fastcorners(img1, 12, 0.35))
+features_2 = Features(fastcorners(img2, 12, 0.35))</code></pre></div><p>To create the BRISK descriptor, we first need to define the parameters by calling the <a href="function_reference.html#ImageFeatures.BRISK"><code>BRISK</code></a> constructor.</p><div><pre><code class="language-julia">brisk_params = BRISK()</code></pre></div><p>Now pass the image with the keypoints and the parameters to the <a href="function_reference.html#ImageFeatures.create_descriptor"><code>create_descriptor</code></a> function.</p><div><pre><code class="language-julia">desc_1, ret_features_1 = create_descriptor(img1, features_1, brisk_params)
 desc_2, ret_features_2 = create_descriptor(img2, features_2, brisk_params)</code></pre></div><p>The obtained descriptors can be used to find the matches between the two images using the <a href="function_reference.html#ImageFeatures.match_keypoints"><code>match_keypoints</code></a> function.</p><div><pre><code class="language-julia">matches = match_keypoints(Keypoints(ret_features_1), Keypoints(ret_features_2), desc_1, desc_2, 0.1)</code></pre></div><p>We can use the <a href="https://github.com/JuliaImages/ImageDraw.jl">ImageDraw.jl</a> package to view the results.</p><div><pre><code class="language-julia">grid = hcat(img1, img2)
 offset = CartesianIndex(0, size(img1, 2))
 map(m -&gt; draw!(grid, LineSegment(m[1], m[2] + offset)), matches)</code></pre><pre><code class="language-none">WARNING: one(ColorTypes.Gray{FixedPointNumbers.Normed{UInt8,8}}) will soon switch to returning 1; you might need to switch to `oneunit`
@@ -24,14 +24,14 @@ Stacktrace:
  [5] map(::Function, ::Array{Array{CartesianIndex{2},1},1}) at ./abstractarray.jl:1868
  [6] eval(::Module, ::Any) at ./boot.jl:235
  [7] cd(::Documenter.Expanders.##8#10, ::String) at ./file.jl:70
- [8] withoutput(::Documenter.Expanders.##7#9{Documenter.Documents.Page}) at /home/travis/.julia/v0.6/Documenter/src/Utilities/Utilities.jl:588
- [9] runner(::Type{Documenter.Expanders.ExampleBlocks}, ::Base.Markdown.Code, ::Documenter.Documents.Page, ::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:458
+ [8] withoutput(::Documenter.Expanders.##7#9{Documenter.Documents.Page}) at /home/travis/.julia/v0.6/Documenter/src/Utilities/Utilities.jl:557
+ [9] runner(::Type{Documenter.Expanders.ExampleBlocks}, ::Base.Markdown.Code, ::Documenter.Documents.Page, ::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:459
  [10] dispatch(::Type{Documenter.Expanders.ExpanderPipeline}, ::Base.Markdown.Code, ::Vararg{Any,N} where N) at /home/travis/.julia/v0.6/Documenter/src/Selectors.jl:168
- [11] expand(::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:30
+ [11] expand(::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:31
  [12] runner(::Type{Documenter.Builder.ExpandTemplates}, ::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Builder.jl:178
  [13] dispatch(::Type{Documenter.Builder.DocumentPipeline}, ::Documenter.Documents.Document, ::Vararg{Documenter.Documents.Document,N} where N) at /home/travis/.julia/v0.6/Documenter/src/Selectors.jl:168
  [14] cd(::Documenter.##2#3{Documenter.Documents.Document}, ::String) at ./file.jl:70
- [15] #makedocs#1(::Bool, ::Array{Any,1}, ::Function) at /home/travis/.julia/v0.6/Documenter/src/Documenter.jl:203
+ [15] #makedocs#1(::Bool, ::Array{Any,1}, ::Function) at /home/travis/.julia/v0.6/Documenter/src/Documenter.jl:204
  [16] (::Documenter.#kw##makedocs)(::Array{Any,1}, ::Documenter.#makedocs) at ./&lt;missing&gt;:0
  [17] include_from_node1(::String) at ./loading.jl:576
  [18] include(::String) at ./sysimg.jl:14
