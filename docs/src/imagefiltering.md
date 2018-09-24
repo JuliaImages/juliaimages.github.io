@@ -86,7 +86,7 @@ See [OffsetArrays](https://github.com/alsam/OffsetArrays.jl) for more informatio
 
 A key feature of Gaussian kernels---along with many other
 commonly-used kernels---is that they are *separable*, meaning that
-`K[j_1,j_2,...]` can be written as ``K_1[j_1] K_2[j_2] \cdots``.
+``K[j_1,j_2,...]`` can be written as ``K_1[j_1] K_2[j_2] \cdots``.
 As a consequence, the correlation
 
 ```math
