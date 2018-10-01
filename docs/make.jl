@@ -24,11 +24,11 @@ makedocs(format   = :html,
                      ],
          html_edit_branch = "source")
 
-deploydocs(repo    = "github.com/JuliaImages/juliaimages.github.io.git",
-           target  = "build",
-           branch  = "master",
-           latest  = "source",
-           julia   = "0.6",
-           osname  = "linux",
-           deps    = nothing,
-           make    = nothing)
+deploydocs(repo      = "github.com/JuliaImages/juliaimages.github.io.git",
+           target    = "build",
+           branch    = "master",
+           latest    = "source",
+           julia     = "1.0",
+           osname    = "linux",
+           deps      = nothing,
+           make      = nothing)

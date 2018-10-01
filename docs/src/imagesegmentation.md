@@ -216,14 +216,14 @@ This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is 
 ###### Demo
 
 ```julia
-using Images, ImageSegmentation, TestImages;
+using Images, ImageSegmentation, TestImages, Random
 
 img = Gray.(testimage("house"));
 segments = felzenszwalb(img, 300, 100); # k=300 (the merging threshold), min_size = 100 (smallest number of pixels/region)
 
 # visualize segmentation by creating an image with each label replaced by a random color
 function get_random_color(seed)
-    srand(seed)
+    Random.seed!(seed)
     rand(RGB{N0f8})
 end
 imshow(map(i->get_random_color(i), labels_map(segments)))

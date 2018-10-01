@@ -26,9 +26,7 @@ images.
 
 ```@docs
 colorview
-ColorView
 channelview
-ChannelView
 normedview
 rawview
 permuteddimsview

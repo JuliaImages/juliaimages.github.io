@@ -29,14 +29,13 @@ this example.
 First, let us create the two images we will match using BRISK.
 
 ```@example 3
-
 using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
 
 img = testimage("lighthouse")
 img1 = Gray.(img)
 rot = recenter(RotMatrix(5pi/6), [size(img1)...] .÷ 2)  # a rotation around the center
 tform = rot ∘ Translation(-50, -40)
-img2 = warp(img1, tform, indices(img1))
+img2 = warp(img1, tform, axes(img1))
 nothing # hide
 ```
 

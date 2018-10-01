@@ -2,7 +2,8 @@
 
 ```@meta
 DocTestSetup = quote
-    srand(2)
+    using Random
+    Random.seed!(2)
 end
 ```
 
@@ -12,7 +13,7 @@ manipulate images come from the general methods to work with
 example,
 
 
-```julia
+```jldoctest
 julia> img = rand(2,2)
 2×2 Array{Float64,2}:
  0.366796  0.210256
@@ -27,7 +28,7 @@ We'll be talking quite a bit about handling arrays. This page will
 focus on the "element type" (`eltype`) stored in the array. In case
 you're new to Julia, if `a` is an array of integers:
 
-```julia
+```jldoctest
 julia> a = [1,2,3,4]
 4-element Array{Int64,1}:
  1
@@ -69,8 +70,8 @@ the fastest dimension is the first dimension).
 ## Numbers versus colors
 
 For the array `img` we created above, you can display it as a
-grayscale image using ImageView. But if you're following along in
-IJulia, you might notice that `img` does not *display* as an image:
+grayscale image using ImageView. But if you happen to be following along in
+Juno or IJulia, you might notice that `img` does not *display* as an image:
 instead, it prints as an array of numbers as shown above.  Arrays of
 "plain numbers" are not displayed graphically, because they might
 represent something numerical (e.g., a matrix used for linear algebra)
@@ -82,15 +83,16 @@ display, convert the element type to a color chosen from the
 
 Here we used `Gray` to indicate that this array should be interpreted
 as a grayscale image.
+(Note that the Images package re-exports Colors, so you can alternatively
+say `using Images`.)
 
 Under the hood, what is `Gray` doing?  It's informative to see the
 "raw" object, displayed as text:
 
 ![float_gray_text](assets/arrays_colors/float_gray_text.png)
 
-(**should there be a convenience function for this?**) (Users of the
-Julia command-line REPL interface will see this representation
-immediately, rather than the graphical one.)
+(Users of Juno or the Julia command-line REPL interface will see this
+representation immediately.)
 
 You can see this is a 2×2 array of `Gray{Float64}` objects. You might
 be curious how these `Gray` objects are represented. In the
@@ -124,7 +126,7 @@ julia> sizeof(imgg)
 
 The answer is "none": they don't take up any memory of their own, nor
 do they typically require any additional processing time. The `Gray`
-"wrapper" is just an "interpretation" of the values, one that helps
+"wrapper" is just an *interpretation* of the values, one that helps
 clarify that this should be displayed as a grayscale image.  Indeed,
 `img` and `imgg` compare as equal:
 
@@ -279,8 +281,10 @@ might produce the following images:
 | ![checker](assets/arrays_colors/uint8.png) | ![checker2](assets/arrays_colors/uint8_to_double.png) |
 
 The one on the right looks white because floating-point types are
-interpreted on a 0-to-1 colorscale, whereas `uint8` is interpreted on
-a 0-to-255 colorscale.
+interpreted on a 0-to-1 colorscale (and all of the entries in `img`
+happen to be 1 or higher), whereas `uint8` is interpreted on a
+0-to-255 colorscale. Unfortunately, two arrays that are *numerically identical*
+have very different meanings as images.
 
 Many frameworks offer convenience functions for converting images from
 one representation to another, but this can be a source of bugs if we
@@ -305,17 +309,19 @@ However, you should be aware that for *integer* inputs, the default is
 to use the `N0f8` element type, and this type cannot represent values
 outside the range from 0 to 1:
 
-```julia
+```jldoctest; setup = :(using ColorTypes), filter = r"at \(.*\)"
 julia> RGB(8,2,0)
-ERROR: ArgumentError: (8,2,0) are integers in the range 0-255, but integer inputs are encoded with the N0f8
+ERROR: ArgumentError: (8, 2, 0) are integers in the range 0-255, but integer inputs are encoded with the N0f8
   type, an 8-bit type representing 256 discrete values between 0 and 1.
   Consider dividing your input values by 255, for example: RGB{N0f8}(8/255,2/255,0/255)
   See the READMEs for FixedPointNumbers and ColorTypes for more information.
- in throw_colorerror(::Type{FixedPointNumbers.Normed{UInt8,8}}, ::Tuple{Int64,Int64,Int64}) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:639
- in throw_colorerror(::Type{FixedPointNumbers.Normed{UInt8,8}}, ::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:608
- in checkval at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:596 [inlined]
- in ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:90
- in ColorTypes.RGB{T<:Union{AbstractFloat,FixedPointNumbers.FixedPoint}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/v0.5/ColorTypes/src/types.jl:437
+Stacktrace:
+ [1] throw_colorerror(::Type{Normed{UInt8,8}}, ::Tuple{Int64,Int64,Int64}) at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:673
+ [2] throw_colorerror(::Type{Normed{UInt8,8}}, ::Int64, ::Int64, ::Int64) at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:642
+ [3] checkval at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:624 [inlined]
+ [4] RGB{Normed{UInt8,8}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:90
+ [5] RGB(::Int64, ::Int64, ::Int64) at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:441
+ [6] top-level scope at none:0
 ```
 
 The error message here reminds you how to resolve a common mistake,
@@ -328,14 +334,14 @@ always be `RGB(1, 0, 0)`.
 compare the maximum values (`typemax`) and smallest-difference (`eps`)
 representable with `N0f8` and `N0f16`:
 
-```julia
+```jldoctest
 julia> using FixedPointNumbers
 
 julia> (typemax(N0f8), eps(N0f8))
-(1.0N0f8,0.004N0f8)
+(1.0N0f8, 0.004N0f8)
 
 julia> (typemax(N0f16), eps(N0f16))
-(1.0N0f16,2.0e-5N0f16)
+(1.0N0f16, 2.0e-5N0f16)
 ```
 
 You can see that this type also has a maximum value of 1, but is
@@ -362,9 +368,9 @@ interpret these values is by using a fixed-point number with 12
 fractional bits; this leaves 4 bits that we can use to represent
 values bigger than 1, so the number type is called `N4f12`:
 
-```julia
+```jldoctest; setup = :(using FixedPointNumbers)
 julia> (typemax(N4f12), eps(N4f12))
-(16.0037N4f12,0.0002N4f12)
+(16.0037N4f12, 0.0002N4f12)
 ```
 
 You can see that the maximum value achievable by an `N4f12` is
@@ -390,15 +396,15 @@ sum will typically result in a color that is well beyond saturation.
 It's important to note that arithmetic with `N0f8` numbers, like
 arithmetic with `UInt8`, overflows:
 
-```julia
+```jldoctest; setup = :(using FixedPointNumbers)
 julia> 0xff + 0xff
 0xfe
 
-julia> 0xfe/0xff
-0.996078431372549
-
 julia> 1N0f8 + 1N0f8
 0.996N0f8
+
+julia> 0xfe/0xff      # the first result corresponds to the second result
+0.996078431372549
 ```
 
 Consequently, if you're accumulating values, it's advisable to

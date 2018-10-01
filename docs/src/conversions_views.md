@@ -7,7 +7,7 @@ convert the element type of an array `a = [1,2,3,4]` using a syntax
 like `Float64.(a)`. You might be curious what affect, if any,
 `Int.(a)` has:
 
-```julia
+```jldoctest
 julia> a = [1,2,3,4]
 4-element Array{Int64,1}:
  1
@@ -28,7 +28,7 @@ returns `true`.  Beyond having equal size and elements, there's a more
 extensive notion of "sameness": do `a` and `b` refer to the *same*
 storage area in memory?  We can test that in the following ways:
 
-```julia
+```jldoctest; setup = :(a = [1,2,3,4]; b = Int.(a))
 julia> a === b   # note: 3 equal signs!
 false
 ```
@@ -36,7 +36,7 @@ false
 or more generally by setting a value and seeing whether the change is
 reflected in the other:
 
-```julia
+```jldoctest; setup = :(a = [1,2,3,4]; b = Int.(a))
 julia> b[1] = 5
 5
 
@@ -63,18 +63,18 @@ This occurs because `f.(a)` (which calls the function `broadcast(f,
 a)`) always allocates a new array to return its values. However, not
 all functions operate this way. One good example is `view`:
 
-```julia
+```jldoctest; setup = :(a = [1,2,3,4])
 julia> v = view(a, :)
-4-element SubArray{Int64,1,Array{Int64,1},Tuple{Colon},true}:
+4-element view(::Array{Int64,1}, :) with eltype Int64:
  1
  2
  3
  4
 ```
 
-Now, `v` and `a` have the same values but are distinct objects:
+`v` and `a` have the same values, but again they are distinct objects:
 
-```julia
+```jldoctest; setup = :(a = [1,2,3,4]; v = view(a, :))
 julia> v == a
 true
 
@@ -84,12 +84,12 @@ false
 
 However, **they share the same memory**:
 
-```julia
+```jldoctest; setup = :(a = [1,2,3,4]; v = view(a, :))
 julia> v[1] = 10
 10
 
 julia> v
-4-element SubArray{Int64,1,Array{Int64,1},Tuple{Colon},true}:
+4-element view(::Array{Int64,1}, :) with eltype Int64:
  10
   2
   3
@@ -115,7 +115,7 @@ original (parent) array. See the documentation on `view`, by typing
 example is `reshape`, which can be used to change the dimensions of an
 array:
 
-```julia
+```jldoctest; setup = :(a = [10,2,3,4])
 julia> r = reshape(a, 2, 2)
 2×2 Array{Int64,2}:
  10  3
@@ -141,9 +141,9 @@ Notice that the return type of `reshape` is just an `Array`, one which
 happens to be serving as a view of `a`. However, some inputs cannot be
 represented as a view with an `Array`. For example:
 
-```julia
+```jldoctest
 julia> r = reshape(1:15, 3, 5)
-3×5 Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}:
+3×5 reshape(::UnitRange{Int64}, 3, 5) with eltype Int64:
  1  4  7  10  13
  2  5  8  11  14
  3  6  9  12  15
@@ -166,7 +166,7 @@ numbers used in some representations of color (or grayscale)
 information. If you want to switch representation, you can use the
 `reinterpret` function:
 
-```julia
+```jldoctest
 julia> using FixedPointNumbers
 
 julia> x = 0.5N0f8
@@ -181,9 +181,9 @@ julia> reinterpret(N0f8, y)
 
 You can apply this to arrays:
 
-```julia
+```jldoctest; setup = :(using FixedPointNumbers)
 julia> a = [0.2N0f8, 0.8N0f8]
-2-element Array{FixedPointNumbers.Normed{UInt8,8},1}:
+2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
  0.2N0f8
  0.8N0f8
 
@@ -195,12 +195,12 @@ julia> b = reinterpret.(a)
 
 Because of the `f.(a)` call, `b` does not share memory with `a`:
 
-```julia
+```jldoctest; setup = :(using FixedPointNumbers; a = [0.2N0f8, 0.8N0f8]; b = reinterpret.(a))
 julia> b[2] = 0xff
 0xff
 
 julia> a
-2-element Array{FixedPointNumbers.Normed{UInt8,8},1}:
+2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
  0.2N0f8
  0.8N0f8
 ```
@@ -212,11 +212,11 @@ JuliaImages, through the
 (which is bundled with Images), implements views that can perform this
 reinterpretation:
 
-```julia
+```jldoctest; setup = :(using FixedPointNumbers; a = [0.2N0f8, 0.8N0f8])
 julia> using Images
 
 julia> v = rawview(a)
-2-element Array{UInt8,1}:
+2-element reinterpret(UInt8, ::Array{N0f8,1}):
  0x33
  0xcc
 
@@ -224,21 +224,21 @@ julia> v[2] = 0xff
 0xff
 
 julia> a
-2-element Array{FixedPointNumbers.Normed{UInt8,8},1}:
+2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
  0.2N0f8
  1.0N0f8
 ```
 
 The opposite transformation is `normedview`:
 
-```julia
+```jldoctest; setup = :(using Images)
 julia> c = [0x11, 0x22]
 2-element Array{UInt8,1}:
  0x11
  0x22
 
 julia> normedview(c)
-2-element Array{FixedPointNumbers.Normed{UInt8,8},1}:
+2-element reinterpret(N0f8, ::Array{UInt8,1}):
  0.067N0f8
  0.133N0f8
 ```
@@ -249,7 +249,8 @@ so unless `A` has element type `UInt8`, in which case `normedview`
 assumes you want `N0f8`.
 
 Like `reshape`, both `rawview` and `normedview` might return an
-`Array` or a more complicated type (a `MappedArray` from the
+`Array` or a more complicated type (a `ReinterpretArray`, or a
+`MappedArray` from the
 [MappedArrays package](https://github.com/JuliaArrays/MappedArrays.jl)),
 depending on the types of the inputs.
 
@@ -261,7 +262,7 @@ opposite transformation can be performed with `real.(b)`. Handling RGB
 colors is a little more complicated, because the dimensionality of the
 array changes. One approach is to use Julia's comprehensions:
 
-```julia
+```jldoctest; setup = :(using ColorTypes)
 julia> a = reshape(collect(0.1:0.1:0.6), 3, 2)
 3×2 Array{Float64,2}:
  0.1  0.4
@@ -269,7 +270,7 @@ julia> a = reshape(collect(0.1:0.1:0.6), 3, 2)
  0.3  0.6
 
 julia> c = [RGB(a[1,j], a[2,j], a[3,j]) for j = 1:2]
-2-element Array{ColorTypes.RGB{Float64},1}:
+2-element Array{RGB{Float64},1} with eltype RGB{Float64}:
  RGB{Float64}(0.1,0.2,0.3)
  RGB{Float64}(0.4,0.5,0.6)
 
@@ -286,34 +287,48 @@ While this approach works, it's not without flaws:
 - the use of `getfield` assumes that elements of `c` have fields and that they are in the order `r`, `g`, `b`. Given the large number of different representations of RGB supported by [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl), neither of these assumptions is entirely safe.
 - it always makes a copy of the data
 
-To address these weaknesses, JuliaImages provides two complementary view types, `ColorView` and `ChannelView`:
+To address these weaknesses, JuliaImages provides two complementary view function, `colorview` and `channelview`:
 
-```julia
+```jldoctest; setup = :(using Images; a = reshape(collect(0.1:0.1:0.6), 3, 2); c = [RGB(a[1,j], a[2,j], a[3,j]) for j = 1:2])
 julia> colv = colorview(RGB, a)
-2-element Array{ColorTypes.RGB{Float64},1}:
+2-element reshape(reinterpret(RGB{Float64}, ::Array{Float64,2}), 2) with eltype RGB{Float64}:
  RGB{Float64}(0.1,0.2,0.3)
  RGB{Float64}(0.4,0.5,0.6)
 
 julia> chanv = channelview(c)
-3×2 Array{Float64,2}:
+3×2 reinterpret(Float64, ::Array{RGB{Float64},2}):
  0.1  0.4
  0.2  0.5
  0.3  0.6
 ```
 
 `colorview` and `channelview` *always* return a view of the original
-array; whether they return an `Array` or a `ColorView`/`ChannelView`
-again depends on the input types.
+array.
 
 ## Using colorview to make color overlays
 
 Another use for `colorview` is to combine multiple grayscale images into a single color image. For example:
 
-```julia
+```jldoctest
 using Colors, Images
-r = linspace(0,1,11)
-b = linspace(1,0,11)
+r = range(0,stop=1,length=11)
+b = range(0,stop=1,length=11)
 img1d = colorview(RGB, r, zeroarray, b)
+
+# output
+
+11-element mappedarray(RGB{Float64}, ImageCore.extractchannels, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::ImageCore.ZeroArray{Float64,1,Base.OneTo{Int64}}, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}) with eltype RGB{Float64}:
+ RGB{Float64}(0.0,0.0,0.0)
+ RGB{Float64}(0.1,0.0,0.1)
+ RGB{Float64}(0.2,0.0,0.2)
+ RGB{Float64}(0.3,0.0,0.3)
+ RGB{Float64}(0.4,0.0,0.4)
+ RGB{Float64}(0.5,0.0,0.5)
+ RGB{Float64}(0.6,0.0,0.6)
+ RGB{Float64}(0.7,0.0,0.7)
+ RGB{Float64}(0.8,0.0,0.8)
+ RGB{Float64}(0.9,0.0,0.9)
+ RGB{Float64}(1.0,0.0,1.0)
 ```
 
 results (in IJulia) in
@@ -321,7 +336,7 @@ results (in IJulia) in
 ![linspace](assets/conversions_views/linspace.png)
 
 `zeroarray` is a special constant that "expands" to return the
-equivalent of an all-zeros array matching the indices of the other
+equivalent of an all-zeros array with axes matching the other
 inputs to `colorview`.
 
 ## Changing the order of dimensions
@@ -330,7 +345,7 @@ When you've separated colors into a separate color dimension, some
 code might assume that color is the last (slowest) dimension. You can
 convert directly using Julia's `permutedims` function:
 
-```julia
+```jldoctest; setup = :(a = reshape(collect(0.1:0.1:0.6), 3, 2))
 julia> pc = permutedims(a, (2,1))
 2×3 Array{Float64,2}:
  0.1  0.2  0.3
@@ -340,16 +355,16 @@ julia> pc = permutedims(a, (2,1))
 `permutedims` explicitly creates a new array with the data rearranged in memory. It's also possible to perform something similar
 as a view:
 
-```julia
-julia> pv = permuteddimsview(a, (2,1))
-2×3 permuteddimsview(::Array{Float64,2}, (2,1)) with element type Float64:
+```jldoctest; setup = :(using Images; a = reshape(collect(0.1:0.1:0.6), 3, 2))
+julia> pv = PermutedDimsArray(a, (2,1))
+2×3 PermutedDimsArray(::Array{Float64,2}, (2, 1)) with eltype Float64:
  0.1  0.2  0.3
  0.4  0.5  0.6
 ```
 
 While this looks the same, `pv` (unlike `pc`) shares memory with `a`; this is
 an *apparent* permutation, achieved by having the indexing of a
-`permuteddimsview` array swap the input indexes whenever individual
+`PermutedDimsArray` swap the input indexes whenever individual
 elements are accessed.
 
 One thing to be aware of is that the performance of these two might
@@ -367,14 +382,14 @@ Sometimes when you want to compare two images, one might be of a
 different size than another. You can create array views that have
 common indices with `paddedviews`:
 
-```julia
+```jldoctest; setup = :(using Images)
 julia> a1 = reshape([1,2], 2, 1)
 2×1 Array{Int64,2}:
  1
  2
 
 julia> a2 = [1.0,2.0]'
-1×2 Array{Float64,2}:
+1×2 LinearAlgebra.Adjoint{Float64,Array{Float64,1}}:
  1.0  2.0
 
 julia> a1p, a2p = paddedviews(0, a1, a2);   # 0 is the fill value
@@ -385,7 +400,7 @@ julia> a1p
  2  0
 
 julia> a2p
-2×2 PaddedViews.PaddedView{Float64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},Array{Float64,2}}:
+2×2 PaddedViews.PaddedView{Float64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},LinearAlgebra.Adjoint{Float64,Array{Float64,1}}}:
  1.0  2.0
  0.0  0.0
 ```
@@ -412,13 +427,13 @@ information about certain kinds of arrays. For example, the type of
 `pv` above is
 
 ```julia
-Base.PermutedDimsArrays.PermutedDimsArray{Float64,2,(2,1),(2,1),Array{Float64,2}}
+PermutedDimsArray{Float64,2,(2,1),(2,1),Array{Float64,2}}
 ```
 
 but when you display such an object, in the summary line it prints as
 
 ```julia
-permuteddimsview(::Array{Float64,2}, (2,1)) with element type Float64
+2×3 PermutedDimsArray(::Array{Float64,2}, (2, 1)) with eltype Float64
 ```
 
 This is intended to result in more easily-readable information about
@@ -432,22 +447,23 @@ have it display as an RGB movie, you might create the following view of
 the array `A`:
 
 ```julia
-mov = colorview(RGB, normedview(permuteddimsview(A, (3,1,2,4))))
+mov = colorview(RGB, normedview(PermutedDimsArray(A, (3,1,2,4))))
 ```
 
 If you show `mov` at the REPL, the `summary` prints like this:
 
-```julia
-ColorView{RGB}(normedview(N0f8, permuteddimsview(::Array{UInt8,4}, (3,1,2,4)))) with element type ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}}
+```jldoctest; setup = :(using Images; A = rand(UInt8, 5, 6, 3, 10); mov = colorview(RGB, normedview(PermutedDimsArray(A, (3,1,2,4)))))
+julia> summary(mov)
+"5×6×10 reshape(reinterpret(RGB{N0f8}, normedview(N0f8, PermutedDimsArray(::Array{UInt8,4}, (3, 1, 2, 4)))), 5, 6, 10) with eltype RGB{Normed{UInt8,8}}"
 ```
 
 which may be somewhat easier to read than the type:
 
-```julia
-ImageCore.ColorView{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},3,MappedArrays.MappedArray{FixedPointNumbers.Normed{UInt8,8},4,Base.PermutedDimsArrays.PermutedDimsArray{UInt8,4,(3,1,2,4),(2,3,1,4),Array{UInt8,4}},ImageCore.##29#30{FixedPointNumbers.Normed{UInt8,8}},Base.#reinterpret}}
+```jldoctest; setup = :(using Images; A = rand(UInt8, 5, 6, 3, 10); mov = colorview(RGB, normedview(PermutedDimsArray(A, (3,1,2,4))))), filter=r"Symbol\(.*\)"
+julia> typeof(mov)
+Base.ReshapedArray{RGB{Normed{UInt8,8}},3,Base.ReinterpretArray{RGB{Normed{UInt8,8}},4,Normed{UInt8,8},MappedArrays.MappedArray{Normed{UInt8,8},4,PermutedDimsArray{UInt8,4,(3, 1, 2, 4),(2, 3, 1, 4),Array{UInt8,4}},getfield(ImageCore, Symbol("##36#37")){Normed{UInt8,8}},typeof(reinterpret)}},Tuple{Base.MultiplicativeInverses.SignedMultiplicativeInverse{Int64},Base.MultiplicativeInverses.SignedMultiplicativeInverse{Int64},Base.MultiplicativeInverses.SignedMultiplicativeInverse{Int64}}}
 ```
 
 While there is little or no performance cost to making use of
 JuliaImage's convenient views, sometimes the types can get
-complicated! The strategy adopted here is to
-[ShowItLikeYouBuildIt](https://github.com/JuliaArrays/ShowItLikeYouBuildIt.jl).
+complicated!
