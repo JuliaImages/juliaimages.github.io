@@ -7,7 +7,7 @@ Image Segmentation is the process of partitioning the image into regions that ha
 ## Installation
 
 ```julia
-Pkg.add("ImageSegmentation")
+(v1.0) pkg> add ImageSegmentation
 ```
 
 ## Example
@@ -25,32 +25,57 @@ The documentation for `seeded_region_growing` says that it needs two arguments -
 ```julia
 using Images, ImageView
 
-img = load("horse.jpg")
+img = load("src/assets/segmentation/horse.jpg")
 imshow(img)
 ```
 
 Hover over the different objects you'd like to segment, and read out the coordinates of one or more points inside each object. We will store the seed points as a vector of `(seed position, label)` tuples and use `seeded_region_growing` with the recorded seed points.
 
-```julia
+```jldoctest; setup = :(using Images; img = load("src/assets/segmentation/horse.jpg")), filter = r"\\s"
 using ImageSegmentation
 seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex(213,97),3)]
 segments = seeded_region_growing(img, seeds)
+
+# output
+
+Segmented Image with:
+  labels map: 240×360 Array{Int64,2}
+  number of labels: 3
 ```
 
-All the segmentation algorithms (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result. `SegmentedImage` contains a list of applied labels, an array containing the assigned label for each pixel, and mean color and number of pixels in each segment. [This section](#Result-1) explains how to access information about the segments.
+All the segmentation algorithms (except Fuzzy C-means) return a struct `SegmentedImage` that stores the segmentation result.
+`SegmentedImage` contains a list of applied labels, an array containing the assigned label for each pixel, and mean color and number of pixels in each segment.
+[This section](#Result-1) explains how to access information about the segments.
+
+```@meta
+DocTestSetup = quote
+    using Images, ImageSegmentation
+    img = load("src/assets/segmentation/horse.jpg")
+    seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex(213,97),3)]
+    segments = seeded_region_growing(img, seeds)
+end
+```
+
+```jldoctest
+julia> length(segment_labels(segments))
+3
+
+julia> segment_mean(segments)
+Dict{Int64,RGB{Float64}} with 3 entries:
+  2 => RGB{Float64}(0.793679,0.839473,0.932494)
+  3 => RGB{Float64}(0.329867,0.357842,0.237361)
+  1 => RGB{Float64}(0.0650002,0.0586348,0.074091)
+```
+
+We can visualize each segment using its mean color:
 
 ```julia
-length(segment_labels(segments))   # number of segments = 3
-
-segment_mean(segments)
-#first segment's color (horse) = RGB(0.0647831,0.0588508,0.074473) = black
-#second segment's color (sky) = RGB(0.793598,0.839543,0.932374) = light blue
-#third segment's color (grass) = RGB(0.329876,0.357805,0.23745) = green
-
-# for visualizing the segmentation, create an image by replacing each each label in label_map(segments) with it's mean color
-imshow(map(i->segment_mean(segments,i), labels_map(segments)))
+julia> imshow(map(i->segment_mean(segments,i), labels_map(segments)));
 ```
+
 ![Original](assets/segmentation/horse_seg1.jpg)
+
+This display form is used for many of the demonstrations below.
 
 You can see that the algorithm did a fairly good job of segmenting the three objects. The only obvious error is the fact that elements of the sky that were "framed" by the horse ended up being grouped with the ground. This is because `seeded_region_growing` always returns connected regions, and there is no path connecting those portions of sky to the larger image. If we add some additional seed points in those regions, and give them the same label `2` that we used for the rest of the sky, we will get a result that is more or less perfect.
 
@@ -58,29 +83,37 @@ You can see that the algorithm did a fairly good job of segmenting the three obj
 seeds = [(CartesianIndex(126,81), 1), (CartesianIndex(93,255), 2), (CartesianIndex(171,103), 2),
          (CartesianIndex(172,142), 2), (CartesianIndex(182,72), 2), (CartesianIndex(213,97), 3)]
 segments = seeded_region_growing(img, seeds)
-imshow(map(i->segment_mean(segments,i), labels_map(segments)))
 ```
 
 ![Original](assets/segmentation/horse_seg5.jpg)
 
-Now let's segment this image using felzenszwalb algorithm. `felzenswalb` only needs a single parameter k which controls the size of segments. Larger k will result in bigger segments. Using k=5 to k=500 generally gives good results.
+```@meta
+DocTestSetup = nothing
+```
 
-```julia
-using Images, ImageSegmentation, ImageView
+Now let's segment this image using felzenszwalb algorithm. `felzenswalb` only needs a single parameter `k` which controls the size of segments. Larger `k` will result in bigger segments. Using `k=5` to `k=500` generally gives good results.
 
-img = load("horse.jpg")
-segments = felzenszwalb(img, 100)
-imshow(map(i->segment_mean(segments,i), labels_map(segments)))
+```jldoctest
+julia> using Images, ImageSegmentation
 
-segments = felzenszwalb(img, 10)  #smaller segments but noisy segmentation
-imshow(map(i->segment_mean(segments,i), labels_map(segments)))
+julia> img = load("src/assets/segmentation/horse.jpg");
+
+julia> segments = felzenszwalb(img, 100)
+Segmented Image with:
+  labels map: 240×360 Array{Int64,2}
+  number of labels: 43
+
+julia> segments = felzenszwalb(img, 10)  #smaller segments but noisy segmentation
+Segmented Image with:
+  labels map: 240×360 Array{Int64,2}
+  number of labels: 275
 ```
 
 | k = 100 | k = 10 |
 |:------:|:---:|
 | ![Original](assets/segmentation/horse_seg2.jpg) | ![Original](assets/segmentation/horse_seg3.jpg) |
 
-We only got two segments with k = 100. Setting k = 10 resulted in smaller but rather noisy segments. `felzenzwalb` also takes an optional argument `min_size` - it removes all segments smaller than `min_size` pixels. (Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.)
+We only got two "major" segments with `k = 100`. Setting `k = 10` resulted in smaller but rather noisy segments. `felzenzwalb` also takes an optional argument `min_size` - it removes all segments smaller than `min_size` pixels. (Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.)
 
 ```julia
 segments = felzenszwalb(img, 10, 100)  # removes segments with fewer than 100 pixels
@@ -102,10 +135,10 @@ functions can be used to get the information about the segments:
 
 ###### Demo
 
-```julia
+```jldoctest; setup = :(using ImageSegmentation)
 julia> img = fill(1, 4, 4);
 
-julia> img[1:2,1:2] = 2;
+julia> img[1:2,1:2] .= 2;
 
 julia> img
 4×4 Array{Int64,2}:
@@ -129,7 +162,7 @@ julia> segment_labels(seg) # returns a list of all assigned labels
  3
 
 julia> segment_mean(seg, 1) # returns the mean intensity of label 1
-2
+2.0
 
 julia> segment_pixel_count(seg, 1) # returns the pixel count of label 1
 4
@@ -148,14 +181,20 @@ If more than one point has the same label then they will be contribute to the sa
 
 ###### Demo
 
-```julia
-julia> using ImageSegmentation, Images;
-julia> img = load("worm.jpg");
+```jldoctest
+julia> using Images, ImageSegmentation
+
+julia> img = load("src/assets/segmentation/worm.jpg");
+
 julia> seeds = [(CartesianIndex(104, 48), 1), (CartesianIndex( 49, 40), 1),
                 (CartesianIndex( 72,131), 1), (CartesianIndex(109,217), 1),
                 (CartesianIndex( 28, 87), 2), (CartesianIndex( 64,201), 2),
                 (CartesianIndex(104, 72), 2), (CartesianIndex( 86,138), 2)];
-julia> seg = seeded_region_growing(img, seeds);
+
+julia> seg = seeded_region_growing(img, seeds)
+Segmented Image with:
+  labels map: 183×275 Array{Int64,2}
+  number of labels: 2
 ```
 **Original** [(source)](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Davidraju_Worm_Snake.jpg/275px-Davidraju_Worm_Snake.jpg):
 
@@ -195,10 +234,15 @@ all the pixels have been assigned to some region.
 
 ###### Demo
 
-```julia
-julia> using ImageSegmentation, Images;
-julia> img = load("tree.jpg");
-julia> seg = unseeded_region_growing(img, 0.05); # here 0.05 is the threshold
+```jldoctest
+julia> using ImageSegmentation, Images
+
+julia> img = load("src/assets/segmentation/tree.jpg");
+
+julia> seg = unseeded_region_growing(img, 0.05) # here 0.05 is the threshold
+Segmented Image with:
+  labels map: 320×480 Array{Int64,2}
+  number of labels: 774
 ```
 
 | Threshold | Output | Compression percentage|
@@ -215,13 +259,19 @@ This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is 
 
 ###### Demo
 
+```jldoctest
+julia> using Images, ImageSegmentation, TestImages
+
+julia> img = Gray.(testimage("house"));
+
+julia> segments = felzenszwalb(img, 300, 100) # k=300 (the merging threshold), min_size = 100 (smallest number of pixels/region)
+Segmented Image with:
+  labels map: 512×512 Array{Int64,2}
+  number of labels: 11
+```
+
+Here let's visualize segmentation by creating an image with each label replaced by a random color:
 ```julia
-using Images, ImageSegmentation, TestImages, Random
-
-img = Gray.(testimage("house"));
-segments = felzenszwalb(img, 300, 100); # k=300 (the merging threshold), min_size = 100 (smallest number of pixels/region)
-
-# visualize segmentation by creating an image with each label replaced by a random color
 function get_random_color(seed)
     Random.seed!(seed)
     rand(RGB{N0f8})
@@ -237,12 +287,17 @@ MeanShift is a clustering technique. Its primary advantages are that it doesn't 
 
 ###### Demo
 
-```julia
-using Images, ImageSegmentation, TestImages;
+```jldoctest
+julia> using Images, ImageSegmentation, TestImages
 
-img = Gray.(testimage("house"));
-img = imresize(img, (256, 256))
-segments = meanshift(img, 16, 8/255); # parameters are smoothing radii: spatial=16, intensity-wise=8/255
+julia> img = Gray.(testimage("house"));
+
+julia> img = imresize(img, (128, 128));
+
+julia> segments = meanshift(img, 16, 8/255) # parameters are smoothing radii: spatial=16, intensity-wise=8/255
+Segmented Image with:
+  labels map: 128×128 Array{Int64,2}
+  number of labels: 42
 ```
 ![img1](assets/segmentation/small_house.jpg) ![img2](assets/segmentation/meanshift.jpg)
 
@@ -266,11 +321,20 @@ merging), hence it is very fast and can be used in real time applications.
 
 ###### Demo
 
-```julia
-julia> using ImageSegmentation, TestImages;
+```jldoctest
+julia> using ImageSegmentation, TestImages
+
 julia> img = testimage("camera");
-julia> seg = fast_scanning(img, 0.1);  # threshold = 0.1
+
+julia> seg = fast_scanning(img, 0.1)  # threshold = 0.1
+Segmented Image with:
+  labels map: 512×512 Array{Int64,2}
+  number of labels: 2536
+
 julia> seg = prune_segments(seg, i->(segment_pixel_count(seg,i)<50), (i,j)->(-segment_pixel_count(seg,j)))
+Segmented Image with:
+  labels map: 512×512 Array{Int64,2}
+  number of labels: 65
 ```
 
 **Original:**
@@ -293,14 +357,21 @@ be used to create a segmented image.
 
 ###### Demo
 
-```julia
-julia> using TestImages, ImageSegmentation;
-julia> img = testimage("lena_gray")
+```jldoctest
+julia> using TestImages, ImageSegmentation
+
+julia> img = testimage("lena_gray");
+
 julia> function homogeneous(img)
            min, max = extrema(img)
            max - min < 0.2
        end
-julia> seg = region_splitting(img, homogeneous);
+homogeneous (generic function with 1 method)
+
+julia> seg = region_splitting(img, homogeneous)
+Segmented Image with:
+  labels map: 256×256 Array{Int64,2}
+  number of labels: 8836
 ```
 
 **Original:**
@@ -328,10 +399,13 @@ number of clusters and ``iter`` is the number of iterations.
 
 ###### Demo
 
-```julia
-julia> using ImageSegmentation, Images;
-julia> img = load("flower.jpg");
-julia> r = fuzzy_cmeans(img, 3, 2);
+```jldoctest
+julia> using ImageSegmentation, Images
+
+julia> img = load("src/assets/segmentation/flower.jpg");
+
+julia> r = fuzzy_cmeans(img, 3, 2)
+FuzzyCMeansResult: 3 clusters for 135360 points in 3 dimensions (converged in 27 iterations)
 ```
 
 **Original** [(source)](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flower-631765_960_720.jpg/800px-Flower-631765_960_720.jpg)
@@ -353,14 +427,21 @@ Let's see an example on how to use watershed to segment touching objects. To use
 
 ###### Demo
 
-```julia
-using Images, ImageSegmentation;
+```jldoctest
+julia> using Images, ImageSegmentation
 
-img = load(download("http://docs.opencv.org/3.1.0/water_coins.jpg"));
-bw = Gray.(img).>0.5;
-dist = 1.-distance_transform(feature_transform(bw));
-markers = label_components(dist.<-15);
-segments = watershed(dist, markers);
+julia> img = load(download("http://docs.opencv.org/3.1.0/water_coins.jpg"));
+
+julia> bw = Gray.(img) .> 0.5;
+
+julia> dist = 1 .- distance_transform(feature_transform(bw));
+
+julia> markers = label_components(dist .< -15);
+
+julia> segments = watershed(dist, markers)
+Segmented Image with:
+  labels map: 312×252 Array{Int64,2}
+  number of labels: 24
 ```
 
 | Original Image | Thresholded Image |
@@ -386,12 +467,17 @@ using the `region_adjacency_graph` function. Each segment is denoted by a vertex
 and edges are constructed between adjacent segments. The output is a tuple of
 `SimpleWeightedGraph` and a `Dict(label=>vertex)` with weights assigned according to `weight_fn`.
 
-```julia
+```jldoctest
 julia> using ImageSegmentation, Distances, TestImages
+
 julia> img = testimage("camera");
+
 julia> seg = felzenszwalb(img, 10, 100);
+
 julia> weight_fn(i,j) = euclidean(segment_pixel_count(seg,i), segment_pixel_count(seg,j));
+
 julia> G, vert_map = region_adjacency_graph(seg, weight_fn);
+
 julia> G
 {70, 139} undirected simple Int64 graph with Float64 weights
 ```
@@ -409,12 +495,15 @@ If the image is not homogeneous, then it is split into half along each dimension
 the function is called recursively for each portion of the image. The output is a
 `RegionTree`.
 
-```julia
+```jldoctest; setup = :(img = ones(300, 300))
 julia> using ImageSegmentation
+
 julia> function homogeneous(img)
            min, max = extrema(img)
            max - min < 0.2
        end
+homogeneous (generic function with 1 method)
+
 julia> t = region_tree(img, homogeneous)        # `img` is an image
 Cell: RegionTrees.HyperRectangle{2,Float64}([1.0, 1.0], [300.0, 300.0])
 ```
@@ -436,28 +525,33 @@ be removed.
 For this example and the next one (in [Removing a segment](@ref)), a sample
 `SegmentedImage` has been used. It can be generated as:
 
-```julia
-julia> img = fill(1, 4, 4);
-julia> img[3:4,:] = 2;
-julia> img[1:2,3:4] = 3;
+```jldoctest prune; setup = :(using ImageSegmentation)
+julia> img = fill(1, (4, 4));
+
+julia> img[3:4,:] .= 2;
+
+julia> img[1:2,3:4] .= 3;
+
 julia> seg = fast_scanning(img, 0.5);
+
 julia> labels_map(seg)
 4×4 Array{Int64,2}:
  1  1  3  3
  1  1  3  3
  2  2  2  2
  2  2  2  2
-```
 
-```julia
 julia> seg.image_indexmap
 4×4 Array{Int64,2}:
  1  1  3  3
  1  1  3  3
  2  2  2  2
  2  2  2  2
+
 julia> diff_fn(rem_label, neigh_label) = segment_pixel_count(seg,rem_label) - segment_pixel_count(seg,neigh_label);
+
 julia> new_seg = prune_segments(seg, [3], diff_fn);
+
 julia> labels_map(new_seg)
 4×4 Array{Int64,2}:
  1  1  2  2
@@ -476,15 +570,18 @@ neighbouring segment having least `diff_fn` value.
     If multiple segments need to be removed then [`prune_segments`](@ref) should be
     preferred as it is much more time efficient than calling `rem_segment!` multiple times.
 
-```julia
+```jldoctest prune
 julia> seg.image_indexmap
 4×4 Array{Int64,2}:
  1  1  3  3
  1  1  3  3
  2  2  2  2
  2  2  2  2
+
 julia> diff_fn(rem_label, neigh_label) = segment_pixel_count(seg,rem_label) - segment_pixel_count(seg,neigh_label);
+
 julia> rem_segment!(seg, 3, diff_fn);
+
 julia> labels_map(new_seg)
 4×4 Array{Int64,2}:
  1  1  2  2
