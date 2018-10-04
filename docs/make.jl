@@ -2,6 +2,8 @@ using Documenter, Images, ImageFiltering, ImageSegmentation, ImageFeatures
 
 makedocs(format   = :html,
          sitename = "JuliaImages",
+         assets   = [joinpath("assets", "style.css"),
+                    ],
          pages    = ["Home"=>"index.md",
                      "install.md",
                      "Manual" => Any[
@@ -17,6 +19,7 @@ makedocs(format   = :html,
                          "troubleshooting.md",
                      ],
                      "Demos" => Any[
+                         "demos.md",
                          "demos/color_separations_svd.md",
                      ],
                      "function_reference.md",
