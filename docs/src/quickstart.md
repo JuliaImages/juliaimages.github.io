@@ -12,8 +12,7 @@ For most purposes, any `AbstractArray` can be treated as an image. For example,
 ```jldoctest; output = false
 using Images
 
-img = rand(640,480)               # a random Float64 image
-img = rand(RGB{N0f8}, 256, 256)   # a random RGB image, 8 bits per channel
+img = rand(640,480)               # a random Float64 image (grayscale)
 # select a region-of-interest from a larger image
 imgc = img[200:245, 17:42]        # makes a copy
 imgv = @view img[200:245, 17:42]  # makes a view
@@ -80,7 +79,20 @@ In such cases the representation of a single pixel is spread out among
 In JuliaImages, the typical representation of such an image would be
 an `m × n` array of `RGB` values.
 Consequently, every element of the array corresponds to one pixel,
-and conversely each pixel is represented by exactly one array element.
+and conversely each pixel is represented by exactly one array element:
+
+```jldoctest
+using Images, TestImages
+
+img = testimage("mandrill")
+img[350,225]    # pick a reddish pixel from the nose of the mandrill
+
+# output
+
+RGB{N0f8}(0.937,0.294,0.231)
+```
+
+(In ImageView, you can "hover" over pixels and see their coordinates in the statusbar.)
 
 This design choice facilitates generic code that can handle both
 grayscale and color images without needing to introduce extra loops or
