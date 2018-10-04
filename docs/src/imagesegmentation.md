@@ -393,13 +393,15 @@ J = \displaystyle\sum_{i=1}^{N} \sum_{j=1}^{C} \delta_{ij} \| x_{i} - c_{j} \|^2
 
 Unlike K-means, it allows pixels to belong to two or more clusters. It is widely used
 for medical imaging like in the soft segmentation of brain tissue model.
+Note that both Fuzzy C-means and K-means have an element of randomness, and it's possible
+to get results that vary considerably from one run to the next.
 
 **Time Complexity:** ``O(n*C^2*iter)`` where ``n`` is the number of pixels, ``C`` is
 number of clusters and ``iter`` is the number of iterations.
 
 ###### Demo
 
-```jldoctest
+```jldoctest; filter=r"converged in [0-9]+ iterations"
 julia> using ImageSegmentation, Images
 
 julia> img = load("src/assets/segmentation/flower.jpg");
@@ -407,6 +409,13 @@ julia> img = load("src/assets/segmentation/flower.jpg");
 julia> r = fuzzy_cmeans(img, 3, 2)
 FuzzyCMeansResult: 3 clusters for 135360 points in 3 dimensions (converged in 27 iterations)
 ```
+
+Briefly, `r` contains two fields of interest:
+
+- `centers`, a `3×C` matrix of center positions for `C` clusters in RGB colorspace. You can extract it as a vector of colors using `centers = colorview(RGB, r.centers)`.
+- `weights`, a `n×C` matrix such that `r.weights[10,2]` would be the weight of the 10th pixel in the green color channel (color channel 2).  You can visualize this component as `centers[i]*reshape(r.weights[:,i], axes(img))`.
+
+See the documentation in [Clustering.jl](https://github.com/JuliaStats/Clustering.jl) for further details.
 
 **Original** [(source)](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flower-631765_960_720.jpg/800px-Flower-631765_960_720.jpg)
 
