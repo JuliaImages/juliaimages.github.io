@@ -10,12 +10,12 @@ properties of arrays and `Dict`.
 
 You typically create an `ImageMeta` using keyword arguments:
 
-```julia
-julia> using Colors, ImageMetadata
+```jldoctest
+julia> using Colors, ImageMetadata, Dates
 
 julia> img = ImageMeta(fill(RGB(1,0,0), 3, 2), date=Date(2016, 7, 31), time="high noon")
 RGB ImageMeta with:
-  data: 3×2 Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2}
+  data: 3×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
   properties:
     time: high noon
     date: 2016-07-31
@@ -23,21 +23,21 @@ RGB ImageMeta with:
 
 ```@meta
 DocTestSetup = quote
-    using Colors, ImageMetadata
+    using Colors, ImageMetadata, Dates
     img = ImageMeta(fill(RGB(1,0,0), 3, 2), date=Date(2016, 7, 31), time="high noon")
 end
 ```
 
 You can then index elements of `img` like this:
 
-```julia
+```jldoctest
 julia> img[1,2]
 RGB{N0f8}(1.0,0.0,0.0)
 ```
 
 and access and set properties like this:
 
-```julia
+```jldoctest
 julia> img["time"]
 "high noon"
 
@@ -46,7 +46,7 @@ julia> img["time"] = "evening"
 
 julia> img
 RGB ImageMeta with:
-  data: 3×2 Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2}
+  data: 3×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
   properties:
     time: evening
     date: 2016-07-31
@@ -54,9 +54,9 @@ RGB ImageMeta with:
 
 You can extract the data matrix with `data(img)`:
 
-```julia
+```jldoctest
 julia> data(img)
-3×2 Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2}:
+3×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}:
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
@@ -64,7 +64,7 @@ julia> data(img)
 
 and the properties dictionary with `properties`:
 
-```julia
+```jldoctest
 julia> properties(img)
 Dict{String,Any} with 2 entries:
   "time" => "high noon"
@@ -78,18 +78,13 @@ through Julia's type system.  However, functions that receive an
 in your own code it's fine to use properties to your advantage for
 custom tasks.
 
-### getindexim/viewim
+If you index a scalar location (a single pixel), `img[i,j,...]` will return just the value
+of that pixel. But if you index a range, you get another `ImageMeta`:
 
-As with the rest of julia, `img[i,j,...]` will return just the values
-in an `ImageMeta`; the properties dictionary is "left behind." You can
-ensure that the return is also an `ImageMeta` using `getindexim`
-instead of `getindex` (`img[i,j]` gets converted into `getindex(img,
-i, j)`, hence the name):
-
-```julia
-julia> c = getindexim(img, 1:2, 1:2)
+```jldoctest
+julia> c = img[1:2, 1:2]
 RGB ImageMeta with:
-  data: 2×2 Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2}
+  data: 2×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
   properties:
     time: high noon
     date: 2016-07-31
@@ -97,10 +92,10 @@ RGB ImageMeta with:
 
 This copies both the data (just the relevant portions) and the properties dictionary. In contrast,
 
-```julia
-julia> v = viewim(img, 1:2, 1:2)
+```jldoctest
+julia> v = view(img, 1:2, 1:2)
 RGB ImageMeta with:
-  data: 2×2 SubArray{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2,Array{ColorTypes.RGB{FixedPointNumbers.Normed{UInt8,8}},2},Tuple{UnitRange{Int64},UnitRange{Int64}},false}
+  data: 2×2 view(::Array{RGB{N0f8},2}, 1:2, 1:2) with eltype RGB{Normed{UInt8,8}}
   properties:
     time: high noon
     date: 2016-07-31
@@ -130,30 +125,30 @@ chaos could result.
 You can declare that certain properties are coupled to spatial axes
 using `"spatialproperties"`:
 
-```julia
+```jldoctest
 julia> using ImageMetadata
 
 julia> A = reshape(1:15, 3, 5)
-3×5 Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}:
+3×5 reshape(::UnitRange{Int64}, 3, 5) with eltype Int64:
  1  4  7  10  13
  2  5  8  11  14
  3  6  9  12  15
 
-julia> img = ImageMeta(A, spatialproperties=Set(["maxsum"]), maxsum=[maximum(sum(A,1)), maximum(sum(A,2))])
+julia> img = ImageMeta(A, spatialproperties=Set(["maxsum"]), maxsum=[maximum(sum(A,dims=1)), maximum(sum(A,dims=2))])
 Int64 ImageMeta with:
-  data: 3×5 Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}
+  data: 3×5 reshape(::UnitRange{Int64}, 3, 5) with eltype Int64
   properties:
-    maxsum: [42,45]
-    spatialproperties: Set(String["maxsum"])
+    maxsum: [42, 45]
+    spatialproperties: Set(["maxsum"])
 
 julia> imgp = permutedims(img, (2,1))
 Int64 ImageMeta with:
   data: 5×3 Array{Int64,2}
   properties:
-    maxsum: [45,42]
-    spatialproperties: Set(String["maxsum"])
+    maxsum: [45, 42]
+    spatialproperties: Set(["maxsum"])
 
-julia> maximum(sum(imgp,1))
+julia> maximum(sum(imgp, dims=1))
 45
 ```
 

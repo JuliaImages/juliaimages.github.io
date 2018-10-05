@@ -2,6 +2,8 @@ using Documenter, Images, ImageFiltering, ImageSegmentation, ImageFeatures
 
 makedocs(format   = :html,
          sitename = "JuliaImages",
+         assets   = [joinpath("assets", "style.css"),
+                    ],
          pages    = ["Home"=>"index.md",
                      "install.md",
                      "Manual" => Any[
@@ -17,6 +19,7 @@ makedocs(format   = :html,
                          "troubleshooting.md",
                      ],
                      "Demos" => Any[
+                         "demos.md",
                          "demos/color_separations_svd.md",
                      ],
                      "function_reference.md",
@@ -24,11 +27,11 @@ makedocs(format   = :html,
                      ],
          html_edit_branch = "source")
 
-deploydocs(repo    = "github.com/JuliaImages/juliaimages.github.io.git",
-           target  = "build",
-           branch  = "master",
-           latest  = "source",
-           julia   = "0.6",
-           osname  = "linux",
-           deps    = nothing,
-           make    = nothing)
+deploydocs(repo      = "github.com/JuliaImages/juliaimages.github.io.git",
+           target    = "build",
+           branch    = "master",
+           latest    = "source",
+           julia     = "1.0",
+           osname    = "linux",
+           deps      = nothing,
+           make      = nothing)

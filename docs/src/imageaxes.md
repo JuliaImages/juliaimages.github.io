@@ -17,12 +17,7 @@ dealing with such images.
 
 ## Installation
 
-If you've installed the `Images` packages, `ImageAxes` should already
-be installed for you. If not, add it with
-
-```jl
-Pkg.add("ImageAxes")
-```
+If you want to directly use `ImageAxes`, `add` it via the package manager.
 
 ## Usage
 
@@ -85,8 +80,8 @@ You can also specialize methods like this:
 
 ```@example
 using ImageAxes, SimpleTraits
-@traitfn nimages{AA<:AxisArray;  HasTimeAxis{AA}}(img::AA) = length(timeaxis(img))
-@traitfn nimages{AA<:AxisArray; !HasTimeAxis{AA}}(img::AA) = 1
+@traitfn nimages(img::AA) where {AA<:AxisArray;  HasTimeAxis{AA}} = length(timeaxis(img))
+@traitfn nimages(img::AA) where {AA<:AxisArray; !HasTimeAxis{AA}} = 1
 ```
 
 where the pre-defined `HasTimeAxis` trait will restrict that method to

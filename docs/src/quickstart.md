@@ -9,32 +9,42 @@ more detailed explanations in the following sections.
 
 For most purposes, any `AbstractArray` can be treated as an image. For example,
 
-```julia
+```jldoctest; output = false
 using Images
 
-img = rand(640,480)               # a random Float64 image
-img = rand(RGB{N0f8}, 256, 256)   # a random RGB image, 8 bits per channel
+img = rand(640,480)               # a random Float64 image (grayscale)
 # select a region-of-interest from a larger image
 imgc = img[200:245, 17:42]        # makes a copy
 imgv = @view img[200:245, 17:42]  # makes a view
 # an image that starts black in the upper left and gets bright in the lower right:
-img = reshape(linspace(0,1,10^4), 100, 100)
+img = reshape(range(0,stop=1,length=10^4), 100, 100)
 # a 3d box image
 img = zeros(128, 128, 80)
-img[20:100, 20:100, 10:70] = 1
+img[20:100, 20:100, 10:70] .= 1
+maximum(img)
+
+# output
+
+1.0
 ```
 
 Some add-on packages enable additional behavior. For example,
 
-```julia
+```jldoctest
 using Images, Unitful, AxisArrays
 using Unitful: mm, s
 
-img = AxisArray(rand(256, 256, 100, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s))
+img = AxisArray(rand(256, 256, 6, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s));
+pixelspacing(img)
+
+# output
+
+(0.4 mm, 0.4 mm, 1 mm)
 ```
 
 defines a 4d image (3 space dimensions plus one time dimension) with
 the specified name and physical pixel spacing for each coordinate.
+(Note that [`pixelspacing`](@ref) only returns dimensions for spatial coordinates.)
 The AxisArrays package supports rich and efficient operations on such
 arrays, and can be useful to keep track of not just pixel spacing but
 the
@@ -60,7 +70,71 @@ It is very easy to define new array types in Julia--and consequently
 specialized images or operations--and have them interoperate
 smoothly with the vast majority of functions in JuliaImages.
 
-## Colors, the 0-to-1 intensity scale, and views
+## Array elements are pixels (and vice versa)
+
+In some languages, an RGB image is represented as an `m × n × 3` array,
+where the third dimension is the color-channel dimension.
+In such cases the representation of a single pixel is spread out among
+3 array elements.
+In JuliaImages, the typical representation of such an image would be
+an `m × n` array of `RGB` values.
+Consequently, every element of the array corresponds to one pixel,
+and conversely each pixel is represented by exactly one array element:
+
+```jldoctest
+using Images, TestImages
+
+img = testimage("mandrill")
+img[350,225]    # pick a reddish pixel from the nose of the mandrill
+
+# output
+
+RGB{N0f8}(0.937,0.294,0.231)
+```
+
+(In ImageView, you can "hover" over pixels and see their coordinates in the statusbar.)
+
+This design choice facilitates generic code that can handle both
+grayscale and color images without needing to introduce extra loops or
+checks for a color dimension.
+It also provides more rational support for 3d grayscale images--which
+might happen to have size 3 along the third dimension--and
+consequently helps unify the "computer vision" and "biomedical image
+processing" communities.
+
+Because images are just arrays, some environments (e.g.,
+Juno or IJulia/Jupyter) will display numeric arrays as arrays using a text
+representation but will display 2d arrays that have `Colorant`
+elements as images.  You can "convert" in the following ways:
+
+```jldoctest
+using Images
+
+# "Convert" a numeric array to a `Colorant` (but grayscale) array
+A = rand(8, 8)
+img = Gray.(A)               # creates a copy of the data
+img = colorview(Gray, A)     # creates a "view" which "reinterprets" but does not copy data
+
+# RGB images
+A = rand(3, 8, 8)            # Float64 data (64 bits per color channel)
+img = colorview(RGB, A)      # encodes as a 2d RGB{Float64} array
+A = rand(N0f8, 3, 8, 8)      # uses only 8 bits per channel
+img = colorview(RGB, A)      # encodes as a 2d RGB{Float64} array
+
+# The following illustrates "conversions" between representation as an 8-bit RGB
+# image and as a 3×m×n UInt8 array
+A = rand(UInt8, 3, 8, 8)
+img = colorview(RGB, normedview(A))
+A = rand(RGB{N0f8}, 8, 8)
+A = rawview(channelview(A))
+eltype(A)
+
+# output
+
+UInt8
+```
+
+## The 0-to-1 intensity scale
 
 In JuliaImages, by default all images are displayed assuming that 0
 means "black" and 1 means "white" or "saturated" (the latter applying
@@ -80,25 +154,6 @@ images, and avoids the need for special conversion functions that
 change the *value* of pixels when your main goal is simply to change
 the *type* (numeric precision and properties) used to represent the
 pixel.
-
-Because images are just arrays, some environments (e.g.,
-IJulia/Jupyter) will display numeric arrays as arrays (using a text
-representation) but will display 2d arrays that have `Colorant`
-elements as images.  You can "convert" in the following ways:
-
-```julia
-img = colorview(Gray, rand(8, 8))          # encodes as Gray{Float64}, so displays as image
-img = colorview(RGB, rand(3, 8, 8))        # encodes as a 2d RGB{Float64} array
-img = colorview(RGB, rand(N0f8, 3, 8, 8))  # uses only 8 bits per channel
-# The following two "convert" between representation as an 8-bit RGB
-# image and as a 3×m×n UInt8 array
-img = colorview(RGB, normedview(A))
-A = rawview(channelview(rand(RGB{N0f8}, 8, 8)))
-```
-
-All of these "conversions" actually create views, meaning that no
-copies of the underlying storage are made unless you call `copy` on
-the result.
 
 ## Default orientation and storage order
 
@@ -121,6 +176,10 @@ allow array indices to represent *absolute* position in space, making
 it straightforward to keep track of the correspondence between
 location across multiple images. More information can be found in
 [Keeping track of location with unconventional indices](@ref).
+
+## Examples of usage
+
+If you feel ready to get started, see the [Demonstrations](@ref) page for inspiration.
 
 ## Function categories
 
@@ -159,7 +218,5 @@ Test images and phantoms (see also TestImages.jl):
 
 - `shepp_logan`
 
-See also the excellent
-[ImageFeatures](http://juliaimages.github.io/ImageFeatures.jl/latest/)
-package, which supports a number of algorithms important for computer
-vision.
+Also described are the [ImageFeatures.jl](@ref) and [ImageSegmentation.jl](@ref) packages,
+which support a number of algorithms important for computer vision.
