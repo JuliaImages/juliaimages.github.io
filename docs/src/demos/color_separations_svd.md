@@ -1,4 +1,4 @@
-# Color separations and the SVD
+# [Color separations and the SVD](@id color_separations_svd)
 
 This demonstration shows how to work with color channels and build a
 simple GUI to explore image compression using the Singular Value

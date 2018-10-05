@@ -1,15 +1,30 @@
-# Color channels
+# Demonstrations
+
+## Color channels
 
 ```@raw html
-<table>
-  <tbody>
-    <tr>
-      <td><a href="https://juliaimages.github.io/latest/demos/color_separations_svd.html"><img src="assets/demos/color_separations_svd.jpg" alt="SVD"></a></td>
-    </tr>
-  </tbody>
-</table>
+<div class="cards">
 ```
 
-# Contributions
+```@raw html
+<div class="card-200">
+<div class="card-img">
+```
+[![svd](assets/demos/color_separations_svd.jpg)](@ref color_separations_svd)
+```@raw html
+</div>
+<div class="card-text">
+```
+[Color separations and SVD](@ref color_separations_svd)
+```@raw html
+</div>
+</div>
+```
+
+```@raw html
+</div>
+```
+
+## Contributions
 
 Users are invited to [contribute demonstrations of their own](https://github.com/JuliaImages/juliaimages.github.io).

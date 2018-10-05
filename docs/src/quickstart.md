@@ -177,6 +177,10 @@ it straightforward to keep track of the correspondence between
 location across multiple images. More information can be found in
 [Keeping track of location with unconventional indices](@ref).
 
+## Examples of usage
+
+If you feel ready to get started, see the [Demonstrations](@ref) page for inspiration.
+
 ## Function categories
 
 See [Summary and function reference](@ref) for more information about
