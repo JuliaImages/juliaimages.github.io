@@ -222,7 +222,7 @@ These values are close to the channels of `c`, but have been rounded
 off---each channel is encoded with only 8 bits, so some approximation
 of the exact floating-point value is unavoidable.
 
-## A consistent scale for floating-point and "integer" colors: fixed-point numbers
+## [A consistent scale for floating-point and "integer" colors: fixed-point numbers](@id fixedpoint)
 
 `c24` does not have an `r` field, but we can still use `red` to
 extract the red channel:

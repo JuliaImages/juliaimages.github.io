@@ -93,6 +93,8 @@ RGB{N0f8}(0.937,0.294,0.231)
 ```
 
 (In ImageView, you can "hover" over pixels and see their coordinates in the statusbar.)
+The meaning of `N0f8` is summarized [below](@ref The-0-to-1-intensity-scale) and described in detail
+[later](@ref fixedpoint).
 
 This design choice facilitates generic code that can handle both
 grayscale and color images without needing to introduce extra loops or
