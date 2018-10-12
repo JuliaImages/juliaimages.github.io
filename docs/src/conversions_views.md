@@ -410,6 +410,29 @@ compare two (or more) grayscale images. See
 [Keeping track of location with unconventional indices](@ref) for more
 information.
 
+## StackedViews
+
+Sometimes it's helpful to combine several images into a single view for 
+further array like manipulation. 
+```jldoctest; setup = :(using Images)
+julia> img1 = ImageMeta(rand(2,2,2))
+Float64 ImageMeta with:
+  data: 2×2×2 Array{Float64,3}
+  properties:
+
+julia> img2 = ImageMeta(rand(2,2,2))
+Float64 ImageMeta with:
+  data: 2×2×2 Array{Float64,3}
+  properties:
+
+julia> sv = StackedView(img1, img2);
+
+julia> imgMatrix = reshape(sv, (2, prod(size(img1))))
+2×8 reshape(::StackedView{Float64,4,Tuple{ImageMeta{Float64,3,Array{Float64,3}},ImageMeta{Float64,3,Array{Float64,3}}}}, 2, 8) with eltype Float64:
+ 0.146778  0.833466  0.0380765  0.930426  0.623228  0.692244  0.344908  0.335563
+ 0.530886  0.335896  0.502504   0.523674  0.380827  0.149471  0.749996  0.567014
+```
+
 ## Decoupling views from the parent memory
 
 If you want to use some of these views but have an application where
