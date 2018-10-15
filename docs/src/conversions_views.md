@@ -415,22 +415,23 @@ information.
 Sometimes it's helpful to combine several images into a single view for 
 further array like manipulation. 
 ```jldoctest; setup = :(using Images)
-julia> img1 = ImageMeta(rand(2,2,2))
-Float64 ImageMeta with:
-  data: 2×2×2 Array{Float64,3}
+
+julia> img1 = ImageMeta(reshape(1:1:8, (2,2,2)))
+Int64 ImageMeta with:
+  data: 2×2×2 reshape(::StepRange{Int64,Int64}, 2, 2, 2) with eltype Int64
   properties:
 
-julia> img2 = ImageMeta(rand(2,2,2))
-Float64 ImageMeta with:
-  data: 2×2×2 Array{Float64,3}
+julia> img2 = ImageMeta(reshape(2:1:9, (2,2,2)))
+Int64 ImageMeta with:
+  data: 2×2×2 reshape(::StepRange{Int64,Int64}, 2, 2, 2) with eltype Int64
   properties:
 
 julia> sv = StackedView(img1, img2);
 
-julia> imgMatrix = reshape(sv, (2, prod(size(img1))))
-2×8 reshape(::StackedView{Float64,4,Tuple{ImageMeta{Float64,3,Array{Float64,3}},ImageMeta{Float64,3,Array{Float64,3}}}}, 2, 8) with eltype Float64:
- 0.146778  0.833466  0.0380765  0.930426  0.623228  0.692244  0.344908  0.335563
- 0.530886  0.335896  0.502504   0.523674  0.380827  0.149471  0.749996  0.567014
+julia> imgMatrix = reshape(sv, (2, 8))
+2×8 reshape(::StackedView{Int64,4,Tuple{ImageMeta{Int64,3,Base.ReshapedArray{Int64,3,StepRange{Int64,Int64},Tuple{}}},ImageMeta{Int64,3,Base.ReshapedArray{Int64,3,StepRange{Int64,Int64},Tuple{}}}}}, 2, 8) with eltype Int64:
+ 1  2  3  4  5  6  7  8
+ 2  3  4  5  6  7  8  9
 ```
 
 ## Decoupling views from the parent memory
