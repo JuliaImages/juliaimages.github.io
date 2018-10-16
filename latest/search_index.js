@@ -257,6 +257,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "conversions_views.html#StackedViews-1",
+    "page": "Conversions vs. views",
+    "title": "StackedViews",
+    "category": "section",
+    "text": "Sometimes it\'s helpful to combine several images into a single view for further array-like manipulation.julia> img1 = reshape(1:8, (2,4))\n2×4 reshape(::UnitRange{Int64}, 2, 4) with eltype Int64:\n 1  3  5  7\n 2  4  6  8\n\njulia> img2 = reshape(11:18, (2,4))\n2×4 reshape(::UnitRange{Int64}, 2, 4) with eltype Int64:\n 11  13  15  17\n 12  14  16  18\n\njulia> sv = StackedView(img1, img2)\n2×2×4 StackedView{Int64,3,Tuple{Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}},Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}}}:\n[:, :, 1] =\n  1   2\n 11  12\n\n[:, :, 2] =\n  3   4\n 13  14\n\n[:, :, 3] =\n  5   6\n 15  16\n\n[:, :, 4] =\n  7   8\n 17  18\n\njulia> imgMatrix = reshape(sv, (2, 8))\n2×8 reshape(::StackedView{Int64,3,Tuple{Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}},Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}}}, 2, 8) with eltype Int64:\n  1   2   3   4   5   6   7   8\n 11  12  13  14  15  16  17  18"
+},
+
+{
     "location": "conversions_views.html#Decoupling-views-from-the-parent-memory-1",
     "page": "Conversions vs. views",
     "title": "Decoupling views from the parent memory",
