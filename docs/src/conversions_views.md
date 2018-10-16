@@ -410,6 +410,46 @@ compare two (or more) grayscale images. See
 [Keeping track of location with unconventional indices](@ref) for more
 information.
 
+## StackedViews
+
+Sometimes it's helpful to combine several images into a single view for
+further array-like manipulation.
+
+```jldoctest; setup = :(using Images)
+julia> img1 = reshape(1:8, (2,4))
+2×4 reshape(::UnitRange{Int64}, 2, 4) with eltype Int64:
+ 1  3  5  7
+ 2  4  6  8
+
+julia> img2 = reshape(11:18, (2,4))
+2×4 reshape(::UnitRange{Int64}, 2, 4) with eltype Int64:
+ 11  13  15  17
+ 12  14  16  18
+
+julia> sv = StackedView(img1, img2)
+2×2×4 StackedView{Int64,3,Tuple{Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}},Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}}}:
+[:, :, 1] =
+  1   2
+ 11  12
+
+[:, :, 2] =
+  3   4
+ 13  14
+
+[:, :, 3] =
+  5   6
+ 15  16
+
+[:, :, 4] =
+  7   8
+ 17  18
+
+julia> imgMatrix = reshape(sv, (2, 8))
+2×8 reshape(::StackedView{Int64,3,Tuple{Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}},Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}}}, 2, 8) with eltype Int64:
+  1   2   3   4   5   6   7   8
+ 11  12  13  14  15  16  17  18
+```
+
 ## Decoupling views from the parent memory
 
 If you want to use some of these views but have an application where
