@@ -52,7 +52,7 @@ welcome.
 | **Transformations**                   |                                           |                                   |                                           |
 | Resize                                | `imresize`, `restrict`                    | `resize`                          | `imresize`                                |
 | Image pyramids                        | `gaussian_pyramid` (or use `restrict`)    | `pyramid_gaussian` etc.           | `impyramid`                               |
-| Rotate                                | `warp`                                    | `rotate`                          | `imrotate`                                |
+| Rotate                                | `imrotate`                                    | `rotate`                          | `imrotate`                                |
 | Translate                             | `warp`                                    |                                   | `imtranslate`                             |
 | General geometric transformation      | `warp`                                    | `warp`                            | `imwarp`                                  |
 | Hough transform                       | `hough_transform_standard`, `hough_circle_gradient` | `hough_circle`, etc.              | `hough`                                   |
