@@ -1,0 +1,12 @@
+# Documentation: http://docs.travis-ci.com/user/languages/julia/
+language: julia
+os:
+  - linux
+julia:
+  - 1.0
+notifications:
+  email: false
+script:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia -e 'using Pkg; pkg"add Documenter Images AxisArrays Colors ColorTypes CoordinateTransformations Distances FileIO FixedPointNumbers ImageAxes ImageDraw ImageFeatures ImageFiltering ImageMagick ImageMetadata ImageSegmentation SimpleTraits TestImages Unitful"'
+  - julia -e 'cd(ENV["TRAVIS_BUILD_DIR"]); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
