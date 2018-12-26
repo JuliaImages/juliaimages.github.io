@@ -1,4 +1,4 @@
-# www.juliaimages.org
+# juliaimages.org
 
 Documentation For [JuliaImages](https://github.com/JuliaImages), the organization for image processing with Julia.
 
