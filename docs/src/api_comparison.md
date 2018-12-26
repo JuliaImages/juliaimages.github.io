@@ -101,6 +101,6 @@ welcome.
 | Bottom-hat filtering                  | `bothat`                                  | `bottomhat`                       | `imbothat`                                |
 | Regional max/min                      | `mapwindow`                               | `filters.rank.maximum` etc.       | `imregionalmax` etc.                      |
 | Convex hull                           | `convexhull`                              | `convex_hull_image`               | `bwconvhull`                              |
-| Borders                               |                                           | `clear_border`                    | `imclearborder`                           |
+| Borders                               | `clearborder`                             | `clear_border`                    | `imclearborder`                           |
 | Boundaries                            |                                           | `find_boundaries`                 | `boundarymask`                            |
 | Filling                               |                                           | `remove_small_holes`              | `imfill`, `regionfill`                    |
