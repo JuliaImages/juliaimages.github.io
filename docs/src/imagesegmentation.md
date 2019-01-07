@@ -452,7 +452,7 @@ Segmented Image with:
   labels map: 312×252 Array{Int64,2}
   number of labels: 24
 
-julia> segments = imshow( map(i->segment_mean(segments,i), labels_map(segments)) .* .~bw)       #shows segmented image
+julia> imshow( map(i->segment_mean(segments,i), labels_map(segments)) .* .~bw)       #shows segmented image
 ```
 
 | Original Image | Thresholded Image |
