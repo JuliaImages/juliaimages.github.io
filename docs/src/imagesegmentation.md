@@ -451,6 +451,8 @@ julia> segments = watershed(dist, markers)
 Segmented Image with:
   labels map: 312×252 Array{Int64,2}
   number of labels: 24
+
+julia> imshow( map(i->get_random_color(i), labels_map(segments)) .* (1 .-bw))       #shows segmented image
 ```
 
 | Original Image | Thresholded Image |
