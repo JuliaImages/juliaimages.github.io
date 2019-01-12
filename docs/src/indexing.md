@@ -79,7 +79,7 @@ You can learn more about Julia's support for arbitrary indices in
 Suppose you are presented with a 3-dimensional grayscale image. Is this a movie (2d over time), or a 3d image (x, y, and z)? In such situations, one of the best ways to keep yourself oriented is by naming the axes.
 The TestImages package contains an example of a file that illustrates this:
 
-```jldoctest
+```julia-repl
 julia> using Images, TestImages
 
 julia> img = testimage("mri");
