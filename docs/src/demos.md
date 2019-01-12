@@ -22,6 +22,21 @@
 ```
 
 ```@raw html
+<div class="card-200">
+<div class="card-img">
+```
+[![rgb_hsv_thresholding](assets/demos/rgb_hsv_thresholding.png)](@ref rgb_hsv_thresholding)
+```@raw html
+</div>
+<div class="card-text">
+```
+[RGB to HSV and thresholding](@ref rgb_hsv_thresholding)
+```@raw html
+</div>
+</div>
+```
+
+```@raw html
 </div>
 ```
 

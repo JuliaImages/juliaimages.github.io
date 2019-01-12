@@ -21,6 +21,7 @@ makedocs(format   = :html,
                      "Demos" => Any[
                          "demos.md",
                          "demos/color_separations_svd.md",
+			 "demos/rgb_hsv_thresholding.md",
                      ],
                      "function_reference.md",
                      "api_comparison.md",
