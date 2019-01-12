@@ -9,4 +9,4 @@ notifications:
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'using Pkg; pkg"add Documenter Images AxisArrays Colors ColorTypes CoordinateTransformations Distances FileIO FixedPointNumbers ImageAxes ImageDraw ImageFeatures ImageFiltering ImageMagick ImageMetadata ImageSegmentation SimpleTraits TestImages Unitful"'
-  - julia -e 'cd(ENV["TRAVIS_BUILD_DIR"]); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
+  - julia --color=yes -e 'cd(ENV["TRAVIS_BUILD_DIR"]); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
