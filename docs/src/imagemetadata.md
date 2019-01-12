@@ -56,7 +56,7 @@ You can extract the data matrix with `data(img)`:
 
 ```jldoctest
 julia> data(img)
-3×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}:
+3×2 Array{RGB{N0f8},2} with eltype RGB{FixedPointNumbers.Normed{UInt8,8}}:
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)

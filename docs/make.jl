@@ -1,6 +1,6 @@
 using Documenter, Images, ImageFiltering, ImageSegmentation, ImageFeatures
 
-makedocs(format   = :html,
+makedocs(format = :html,
          sitename = "JuliaImages",
          assets   = [joinpath("assets", "style.css"),
                     ],

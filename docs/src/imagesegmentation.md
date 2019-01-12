@@ -436,7 +436,7 @@ Let's see an example on how to use watershed to segment touching objects. To use
 
 ###### Demo
 
-```jldoctest
+```julia-repl
 julia> using Images, ImageSegmentation
 
 julia> img = load(download("http://docs.opencv.org/3.1.0/water_coins.jpg"));
@@ -452,7 +452,7 @@ Segmented Image with:
   labels map: 312×252 Array{Int64,2}
   number of labels: 24
 
-julia> imshow( map(i->get_random_color(i), labels_map(segments)) .* (1 .-bw))       #shows segmented image
+julia> imshow(map(i->get_random_color(i), labels_map(segments)) .* (1 .-bw))       #shows segmented image
 ```
 
 | Original Image | Thresholded Image |

@@ -316,12 +316,7 @@ ERROR: ArgumentError: (8, 2, 0) are integers in the range 0-255, but integer inp
   Consider dividing your input values by 255, for example: RGB{N0f8}(8/255,2/255,0/255)
   See the READMEs for FixedPointNumbers and ColorTypes for more information.
 Stacktrace:
- [1] throw_colorerror(::Type{Normed{UInt8,8}}, ::Tuple{Int64,Int64,Int64}) at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:673
- [2] throw_colorerror(::Type{Normed{UInt8,8}}, ::Int64, ::Int64, ::Int64) at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:642
- [3] checkval at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:624 [inlined]
- [4] RGB{Normed{UInt8,8}}(::Int64, ::Int64, ::Int64) at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:90
- [5] RGB(::Int64, ::Int64, ::Int64) at /home/tim/.julia/packages/ColorTypes/BsAWO/src/types.jl:441
- [6] top-level scope at none:0
+[...]
 ```
 
 The error message here reminds you how to resolve a common mistake,
