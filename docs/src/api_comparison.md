@@ -29,7 +29,7 @@ welcome.
 | Compute histogram                     | `imhist`                                  | `histogram`                       | `imhist`                                  |
 | Histogram equalization                | `histeq`                                  | `equalize_hist`                   | `histeq`                                  |
 | Adaptive equalization                 | `clahe`                                   | `equalize_adapthist`              | `adapthisteq`                             |
-| Reference histogram matching          | `histmatch`                               |                                   | `imhistmatch`                             |
+| Reference histogram matching          | `histmatch`                               | `match_histograms`                | `imhistmatch`                             |
 | Quantization                          | map anonymous function                    |                                   | `imquantize`                              |
 | Threshold estimation                  | `otsu_threshold`                          | `threshold_otsu` etc.             | `graythresh` etc.                         |
 |                                       |                                           |                                   |                                           |
