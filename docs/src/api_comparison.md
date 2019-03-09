@@ -64,7 +64,7 @@ welcome.
 | **Statistics and image comparison**   |                                           |                                   |                                           |
 | Image differences                     | `ssd`, `sad`, etc.                        |                                   | `immse`, `ssim`                           |
 | Min/max/mean                          | `minfinite`, `maxfinite`, `meanfinite`    |                                   | `nanmax`, etc.                            |
-| Entropy                               | `entropy`                                 |                                   | `entropy`                                 |
+| Entropy                               | `entropy`                                 |  `entropy                        | `entropy`                                 |
 |                                       |                                           |                                   |                                           |
 | **Filtering and padding**             |                                           |                                   |                                           |
 | Linear filtering                      | `imfilter`                                | `gaussian`, etc.                  | `imfilter`                                |
