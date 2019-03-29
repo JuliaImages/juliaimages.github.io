@@ -1,11 +1,10 @@
 using Documenter, Images, ImageFiltering, ImageSegmentation, ImageFeatures, PaddedViews
 
-makedocs(modules = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, ImageAxes,
+makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, ImageAxes,
                     ImageFeatures, ImageFiltering, ImageMetadata,
-                    ImageSegmentation, ImageTransformations, PaddedViews, ImageMorphology
-                    ],
-         format = Documenter.HTML(edit_branch = "source",
-                             assets = [joinpath("assets", "style.css")]);
+                    ImageSegmentation, ImageTransformations, PaddedViews, ImageMorphology],
+         format   = Documenter.HTML(edit_branch = "source",
+                                    assets = [joinpath("assets", "style.css")]),
          sitename = "JuliaImages",
          pages    = ["Home" => "index.md",
                      "install.md",
@@ -21,14 +20,14 @@ makedocs(modules = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, Im
                          "imagefeatures.md",
                          "troubleshooting.md",
                      ],
-                    "Demos" => Any[
-                        "demos.md",
-                        "demos/color_separations_svd.md",
-			            "demos/rgb_hsv_thresholding.md",
+                     "Demos" => Any[
+                         "demos.md",
+                         "demos/color_separations_svd.md",
+                         "demos/rgb_hsv_thresholding.md",
                      ],
                      "function_reference.md",
                      "api_comparison.md",
-                     ])
+                    ])
 
 deploydocs(repo      = "github.com/JuliaImages/juliaimages.github.io.git",
            target    = "build",
