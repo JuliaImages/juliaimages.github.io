@@ -380,7 +380,7 @@ match_keypoints
 
 #### Gray Level Co-occurence Matrix
 
-```@docs
+```julia
 glcm
 glcm_symmetric
 glcm_norm
@@ -401,7 +401,7 @@ glcm_var_neighbour
 
 #### Local Binary Patterns
 
-```@docs
+```julia
 lbp
 modified_lbp
 direction_coded_lbp
