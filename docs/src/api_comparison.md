@@ -103,4 +103,4 @@ welcome.
 | Convex hull                           | `convexhull`                              | `convex_hull_image`               | `bwconvhull`                              |
 | Borders                               | `clearborder`                             | `clear_border`                    | `imclearborder`                           |
 | Boundaries                            |                                           | `find_boundaries`                 | `boundarymask`                            |
-| Filling                               |                                           | `remove_small_holes`              | `imfill`, `regionfill`                    |
+| Filling                               | `imfill`                                  | `remove_small_holes`              | `imfill`, `regionfill`                    |
