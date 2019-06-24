@@ -17,6 +17,7 @@ makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, I
                          "imagefiltering.md",
                          "imagemetadata.md",
                          "imagesegmentation.md",
+                         "imagetransformations.md",
                          "imagefeatures.md",
                          "troubleshooting.md",
                      ],
