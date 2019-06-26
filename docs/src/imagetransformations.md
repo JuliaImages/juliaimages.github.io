@@ -33,7 +33,7 @@ There are in-place version of many of the functions, e.g., `imresize!` etc.
 ```julia
 using ImageTransformations, TestImages
 img = testimage("mandrill")
-img_small = imresize(img, round.(Int, size(img)./8))
+img_small = imresize(img, ratio=1/8)
 img_medium = imresize(img_small, size(img_small).*2)
 ```
 
