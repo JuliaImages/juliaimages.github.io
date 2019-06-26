@@ -33,8 +33,10 @@ There are in-place version of many of the functions, e.g., `imresize!` etc.
 ```julia
 using ImageTransformations, TestImages
 img = testimage("mandrill")
-img_small = imresize(img, round.(Int, size(img)./2))
-img_big = imresize(img, size(img).*2)
+img_small = imresize(img, ratio=1/8)
+img_medium = imresize(img_small, size(img_small).*2)
 ```
 
-todo: show results
+Resulting images (small and medium):
+![img_small](assets/transform/img_small.png)
+![img_medium](assets/transform/img_medium.png)
