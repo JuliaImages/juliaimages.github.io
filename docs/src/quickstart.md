@@ -78,7 +78,8 @@ Some add-on packages enable additional behavior. For example,
 using Unitful, AxisArrays
 using Unitful: mm, s
 
-img = AxisArray(rand(256, 256, 6, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s));
+img = AxisArray(rand(256, 256, 6, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s))
+nothing # hide
 ```
 
 defines a 4d image (3 space dimensions plus one time dimension) with
@@ -134,12 +135,9 @@ RGB(0.0, 0.0, 1.0) # blue
 and image is just an array of pixel objects:
 
 ```@repl pixel
-img_gray = rand(Gray, 4, 4);
-summary(img_gray)
-img_rgb = rand(RGB, 4, 4);
-summary(img_rgb)
-img_lab = rand(Lab, 4, 4);
-summary(img_lab)
+img_gray = rand(Gray, 2, 2)
+img_rgb = rand(RGB, 2, 2)
+img_lab = rand(Lab, 2, 2)
 ```
 ```@example pixel
 mosaicview(cat(RGB.(img_gray), # hide
@@ -150,7 +148,7 @@ mosaicview(cat(RGB.(img_gray), # hide
 ```
 
 As you can see, both `img_rgb` and `img_lab` images are of size
-``4 \times 4`` instead of ``4 \times 4 \times 3`` or ``3 \times 4 \times 4``;
+``2 \times 2`` instead of ``2 \times 2 \times 3`` or ``3 \times 2 \times 2``;
 RGB image has `RGB` pixels, Lab image has `Lab` pixel.
 
 !!! note
@@ -168,17 +166,15 @@ processing" communities.
 Because images are just arrays, some environments (e.g.,
 Juno or IJulia/Jupyter) will display numeric arrays as arrays using a text
 representation but will display 2d arrays that have `Colorant`
-elements as images.  You can "convert" in the following ways:
+elements as images.
 
 ## Color conversions are construction/view
 
 Conversions between different `Colorant`s are straightforward:
 
 ```@repl pixel
-summary(img_gray)
-summary(RGB.(img_gray)) # Gray => RGB
-summary(img_rgb)
-summary(Gray.(img_rgb)) # RGB => Gray
+RGB.(img_gray) # Gray => RGB
+Gray.(img_rgb) # RGB => Gray
 ```
 
 !!! note
@@ -186,31 +182,28 @@ summary(Gray.(img_rgb)) # RGB => Gray
     semantics used in JuliaImages here and there, check the documentation if
     you're not familiar with it.
 
-Sometimes, to be compatible to other packages, you'll need to convert a ``m \times n``
+Sometimes, to work with other packages, you'll need to convert a ``m \times n``
 `RGB` images to ``m \times n \times 3`` image and vice versa. `channelview` and
 `colorview` are designed for this purpose. For example:
 
 ```@repl pixel
-img_CHW = channelview(img_rgb); # 3 * 4 * 4
+img_CHW = channelview(img_rgb); # 3 * 2 * 2
 summary(img_CHW)
-img_HWC = permutedims(img_CHW, (2, 3, 1)); # 4 * 4 * 3
+img_HWC = permutedims(img_CHW, (2, 3, 1)); # 2 * 2 * 3
 summary(img_HWC)
 ```
 
 ```@repl pixel
-img_CHW = permutedims(img_HWC, (3, 1, 2)); # 3 * 4 * 4
+img_CHW = permutedims(img_HWC, (3, 1, 2)); # 3 * 2 * 2
 summary(img_CHW)
-img_rgb = colorview(RGB, img_CHW); # 4 * 4
+img_rgb = colorview(RGB, img_CHW); # 2 * 2
 summary(img_rgb)
-```
-```@example pixel
-colorview(RGB, img_CHW) # hide
 ```
 
 !!! note
     The reason we use CHW (i.e., channel-height-width) order instead of HWC
-    is that this provides a memory friendly indexing mechanisim for `Array`
-    - by default, in Julia the first index is also the fastest (i.e., has
+    is that this provides a memory friendly indexing mechanisim for `Array`.
+    By default, in Julia the first index is also the fastest (i.e., has
     adjacent storage in memory). For more details, please check [Access arrays in memory order, along columns](https://docs.julialang.org/en/v1/manual/performance-tips/#Access-arrays-in-memory-order,-along-columns-1)
 
     You can use `permuteddimsview` to "reinterpret" the orientation of a
@@ -253,7 +246,7 @@ images (and even `N2f14` for images acquired with a 14-bit camera, etc.).
 
 ```@repl fixedpoint
 img_n0f8 = rand(N0f8, 2, 2)
-extrema(float.(img_n0f8))
+float.(img_n0f8)
 ```
 
 !!! note
@@ -267,35 +260,36 @@ underlying storage data and convert it to `UInt8` (or other types) if you insist
 
 ```@repl fixedpoint
 img_n0f8_raw = rawview(img_n0f8)
-extrema(float.(img_n0f8_raw))
+float.(img_n0f8_raw)
 ```
 
-For most of time, `floattype` is sufficient to accomplish your job:
+Conversions between the storage type without changing the color type are supported
+by the following functions:
+
+* `float32`, `float64`
+* `n0f8`, `n6f10`, `n4f12`, `n2f14`, `n0f16`
 
 ```@repl fixedpoint
-img_n0f8 = rand(Gray{N0f8}, 2, 2);
-summary(img_n0f8)
-T = floattype(eltype(img_n0f8)) # promote storage type from N0f8 to Float32
-img_float32 = T.(img_n0f8);
-summary(img_float32)
+img = rand(Gray{N0f8}, 2, 2)
+img_float32 = float32.(img) # Gray{N0f8} => Gray{Float32}
+img_n0f16 = n0f16.(img_float32) # Gray{Float32} => Gray{N0f16}
 ```
 
+If you don't want to specify the destination type, `floattype` is designed for this:
 
-## Display
+```@repl fixedpoint
+img_n0f8 = rand(Gray{N0f8}, 2, 2)
+T = floattype(eltype(img_n0f8)) # promote storage type from N0f8 to Float32
+img_float = T.(img_n0f8) # Gray{N0f8} => T
+```
 
-Currently there're four julia packages can be used to display an image:
+For a view-like conversion without new memory allocation, `of_eltype` in [`MappedArrays`](https://github.com/JuliaArrays/MappedArrays.jl) is designed for this:
 
-* [`ImageShow`](https://github.com/JuliaImages/ImageShow.jl) is used to support image display in Juno and IJulia. This is automatically included when you use `Images`.
-* [`ImageInTerminal`](https://github.com/JuliaImages/ImageInTerminal.jl) is used to support image display in terminal.
-* [`ImageView`](https://github.com/JuliaImages/ImageView.jl) is an image display GUI.
-* [`Plots`](https://github.com/JuliaPlots/Plots.jl) maintained by JuliaPlots is a general plotting package that support image display.
-
-!!! warning
-    Currently `ImageView` is not fully tested on MacOS and
-    Windows; check [ImageView#146](https://github.com/
-    JuliaImages/ImageView.jl/issues/146) and
-    [ImageView#175](https://github.com/JuliaImages/ImageView.jl/issues/175) to get an update.
-
+```@repl fixedpoint
+using MappedArrays
+img_float_view = of_eltype(T, img_n0f8)
+eltype(img_float_view)
+```
 
 ## Arrays with arbitrary indices
 
@@ -307,6 +301,21 @@ allow array indices to represent *absolute* position in space, making
 it straightforward to keep track of the correspondence between
 location across multiple images. More information can be found in
 [Keeping track of location with unconventional indices](@ref).
+
+## Display
+
+Currently there're four julia packages can be used to display an image:
+
+* [`ImageShow`](https://github.com/JuliaImages/ImageShow.jl) is used to support image display in Juno and IJulia. This is automatically used when you use `Images`.
+* [`ImageInTerminal`](https://github.com/JuliaImages/ImageInTerminal.jl) is used to support image display in terminal.
+* [`ImageView`](https://github.com/JuliaImages/ImageView.jl) is an image display GUI.
+* [`Plots`](https://github.com/JuliaPlots/Plots.jl) maintained by JuliaPlots is a general plotting package that support image display.
+
+!!! warning
+    Currently `ImageView` is not fully tested on MacOS and
+    Windows; check [ImageView#146](https://github.com/
+    JuliaImages/ImageView.jl/issues/146) and
+    [ImageView#175](https://github.com/JuliaImages/ImageView.jl/issues/175) to get an update.
 
 ## Examples of usage
 
