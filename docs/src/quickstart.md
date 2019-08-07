@@ -7,50 +7,89 @@ more detailed explanations in the following sections.
 
 ## Images are just arrays
 
-For most purposes, any `AbstractArray` can be treated as an image. For example,
+```@setup array
+using Images, ImageDraw
 
-```jldoctest; output = false
-using Images
-
-img = rand(640,480)               # a random Float64 image (grayscale)
-# select a region-of-interest from a larger image
-imgc = img[200:245, 17:42]        # makes a copy
-imgv = @view img[200:245, 17:42]  # makes a view
-# an image that starts black in the upper left and gets bright in the lower right:
-img = reshape(range(0,stop=1,length=10^4), 100, 100)
-# a 3d box image
-img = zeros(128, 128, 80)
-img[20:100, 20:100, 10:70] .= 1
-maximum(img)
-
-# output
-
-1.0
+make_roi(tl::Point, br::Point) = Polygon([tl, Point(br.x, tl.y), br, Point(tl.x, br.y)])
+make_roi(xs::UnitRange, ys::UnitRange) = make_roi(Point(ys[1], xs[1]), Point(ys[end], xs[end]))
 ```
+
+For most purposes, any `AbstractArray` can be treated as an image. For example, numeric array can be interpreted as a grayscale image.
+
+```@repl array
+img = rand(4, 4)
+```
+```@example array
+Gray.(img) #hide
+```
+
+We could also select a region-of-interest from a larger image
+
+```@example array
+# generate an image that starts black in the upper left
+# and gets bright in the lower right
+img = Array(reshape(range(0,stop=1,length=10^4), 100, 100))
+# make a copy
+img_c = img[51:70, 21:70] # red
+# make a view
+img_v = @view img[16:35, 41:90] # blue
+
+out = vcat(img, hcat(img_c, img_v)) # hide
+out = RGB.(Gray.(out)) # hide
+img_boundary = make_roi(1:100, 1:100) # hide
+roi_c = make_roi(51:70, 21:70) # hide
+roi_v = make_roi(16:35, 41:90) # hide
+roi_c_boundary = make_roi(101:120, 1:50) # hide
+roi_v_boundary = make_roi(101:120, 51:100) # hide
+draw!(out, img_boundary, RGB{Float64}(0, 0, 0)) # hide
+draw!(out, roi_c_boundary, RGB{Float64}(1, 0, 0)) # hide
+draw!(out, roi_c, RGB{Float64}(1, 0, 0)) # hide
+draw!(out, roi_v_boundary, RGB{Float64}(0, 0, 1)) # hide
+draw!(out, roi_v, RGB{Float64}(0, 0, 1)) # hide
+```
+
+As you might know, changing the value of a view would affect the original
+image, while changing that of a copy doesn't:
+
+```@example array
+fill!(img_c, 1) # red region in original doesn't change
+fill!(img_v, 0) # blue
+
+out = vcat(img, hcat(img_c, img_v)) # hide
+out = RGB.(Gray.(out)) # hide
+img_boundary = make_roi(1:100, 1:100) # hide
+roi_c = make_roi(51:70, 21:70) # hide
+roi_v = make_roi(16:35, 41:90) # hide
+roi_c_boundary = make_roi(101:120, 1:50) # hide
+roi_v_boundary = make_roi(101:120, 51:100) # hide
+draw!(out, img_boundary, RGB{Float64}(0, 0, 0)) # hide
+draw!(out, roi_c_boundary, RGB{Float64}(1, 0, 0)) # hide
+draw!(out, roi_c, RGB{Float64}(1, 0, 0)) # hide
+draw!(out, roi_v_boundary, RGB{Float64}(0, 0, 1)) # hide
+draw!(out, roi_v, RGB{Float64}(0, 0, 1)) # hide
+```
+
+Don't worry if you don't get the "image" result, that's expected and you'll
+learn how to automatically display an image later in JuliaImages.
 
 Some add-on packages enable additional behavior. For example,
 
-```jldoctest
-using Images, Unitful, AxisArrays
+```@example array
+using Unitful, AxisArrays
 using Unitful: mm, s
 
-img = AxisArray(rand(256, 256, 6, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s));
-pixelspacing(img)
-
-# output
-
-(0.4 mm, 0.4 mm, 1 mm)
+img = AxisArray(rand(256, 256, 6, 50), (:x, :y, :z, :time), (0.4mm, 0.4mm, 1mm, 2s))
+nothing # hide
 ```
 
 defines a 4d image (3 space dimensions plus one time dimension) with
 the specified name and physical pixel spacing for each coordinate.
-(Note that [`pixelspacing`](@ref) only returns dimensions for spatial coordinates.)
-The AxisArrays package supports rich and efficient operations on such
+The `AxisArrays` package supports rich and efficient operations on such
 arrays, and can be useful to keep track of not just pixel spacing but
 the
 [orientation convention used for multidimensional images](http://www.grahamwideman.com/gw/brain/orientation/orientterms.htm).
 
-JuliaImages interoperates smoothly with AxisArrays and many other
+JuliaImages interoperates smoothly with `AxisArrays` and many other
 packages.  As further examples,
 
 - the `ImageMetadata` package (incorporated into `Images` itself)
@@ -72,29 +111,49 @@ smoothly with the vast majority of functions in JuliaImages.
 
 ## Array elements are pixels (and vice versa)
 
-In some languages, an RGB image is represented as an `m × n × 3` array,
-where the third dimension is the color-channel dimension.
-In such cases the representation of a single pixel is spread out among
-3 array elements.
-In JuliaImages, the typical representation of such an image would be
-an `m × n` array of `RGB` values.
-Consequently, every element of the array corresponds to one pixel,
-and conversely each pixel is represented by exactly one array element:
-
-```jldoctest
-using Images, TestImages
-
-img = testimage("mandrill")
-img[350,225]    # pick a reddish pixel from the nose of the mandrill
-
-# output
-
-RGB{N0f8}(0.937,0.294,0.231)
+```@setup pixel
+using Images, MosaicViews
 ```
 
-(In ImageView, you can "hover" over pixels and see their coordinates in the statusbar.)
-The meaning of `N0f8` is summarized [below](@ref The-0-to-1-intensity-scale) and described in detail
-[later](@ref fixedpoint).
+Elements of image are called **pixels**; in JuliaImages we provide an
+abstraction on this concept. For example, we have `Gray` for grayscale image,
+`RGB` for RGB image, `Lab` for Lab image, and etc.
+
+Creating a pixel is initializing a struct of that type:
+
+```@example pixel
+Gray(0.0) # black
+Gray(1.0) # white
+RGB(1.0, 0.0, 0.0) # red
+RGB(0.0, 1.0, 0.0) # green
+RGB(0.0, 0.0, 1.0) # blue
+[RGB.(Gray(0.0)) RGB.(Gray(1.0)) RGB(1.0, 0.0, 0.0) RGB(0.0, 1.0, 0.0) RGB(0.0, 0.0, 1.0)] # hide
+```
+
+and image is just an array of pixel objects:
+
+```@repl pixel
+img_gray = rand(Gray, 2, 2)
+img_rgb = rand(RGB, 2, 2)
+img_lab = rand(Lab, 2, 2)
+```
+```@example pixel
+mosaicview(cat(RGB.(img_gray), # hide
+               RGB.(img_rgb), # hide
+               RGB.(img_lab), dims=3), # hide
+           RGB(1, 1, 1), # hide
+           nrow=1, npad=2) # hide
+```
+
+As you can see, both `img_rgb` and `img_lab` images are of size
+``2 \times 2`` (instead of ``2 \times 2 \times 3`` or ``3 \times 2 \times 2``);
+a RGB image is an array of `RGB` pixels whereas a Lab image is an array of `Lab` pixel.
+
+!!! note
+    It's recommended to use `Gray` instead of the `Number` type in JuliaImages since it indicates
+    that the array of numbers is best interpreted as a grayscale image. For example, it
+    triggers `Atom/Juno` and `Jupyter` to display the array as an image instead of a
+    matrix of numbers. There's no performance overhead for using `Gray` over `Number`.
 
 This design choice facilitates generic code that can handle both
 grayscale and color images without needing to introduce extra loops or
@@ -104,69 +163,133 @@ might happen to have size 3 along the third dimension--and
 consequently helps unify the "computer vision" and "biomedical image
 processing" communities.
 
-Because images are just arrays, some environments (e.g.,
-Juno or IJulia/Jupyter) will display numeric arrays as arrays using a text
-representation but will display 2d arrays that have `Colorant`
-elements as images.  You can "convert" in the following ways:
+## Color conversions are construction/view
 
-```jldoctest
-using Images
+Conversions between different `Colorant`s are straightforward:
 
-# "Convert" a numeric array to a `Colorant` (but grayscale) array
-A = rand(8, 8)
-img = Gray.(A)               # creates a copy of the data
-img = colorview(Gray, A)     # creates a "view" which "reinterprets" but does not copy data
+```@repl pixel
+RGB.(img_gray) # Gray => RGB
+Gray.(img_rgb) # RGB => Gray
+```
 
-# RGB images
-A = rand(3, 8, 8)            # Float64 data (64 bits per color channel)
-img = colorview(RGB, A)      # encodes as a 2d RGB{Float64} array
-A = rand(N0f8, 3, 8, 8)      # uses only 8 bits per channel
-img = colorview(RGB, A)      # encodes as a 2d RGB{Float64} array
+!!! note
+    You'll see [broadcasting](https://docs.julialang.org/en/v1/manual/arrays/#Broadcasting-1)
+    semantics used in JuliaImages here and there, check the documentation if
+    you're not familiar with it.
 
-# The following illustrates "conversions" between representation as an 8-bit RGB
-# image and as a 3×m×n UInt8 array
-A = rand(UInt8, 3, 8, 8)
-img = colorview(RGB, normedview(A))
-A = rand(RGB{N0f8}, 8, 8)
-A = rawview(channelview(A))
-eltype(A)
+Sometimes, to work with other packages, you'll need to convert a ``m \times n``
+`RGB` image to ``m \times n \times 3`` numeric array and vice versa. The functions
+`channelview` and `colorview` are designed for this purpose. For example:
 
-# output
+```@repl pixel
+img_CHW = channelview(img_rgb) # 3 * 2 * 2
+img_HWC = permutedims(img_CHW, (2, 3, 1)) # 2 * 2 * 3
+```
 
-UInt8
+```@repl pixel
+img_CHW = permutedims(img_HWC, (3, 1, 2)) # 3 * 2 * 2
+img_rgb = colorview(RGB, img_CHW) # 2 * 2
+```
+
+!!! warning
+    Don't overuse `channelview` because it loses the colorant information by
+    converting an image to a raw numeric array.
+
+    It's very likely that users from other languages will have the tendency to
+    `channelview` every image they're going to process. Unfamiliarity of the pixel
+    concept provides by JuliaImages doesn't necessarily mean it's bad.
+
+!!! note
+    The reason we use CHW (i.e., channel-height-width) order instead of HWC
+    is that this provides a memory friendly indexing mechanisim for `Array`.
+    By default, in Julia the first index is also the fastest (i.e., has
+    adjacent storage in memory). For more details, please refer to the performance tip:
+    [Access arrays in memory order, along columns](https://docs.julialang.org/en/v1/manual/performance-tips/#Access-arrays-in-memory-order,-along-columns-1)
+
+    You can use `permuteddimsview` to "reinterpret" the orientation of a
+    chunk of memory without making a copy, or `permutedims` if you want a
+    copy.
+
+For `Gray` images, the following codes are almost equivalent except that the
+construction version copies the data while the view version doesn't.
+
+```@example pixel
+img_num = rand(4, 4)
+
+img_gray_copy = Gray.(img_num) # construction
+img_num_copy = Float64.(img_gray_copy) # construction
+
+img_gray_view = colorview(Gray, img_num) # view
+img_num_view = channelview(img_gray_view) # view
+nothing # hide
 ```
 
 ## The 0-to-1 intensity scale
 
+```@setup fixedpoint
+using ImageCore, ImageShow, FixedPointNumbers
+```
+
 In JuliaImages, by default all images are displayed assuming that 0
 means "black" and 1 means "white" or "saturated" (the latter applying
-to channels of an RGB image).  Perhaps surprisingly, **this 0-to-1
-convention applies even when the intensities are encoded using only
-8-bits per color channel**.  JuliaImages uses a special type, `N0f8`,
-that interprets an 8-bit "integer" as if it had been scaled by 1/255,
-thus encoding values from 0 to 1 in 256 steps.  `N0f8` numbers
-(standing for **N**ormalized, with **0** integer bits and **8**
-**f**ractional bits) obey standard mathematical rules, and can be
-added, multiplied, etc. There are types like `N0f16` for working with
-16-bit images (and even `N2f14` for images acquired with a 14-bit
-camera, etc.).
+to channels of an RGB image).
 
-This infrastructure allows us to unify "integer" and floating-point
-images, and avoids the need for special conversion functions that
-change the *value* of pixels when your main goal is simply to change
-the *type* (numeric precision and properties) used to represent the
-pixel.
+Perhaps surprisingly, **this 0-to-1 convention applies even when the
+intensities are encoded using only 8-bits per color channel**. JuliaImages
+uses a special type, `N0f8`, that interprets an 8-bit "integer" as if it had
+been scaled by 1/255, thus encoding values from 0 to 1 in 256 steps.
 
-## Default orientation and storage order
+`N0f8` numbers (standing for **N**ormalized, with **0** integer bits and
+**8** **f**ractional bits) obey standard mathematical rules, and can be
+added, multiplied, etc. There are types like `N0f16` for working with 16-bit
+images (and even `N2f14` for images acquired with a 14-bit camera, etc.).
 
-Images are "vertical-major," meaning that when the image is displayed
-the first index corresponds to the vertical axis. Note that by
-default, in Julia the first index is also the fastest (i.e., has
-adjacent storage in memory).
+```@repl fixedpoint
+img_n0f8 = rand(N0f8, 2, 2)
+float.(img_n0f8)
+```
 
-You can use `permuteddimsview` to "reinterpret" the orientation of a
-chunk of memory without making a copy, or `permutedims` if you want a
-copy.
+!!! note
+    This infrastructure allows us to unify "integer" and floating-point
+    images, and avoids the need for special conversion functions (e.g.,
+    `im2double` in MATLAB) that change the *value* of pixels when your main goal is simply to
+    change the *type* (numeric precision and properties) used to represent the pixel.
+
+Although it's not recommended, but you can use `rawview` to get the
+underlying storage data and convert it to `UInt8` (or other types) if you insist.
+
+```@repl fixedpoint
+img_n0f8_raw = rawview(img_n0f8)
+float.(img_n0f8_raw)
+```
+
+Conversions between the storage type without changing the color type are supported
+by the following functions:
+
+* `float32`, `float64`
+* `n0f8`, `n6f10`, `n4f12`, `n2f14`, `n0f16`
+
+```@repl fixedpoint
+img = rand(Gray{N0f8}, 2, 2)
+img_float32 = float32.(img) # Gray{N0f8} => Gray{Float32}
+img_n0f16 = n0f16.(img_float32) # Gray{Float32} => Gray{N0f16}
+```
+
+If you don't want to specify the destination type, `floattype` is designed for this:
+
+```@repl fixedpoint
+img_n0f8 = rand(Gray{N0f8}, 2, 2)
+T = floattype(eltype(img_n0f8)) # promote storage type from N0f8 to Float32
+img_float = T.(img_n0f8) # Gray{N0f8} => T
+```
+
+For a view-like conversion without new memory allocation, `of_eltype` in [`MappedArrays`](https://github.com/JuliaArrays/MappedArrays.jl) is designed for this:
+
+```@repl fixedpoint
+using MappedArrays
+img_float_view = of_eltype(T, img_n0f8)
+eltype(img_float_view)
+```
 
 ## Arrays with arbitrary indices
 
@@ -179,6 +302,21 @@ it straightforward to keep track of the correspondence between
 location across multiple images. More information can be found in
 [Keeping track of location with unconventional indices](@ref).
 
+## Display
+
+Currently there're four julia packages can be used to display an image:
+
+* [`ImageShow`](https://github.com/JuliaImages/ImageShow.jl) is used to support image display in Juno and IJulia. This is automatically used when you use `Images`.
+* [`ImageInTerminal`](https://github.com/JuliaImages/ImageInTerminal.jl) is used to support image display in terminal.
+* [`ImageView`](https://github.com/JuliaImages/ImageView.jl) is an image display GUI.
+* [`Plots`](https://github.com/JuliaPlots/Plots.jl) maintained by JuliaPlots is a general plotting package that support image display.
+
+!!! warning
+    Currently `ImageView` is not fully tested on MacOS and
+    Windows; check [ImageView#146](https://github.com/
+    JuliaImages/ImageView.jl/issues/146) and
+    [ImageView#175](https://github.com/JuliaImages/ImageView.jl/issues/175) to get an update.
+
 ## Examples of usage
 
 If you feel ready to get started, see the [Demonstrations](@ref) page for inspiration.
@@ -188,8 +326,9 @@ If you feel ready to get started, see the [Demonstrations](@ref) page for inspir
 See [Summary and function reference](@ref) for more information about
 each of the topics below. The list below is accessible via `?Images`
 from the Julia REPL. If you've used other frameworks previously, you
-may also be interested in the
-[Comparison with other image processing frameworks](@ref).
+may also be interested in the [Comparison with other image processing frameworks](@ref).
+Also described are the [ImageFeatures.jl](@ref) and [ImageSegmentation.jl](@ref)
+packages, which support a number of algorithms important for computer vision.
 
 Constructors, conversions, and traits:
 
@@ -219,6 +358,3 @@ Algorithms:
 Test images and phantoms (see also TestImages.jl):
 
 - `shepp_logan`
-
-Also described are the [ImageFeatures.jl](@ref) and [ImageSegmentation.jl](@ref) packages,
-which support a number of algorithms important for computer vision.
