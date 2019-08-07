@@ -84,12 +84,12 @@ nothing # hide
 
 defines a 4d image (3 space dimensions plus one time dimension) with
 the specified name and physical pixel spacing for each coordinate.
-The AxisArrays package supports rich and efficient operations on such
+The `AxisArrays` package supports rich and efficient operations on such
 arrays, and can be useful to keep track of not just pixel spacing but
 the
 [orientation convention used for multidimensional images](http://www.grahamwideman.com/gw/brain/orientation/orientterms.htm).
 
-JuliaImages interoperates smoothly with AxisArrays and many other
+JuliaImages interoperates smoothly with `AxisArrays` and many other
 packages.  As further examples,
 
 - the `ImageMetadata` package (incorporated into `Images` itself)
@@ -116,10 +116,8 @@ using Images, MosaicViews
 ```
 
 Elements of image are called **pixels**; in JuliaImages we provide an
-abstraction on this concept.
-
-For example, we have `Gray` for grayscale image, `RGB` for RGB image, `Lab`
-for Lab image, and etc.
+abstraction on this concept. For example, we have `Gray` for grayscale image,
+`RGB` for RGB image, `Lab` for Lab image, and etc.
 
 Creating a pixel is initializing a struct of that type:
 
@@ -148,12 +146,14 @@ mosaicview(cat(RGB.(img_gray), # hide
 ```
 
 As you can see, both `img_rgb` and `img_lab` images are of size
-``2 \times 2`` instead of ``2 \times 2 \times 3`` or ``3 \times 2 \times 2``;
-RGB image has `RGB` pixels, Lab image has `Lab` pixel.
+``2 \times 2`` (instead of ``2 \times 2 \times 3`` or ``3 \times 2 \times 2``);
+a RGB image is an array of `RGB` pixels whereas a Lab image is an array of `Lab` pixel.
 
 !!! note
-    It's recommended to use `Gray` compared to `Number` in JuliaImages since it has a
-    more explicit meaning. Also, it's worth to mention that there's no overhead of using `Gray` over `Number`.
+    It's recommended to use `Gray` instead of the `Number` type in JuliaImages since it indicates
+    that the array of numbers is best interpreted as a grayscale image. For example, it
+    triggers `Atom/Juno` and `Jupyter` to display the array as an image instead of a
+    matrix of numbers. There's no performance overhead for using `Gray` over `Number`.
 
 This design choice facilitates generic code that can handle both
 grayscale and color images without needing to introduce extra loops or
@@ -162,11 +162,6 @@ It also provides more rational support for 3d grayscale images--which
 might happen to have size 3 along the third dimension--and
 consequently helps unify the "computer vision" and "biomedical image
 processing" communities.
-
-Because images are just arrays, some environments (e.g.,
-Juno or IJulia/Jupyter) will display numeric arrays as arrays using a text
-representation but will display 2d arrays that have `Colorant`
-elements as images.
 
 ## Color conversions are construction/view
 
@@ -183,28 +178,33 @@ Gray.(img_rgb) # RGB => Gray
     you're not familiar with it.
 
 Sometimes, to work with other packages, you'll need to convert a ``m \times n``
-`RGB` images to ``m \times n \times 3`` image and vice versa. `channelview` and
-`colorview` are designed for this purpose. For example:
+`RGB` image to ``m \times n \times 3`` numeric array and vice versa. The functions
+`channelview` and `colorview` are designed for this purpose. For example:
 
 ```@repl pixel
-img_CHW = channelview(img_rgb); # 3 * 2 * 2
-summary(img_CHW)
-img_HWC = permutedims(img_CHW, (2, 3, 1)); # 2 * 2 * 3
-summary(img_HWC)
+img_CHW = channelview(img_rgb) # 3 * 2 * 2
+img_HWC = permutedims(img_CHW, (2, 3, 1)) # 2 * 2 * 3
 ```
 
 ```@repl pixel
-img_CHW = permutedims(img_HWC, (3, 1, 2)); # 3 * 2 * 2
-summary(img_CHW)
-img_rgb = colorview(RGB, img_CHW); # 2 * 2
-summary(img_rgb)
+img_CHW = permutedims(img_HWC, (3, 1, 2)) # 3 * 2 * 2
+img_rgb = colorview(RGB, img_CHW) # 2 * 2
 ```
+
+!!! warning
+    Don't overuse `channelview` because it loses the colorant information by
+    converting an image to a raw numeric array.
+
+    It's very likely that users from other languages will have the tendency to
+    `channelview` every image they're going to process. Unfamiliarity of the pixel
+    concept provides by JuliaImages doesn't necessarily mean it's bad.
 
 !!! note
     The reason we use CHW (i.e., channel-height-width) order instead of HWC
     is that this provides a memory friendly indexing mechanisim for `Array`.
     By default, in Julia the first index is also the fastest (i.e., has
-    adjacent storage in memory). For more details, please check [Access arrays in memory order, along columns](https://docs.julialang.org/en/v1/manual/performance-tips/#Access-arrays-in-memory-order,-along-columns-1)
+    adjacent storage in memory). For more details, please refer to the performance tip:
+    [Access arrays in memory order, along columns](https://docs.julialang.org/en/v1/manual/performance-tips/#Access-arrays-in-memory-order,-along-columns-1)
 
     You can use `permuteddimsview` to "reinterpret" the orientation of a
     chunk of memory without making a copy, or `permutedims` if you want a
