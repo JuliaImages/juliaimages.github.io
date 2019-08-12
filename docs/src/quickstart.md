@@ -197,7 +197,7 @@ img_rgb = colorview(RGB, img_CHW) # 2 * 2
 
     It's very likely that users from other languages will have the tendency to
     `channelview` every image they're going to process. Unfamiliarity of the pixel
-    concept provides by JuliaImages doesn't necessarily mean it's bad.
+    concept provided by JuliaImages doesn't necessarily mean it's bad.
 
 !!! note
     The reason we use CHW (i.e., channel-height-width) order instead of HWC
@@ -275,19 +275,18 @@ img_float32 = float32.(img) # Gray{N0f8} => Gray{Float32}
 img_n0f16 = n0f16.(img_float32) # Gray{Float32} => Gray{N0f16}
 ```
 
-If you don't want to specify the destination type, `floattype` is designed for this:
+If you don't want to specify the destination type, `float` is designed for this:
 
 ```@repl fixedpoint
 img_n0f8 = rand(Gray{N0f8}, 2, 2)
-T = floattype(eltype(img_n0f8)) # promote storage type from N0f8 to Float32
-img_float = T.(img_n0f8) # Gray{N0f8} => T
+img_float = float.(img_n0f8) # Gray{N0f8} => Gray{Float32}
 ```
 
 For a view-like conversion without new memory allocation, `of_eltype` in [`MappedArrays`](https://github.com/JuliaArrays/MappedArrays.jl) is designed for this:
 
 ```@repl fixedpoint
 using MappedArrays
-img_float_view = of_eltype(T, img_n0f8)
+img_float_view = of_eltype(Gray{Float32}, img_n0f8)
 eltype(img_float_view)
 ```
 
