@@ -88,14 +88,15 @@ where the pre-defined `HasTimeAxis` trait will restrict that method to
 arrays that have a timeaxis. A more complex example is
 
 ```julia
-using ImageAxes, SimpleTraits
-@traitfn meanintensity{AA<:AxisArray; !HasTimeAxis{AA}}(img::AA) = mean(img)
-@traitfn function meanintensity{AA<:AxisArray; HasTimeAxis{AA}}(img::AA)
+using ImageAxes, SimpleTraits, Statistics
+
+@traitfn meanintensity(img::AA) where {AA<:AxisArray; !HasTimeAxis{AA}} = mean(img)
+@traitfn function meanintensity(img::AA) where {AA<:AxisArray; HasTimeAxis{AA}}
     ax = timeaxis(img)
-    n = length(x)
+    n = length(ax)
     intensity = zeros(eltype(img), n)
-    for ti = 1:n
-        sl = img[ax[ti]]  # the image slice at time ax[ti]
+    for ti in 1:n
+        sl = view(img, ax(ti))
         intensity[ti] = mean(sl)
     end
     intensity
