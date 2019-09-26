@@ -279,7 +279,7 @@ function get_random_color(ind)
     a, b, c = ntuple(N) do i
        ceil(Int, ((acoeff[i]*ind) % 1)*256)/256
     end
-	 	RGB{N0f8}(a, c, b)
+    RGB{N0f8}(a, c, b)
 end
 imshow(map(i->get_random_color(i), labels_map(segments)))
 ```
