@@ -272,9 +272,14 @@ Segmented Image with:
 
 Here let's visualize segmentation by creating an image with each label replaced by a random color:
 ```julia
-function get_random_color(seed)
-    Random.seed!(seed)
-    rand(RGB{N0f8})
+function get_random_color(ind)
+    N = 3
+    ϕ =  1.2207440846057596
+    acoeff = ϕ.^(-(1:N))
+    a, b, c = ntuple(N) do i
+       ceil(Int, ((acoeff[i]*ind) % 1)*256)/256
+    end
+	 	RGB{N0f8}(a, c, b)
 end
 imshow(map(i->get_random_color(i), labels_map(segments)))
 ```
