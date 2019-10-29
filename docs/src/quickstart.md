@@ -303,12 +303,13 @@ location across multiple images. More information can be found in
 
 ## Display
 
-Currently there're four julia packages can be used to display an image:
+Currently there're five julia packages can be used to display an image:
 
 * [`ImageShow`](https://github.com/JuliaImages/ImageShow.jl) is used to support image display in Juno and IJulia. This is automatically used when you use `Images`.
 * [`ImageInTerminal`](https://github.com/JuliaImages/ImageInTerminal.jl) is used to support image display in terminal.
 * [`ImageView`](https://github.com/JuliaImages/ImageView.jl) is an image display GUI.
 * [`Plots`](https://github.com/JuliaPlots/Plots.jl) maintained by JuliaPlots is a general plotting package that support image display.
+* [`Makie`](https://github.com/JuliaPlots/Makie.jl) is also maintained by JuliaPlots but provides rich interactive functionality. 
 
 !!! warning
     Currently `ImageView` is not fully tested on MacOS and
