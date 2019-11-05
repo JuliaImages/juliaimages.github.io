@@ -18,7 +18,7 @@ However, most users will want to take one or two additional steps:
 ensuring that you can load and display images.
 
 !!! note
-    People in some regions such as China might fail installing/precompiling `Images` due to poor network
+    People in some regions such as China might fail to install/precompile `Images` due to poor network
     status. Using proxy/VPN that has stable connection to Amazon S3 and Github can solve this issue.
 
 ## Loading your first image
