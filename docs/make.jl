@@ -1,10 +1,19 @@
-using Documenter, Images, ImageFiltering, ImageSegmentation, ImageFeatures, PaddedViews
+using Documenter, DemoCards
+using Images, ImageFiltering, ImageSegmentation, ImageFeatures, PaddedViews
+
+branch = "master"
+
+theme = cardtheme()
+demos, postprocess_cb = makedemos("examples"; branch = branch)
+
+format = Documenter.HTML(edit_link = "source",
+                         prettyurls = get(ENV, "CI", nothing) == "true",
+                         assets = [theme])
 
 makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, ImageAxes,
                     ImageFeatures, ImageFiltering, ImageMetadata,
                     ImageSegmentation, ImageTransformations, PaddedViews, ImageMorphology],
-         format   = Documenter.HTML(edit_branch = "source",
-                                    assets = [joinpath("assets", "style.css")]),
+         format   = format,
          sitename = "JuliaImages",
          pages    = ["Home" => "index.md",
                      "install.md",
@@ -21,18 +30,16 @@ makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, I
                          "imagefeatures.md",
                          "troubleshooting.md",
                      ],
-                     "Demos" => Any[
-                         "demos.md",
-                         "demos/color_separations_svd.md",
-                         "demos/rgb_hsv_thresholding.md",
-                     ],
+                     "Demos" => demos,
                      "function_reference.md",
                      "api_comparison.md",
                     ])
 
+postprocess_cb()
+
 deploydocs(repo      = "github.com/JuliaImages/juliaimages.github.io.git",
            target    = "build",
-           branch    = "master",
+           branch    = branch,
            devbranch = "source",
            deps      = nothing,
            make      = nothing)
