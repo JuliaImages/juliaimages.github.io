@@ -31,4 +31,3 @@ vcat([img imgs[1]], [imgs[2] imgs[3]])
 
 cover = hcat(imgs[1]) #src
 save("assets/color_separations_svd.png", cover) #src
-

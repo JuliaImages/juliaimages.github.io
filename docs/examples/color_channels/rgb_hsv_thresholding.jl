@@ -1,7 +1,6 @@
 # ---
 # title: RGB to HSV and thresholding
 # cover: assets/rgb_hsv_thresholding.png
-# id: rgb_hsv_thresholding
 # ---
 
 # This example illustrates how RGB to HSV (Hue, Saturation, Value) conversion

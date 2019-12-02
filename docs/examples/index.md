@@ -1,4 +1,3 @@
-# [Demonstrations](@id demonstrations)
 
 ---
 
