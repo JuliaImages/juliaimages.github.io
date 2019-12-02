@@ -19,7 +19,8 @@ end
 #md nothing #hide
 
 #-
-svdfactors = svd.(eachslice(channels; dims=1))
+## after julia v1.1: svd.(eachslice(channels; dims=1))
+svdfactors = (svd(channels[1,:,:]), svd(channels[2,:,:]), svd(channels[3,:,:]))
 imgs = map((10, 50, 100)) do k
     colorview(RGB,
               rank_approx(svdfactors[1], k),
