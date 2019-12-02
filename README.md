@@ -18,4 +18,4 @@ The current procedure is as follows:
 - Build the documentation locally with `julia --project=. docs/make.jl`. Inspect it (by opening `docs/build/index.html` in a browser) to make sure all is well.
 - Commit your changes (including all new files) and submit a pull request.
 
-`DemoCards.jl` as a plugin package to [Documenter](https://github.com/JuliaDocs/Documenter.jl) is used to manage all the demos, check the [DemoCards Quickstart](https://johnnychen94.github.io/DemoCards.jl/stable/quickstart.html) for more details.
+`DemoCards.jl` as a plugin package to [Documenter](https://github.com/JuliaDocs/Documenter.jl) is used to manage all the demos, check the [DemoCards Quickstart](https://johnnychen94.github.io/DemoCards.jl/stable/democards/quickstart/index.html) for more details.
