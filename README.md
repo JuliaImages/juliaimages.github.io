@@ -13,8 +13,9 @@ content.
 Users are invited to add demonstrations carrying out particular tasks, for example like the gallery for [scikit-image](http://scikit-image.org/docs/stable/auto_examples/).
 The current procedure is as follows:
 
-- `git clone` a copy of this repository
-- Add a new [markdown file](https://en.wikipedia.org/wiki/Markdown) to `docs/src/demos` for your demo. Generally demos should contain one or more images, which should be added to `docs/src/assets/demos`. (If you have many images in your demo, consider creating a subdirectory for your images.)
-- Add a "card" for your demo in `docs/src/demos.md`, using one of the images you added as a "thumbnail" advertising your demo.
-- Build the documentation locally with `julia make.jl` from `docs/`. Inspect it (by opening `docs/build/index.html` in a browser) to make sure all is well.
+- `git clone` a copy of this repository and initialize the project by `julia --project=. -e 'using Pkg; Pkg.instantiate()'`
+- write your julia source codes to `docs/examples` in [Literate Syntax](https://fredrikekre.github.io/Literate.jl/stable/fileformat/#Syntax-1) and [Documenter Syntax](https://juliadocs.github.io/Documenter.jl/stable/man/syntax/). Powered by [DemoCards.jl](https://github.com/johnnychen94/DemoCards.jl), assets can be generated on the fly.
+- Build the documentation locally with `julia --project=. docs/make.jl`. Inspect it (by opening `docs/build/index.html` in a browser) to make sure all is well.
 - Commit your changes (including all new files) and submit a pull request.
+
+`DemoCards.jl` as a plugin package to [Documenter](https://github.com/JuliaDocs/Documenter.jl) is used to manage all the demos, check the [DemoCards Quickstart](https://johnnychen94.github.io/DemoCards.jl/stable/democards/quickstart/index.html) for more details.
