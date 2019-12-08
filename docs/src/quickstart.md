@@ -311,12 +311,6 @@ Currently there're five julia packages can be used to display an image:
 * [`Plots`](https://github.com/JuliaPlots/Plots.jl) maintained by JuliaPlots is a general plotting package that support image display.
 * [`Makie`](https://github.com/JuliaPlots/Makie.jl) is also maintained by JuliaPlots but provides rich interactive functionality. 
 
-!!! warning
-    Currently `ImageView` is not fully tested on MacOS and
-    Windows; check [ImageView#146](https://github.com/
-    JuliaImages/ImageView.jl/issues/146) and
-    [ImageView#175](https://github.com/JuliaImages/ImageView.jl/issues/175) to get an update.
-
 ## Examples of usage
 
 If you feel ready to get started, see the [Demonstrations](@ref) page for inspiration.
