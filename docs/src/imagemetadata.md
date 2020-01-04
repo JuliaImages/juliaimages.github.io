@@ -17,8 +17,8 @@ julia> img = ImageMeta(fill(RGB(1,0,0), 3, 2), date=Date(2016, 7, 31), time="hig
 RGB ImageMeta with:
   data: 3×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
   properties:
-    time: high noon
     date: 2016-07-31
+    time: high noon
 ```
 
 ```@meta
@@ -38,18 +38,18 @@ RGB{N0f8}(1.0,0.0,0.0)
 and access and set properties like this:
 
 ```jldoctest
-julia> img["time"]
+julia> img.time
 "high noon"
 
-julia> img["time"] = "evening"
+julia> img.time = "evening"
 "evening"
 
 julia> img
 RGB ImageMeta with:
   data: 3×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
   properties:
-    time: evening
     date: 2016-07-31
+    time: evening
 ```
 
 You can extract the data matrix with `data(img)`:
@@ -66,9 +66,9 @@ and the properties dictionary with `properties`:
 
 ```jldoctest
 julia> properties(img)
-Dict{String,Any} with 2 entries:
-  "time" => "high noon"
-  "date" => 2016-07-31
+Dict{Symbol,Any} with 2 entries:
+  :date => 2016-07-31
+  :time => "high noon"
 ```
 
 Properties are not accessed or modified by most of Images'
@@ -86,8 +86,8 @@ julia> c = img[1:2, 1:2]
 RGB ImageMeta with:
   data: 2×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
   properties:
-    time: high noon
     date: 2016-07-31
+    time: high noon
 ```
 
 This copies both the data (just the relevant portions) and the properties dictionary. In contrast,
@@ -97,8 +97,8 @@ julia> v = view(img, 1:2, 1:2)
 RGB ImageMeta with:
   data: 2×2 view(::Array{RGB{N0f8},2}, 1:2, 1:2) with eltype RGB{Normed{UInt8,8}}
   properties:
-    time: high noon
     date: 2016-07-31
+    time: high noon
 ```
 
 shares both the data and the properties with the original image
@@ -134,19 +134,19 @@ julia> A = reshape(1:15, 3, 5)
  2  5  8  11  14
  3  6  9  12  15
 
-julia> img = ImageMeta(A, spatialproperties=Set(["maxsum"]), maxsum=[maximum(sum(A,dims=1)), maximum(sum(A,dims=2))])
+julia> img = ImageMeta(A, spatialproperties=Set([:maxsum]), maxsum=[maximum(sum(A,dims=1)), maximum(sum(A,dims=2))])
 Int64 ImageMeta with:
   data: 3×5 reshape(::UnitRange{Int64}, 3, 5) with eltype Int64
   properties:
     maxsum: [42, 45]
-    spatialproperties: Set(["maxsum"])
+    spatialproperties: Set(Symbol[:maxsum])
 
 julia> imgp = permutedims(img, (2,1))
 Int64 ImageMeta with:
   data: 5×3 Array{Int64,2}
   properties:
     maxsum: [45, 42]
-    spatialproperties: Set(["maxsum"])
+    spatialproperties: Set(Symbol[:maxsum])
 
 julia> maximum(sum(imgp, dims=1))
 45
