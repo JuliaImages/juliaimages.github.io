@@ -2,7 +2,7 @@
 
 Documentation For [JuliaImages](https://github.com/JuliaImages), the organization for image processing with Julia.
 
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliaimages.org/latest/) [![Build Status](https://travis-ci.org/JuliaImages/juliaimages.github.io.svg?branch=source)](https://travis-ci.org/JuliaImages/juliaimages.github.io)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaimages.org/stable/) [![Build Status](https://travis-ci.org/JuliaImages/juliaimages.github.io.svg?branch=source)](https://travis-ci.org/JuliaImages/juliaimages.github.io)
 
 Note that the source files for the documentation are on the `source`
 branch; `master` is used only for deploying the generated HTML
