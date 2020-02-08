@@ -4,6 +4,8 @@ Documentation For [JuliaImages](https://github.com/JuliaImages), the organizatio
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaimages.org/stable/) [![Build Status](https://travis-ci.org/JuliaImages/juliaimages.github.io.svg?branch=source)](https://travis-ci.org/JuliaImages/juliaimages.github.io)
 
+See also the [dashboard](DASHBOARD.md) for individual packages.
+
 Note that the source files for the documentation are on the `source`
 branch; `master` is used only for deploying the generated HTML
 content.
