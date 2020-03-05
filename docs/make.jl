@@ -3,8 +3,8 @@ using Images, ImageFiltering, ImageSegmentation, ImageFeatures, PaddedViews
 
 branch = "master"
 
-theme = cardtheme()
-demos, postprocess_cb = makedemos("examples"; branch = branch)
+templates, theme = cardtheme("grid")
+demos, demos_cb = makedemos("examples", templates; branch = branch)
 
 format = Documenter.HTML(edit_link = "source",
                          prettyurls = get(ENV, "CI", nothing) == "true",
@@ -35,7 +35,7 @@ makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, I
                      "api_comparison.md",
                     ])
 
-postprocess_cb()
+demos_cb()
 
 deploydocs(repo      = "github.com/JuliaImages/juliaimages.github.io.git",
            target    = "build",
