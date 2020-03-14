@@ -40,6 +40,7 @@ demos_cb()
 deploydocs(repo      = "github.com/JuliaImages/juliaimages.github.io.git",
            target    = "build",
            branch    = branch,
+           push_preview = true,
            devbranch = "source",
            deps      = nothing,
            make      = nothing)
