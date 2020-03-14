@@ -301,16 +301,6 @@ it straightforward to keep track of the correspondence between
 location across multiple images. More information can be found in
 [Keeping track of location with unconventional indices](@ref).
 
-## Display
-
-Currently there're five julia packages can be used to display an image:
-
-* [`ImageShow`](https://github.com/JuliaImages/ImageShow.jl) is used to support image display in Juno and IJulia. This is automatically used when you use `Images`.
-* [`ImageInTerminal`](https://github.com/JuliaImages/ImageInTerminal.jl) is used to support image display in terminal.
-* [`ImageView`](https://github.com/JuliaImages/ImageView.jl) is an image display GUI. (For OSX and Windows platforms, Julia at least `v1.3` is required)
-* [`Plots`](https://github.com/JuliaPlots/Plots.jl) maintained by JuliaPlots is a general plotting package that support image display.
-* [`Makie`](https://github.com/JuliaPlots/Makie.jl) is also maintained by JuliaPlots but provides rich interactive functionality. 
-
 ## Examples of usage
 
 If you feel ready to get started, see the [Demonstrations](@ref) page for inspiration.
