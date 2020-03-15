@@ -48,7 +48,7 @@ function make_circle(sz, c::T) where T
     img
 end
 
-# create three circles with red, green and blue
+# create three circles with color red, green and blue
 red_c   = make_circle((256, 256), ARGB(1., 0., 0., 1.))
 green_c = make_circle((256, 256), ARGB(0., 1., 0., 1.))
 blue_c  = make_circle((256, 256), ARGB(0., 0., 1., 1.))
