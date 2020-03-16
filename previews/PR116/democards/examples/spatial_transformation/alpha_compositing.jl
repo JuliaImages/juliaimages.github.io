@@ -9,7 +9,7 @@ green_o = OffsetArray(green_patch, 6, 16)
 r, g = paddedviews(Gray(0.2), red_patch, green_o)
 mosaicview(r, g; npad=20, nrow=1, fillvalue=colorant"white")
 
-# Regardless of implementaion details, `Base.OneTo(24)` is mostly equivalent to `1:24`
+# Regardless of implementaion details, `Base.OneTo(32)` is mostly equivalent to `1:32`
 println("before shifting -- size: ", size(green_patch), " axes: ", axes(green_patch))
 println("after shifting  -- size: ", size(green_o), " axes: ", axes(green_o))
 println("after padding   -- size: ", size(g), " axes: ", axes(g))
