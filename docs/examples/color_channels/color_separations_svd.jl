@@ -1,34 +1,50 @@
 # ---
-# cover: assets/color_separations_svd.png
-# title: Color separations and the SVD
+# cover: assets/color_separations_svd.gif
+# title: Image Compression using SVD
 # ---
 
 # This demonstration shows how to work with color channels to explore image compression
 # using the Singular Value Decomposition (SVD).
 
-using Images, TestImages, LinearAlgebra
+using Images, TestImages, MosaicViews
+using LinearAlgebra
 
-img = testimage("mandrill")
-channels = channelview(float.(img))
+img = float.(testimage("mandrill"))
+channels = channelview(img)
 
 function rank_approx(F::SVD, k)
     U, S, V = F
     M = U[:, 1:k] * Diagonal(S[1:k]) * V[:, 1:k]'
-    M = min.(max.(M, 0.0), 1.)
+    clamp01!(M)
 end
-#md nothing #hide
+nothing #hide #md
 
-#-
-## after julia v1.1: svd.(eachslice(channels; dims=1))
+# For each channel, we do SVD decomposition, and then reconstruct the channel using only the K
+# largest singular values.
+
+# The image is compressed because for each channel we only need to save two small matrices and one
+# vector -- truncated part of `(U, S, V)`. For example, if the original image is gray image of size
+# `(512, 512)`, and we rebuild the image with $50$ singular values, then we only need to save
+# $2 \times 512 \times 50 + 50$ numbers to rebuild the image, while original image has
+# $512 \times 512$ numbers. Hence this gives us a compression ratio $19.55\%$ if we don't consider
+# the storage type.
+
+## after julia v1.1:
+## svdfactors = svd.(eachslice(channels; dims=1))
 svdfactors = (svd(channels[1,:,:]), svd(channels[2,:,:]), svd(channels[3,:,:]))
 imgs = map((10, 50, 100)) do k
-    colorview(RGB,
-              rank_approx(svdfactors[1], k),
-              rank_approx(svdfactors[2], k),
-              rank_approx(svdfactors[3], k))
+    colorview(RGB, rank_approx.(svdfactors, k)...)
 end
 
-vcat([img imgs[1]], [imgs[2] imgs[3]])
+mosaicview(img, imgs...; nrow=1, npad=10)
 
-cover = hcat(imgs[1]) #src
-save("assets/color_separations_svd.png", cover) #src
+# From left to right: original image, reconstructed images using 10, 50, 100 largest singular values.
+# We can see that $50$ largest singular values are capable of rebuilding a pretty good image.
+
+# --- save covers --- #src
+using ImageMagick #src
+imgs = map(10:5:50) do k #src
+    colorview(RGB, rank_approx.(svdfactors, k)...) #src
+end #src
+ImageMagick.save("assets/color_separations_svd.gif", cat(imgs...; dims=3); fps=2) #src
+
