@@ -26,8 +26,9 @@ image IO backends to load the images. The current available backends for image f
 * [QuartzImageIO.jl](https://github.com/JuliaIO/QuartzImageIO.jl) exposes macOS's native image IO
   functionality to Julia. In some cases it's faster than ImageMagick, but it might not cover all your
   needs.
-* [ImageIO.jl](https://github.com/JuliaIO/ImageIO.jl) is a new image IO backend that provides an optimized
-  performance for PNG files. Check benchmark [here](https://github.com/JuliaIO/PNGFiles.jl/issues/1)
+* [ImageIO.jl](https://github.com/JuliaIO/ImageIO.jl) is a new image IO backend (requires julia >=v"1.3")
+  that provides an optimized performance for PNG files. Check benchmark
+  [here](https://github.com/JuliaIO/PNGFiles.jl/issues/1)
 * [OMETIFF.jl](https://github.com/tlnagy/OMETIFF.jl) supports
   [OME-TIFF](https://docs.openmicroscopy.org/ome-model/6.0.0/index.html#ome-tiff) files. If you don't
   know what it is, then it is likely that you don't need this package.
