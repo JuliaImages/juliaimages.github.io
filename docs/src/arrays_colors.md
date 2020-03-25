@@ -107,8 +107,8 @@ ColorTypes.Gray{Float64}
 
 `dump` shows the "internal" representation of an object.  You can see
 that `Gray` is a
-[type](http://docs.julialang.org/en/stable/manual/types/)
-(technically, an `immutable`) with a single field `val`; for
+[type](https://docs.julialang.org/en/v1/manual/types/)
+(technically, an immutable `struct`) with a single field `val`; for
 `Gray{Float64}`, `val` is a 64-bit floating point number. Using `val`
 directly is not recommended: you can extract the `Float64` value with
 the accessor functions `real` or `gray` (the reason for the latter
