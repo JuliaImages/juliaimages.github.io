@@ -34,9 +34,10 @@ image IO backends to load the images. The current available backends for image f
 
 These backends aren't exclusive to each other, so if you're a macOS user, you can install all these
 backends. And in most cases, you don't need to directly interact with these backends, instead, we
-use the [`FileIO.jl`](https://github.com/JuliaIO/FileIO.jl) frontend. If you've installed multiple
-backends then `FileIO` will choose the most appropriate backend acoording to your file format.
-For example, if available `ImageIO` is used to load png files.
+use the `save` and `load` provided by the [`FileIO.jl`](https://github.com/JuliaIO/FileIO.jl)
+frontend. If you've installed multiple backends then `FileIO` will choose the most appropriate
+backend acoording to your file format. For example, if available `ImageIO` is used to load PNG
+files.
 
 Adding these gives you a basic image IO setup:
 
@@ -49,7 +50,10 @@ and to load an image, you can use
 ```@example
 using FileIO
 using ImageShow # hide
-img = load(joinpath("assets", "installation", "mandrill.tiff"))
+# specify the path to your local image file
+img_path = "/path/to/image.png"
+img_path = joinpath("assets", "installation", "mandrill.tiff") # hide
+img = load(img_path)
 ```
 
 When testing ideas or just following along with the documentation, it can be useful to have some
@@ -79,7 +83,7 @@ display automatically:
 
 Currently there're five julia packages can be used to display an image:
 
-* [`ImageShow`](https://github.com/JuliaImages/ImageShow.jl) is used to support image display in Juno and IJulia. This is automatically used when you use `Images`.
+* [`ImageShow`](https://github.com/JuliaImages/ImageShow.jl) is used to support image display in Juno and IJulia. This happens automatically if you are `using Images`.
 * [`ImageInTerminal`](https://github.com/JuliaImages/ImageInTerminal.jl) is used to support image display in terminal.
 * [`ImageView`](https://github.com/JuliaImages/ImageView.jl) is an image display GUI. (For OSX and Windows platforms, Julia at least `v1.3` is required)
 * [`Plots`](https://github.com/JuliaPlots/Plots.jl) maintained by JuliaPlots is a general plotting package that support image display.
