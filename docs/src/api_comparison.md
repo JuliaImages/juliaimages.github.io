@@ -73,7 +73,7 @@ welcome.
 | Gradients                             | `imgradients`                             | `sobel_h` etc.                    | `imgradientxy` etc.                       |
 | Integral image                        | `integral_image`                          | `integral_image`                  | `integralImage`                           |
 | Padding                               | `padarray`                                | `pad`                             | `padarray`                                |
-| Deconvolution                         | `weiner` (Deconvolution.jl)               | `richardson_lucy`, `weiner`, etc. | `deconvlucy`, `deconvwnr`, etc.           |
+| Deconvolution                         | `wiener` (Deconvolution.jl)               | `richardson_lucy`, `weiner`, etc. | `deconvlucy`, `deconvwnr`, etc.           |
 |                                       |                                           |                                   |                                           |
 | **Features**                          |                                           |                                   |                                           |
 | Edge detection                        | `imedge`, `canny`                         | `canny`                           | `edge`                                    |
