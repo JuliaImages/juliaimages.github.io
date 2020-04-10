@@ -10,4 +10,4 @@ notifications:
   email: false
 script:
   - julia --project=. --color=yes -e 'using Pkg; Pkg.instantiate()'
-  - travis_wait 20 julia --project=. --color=yes docs/make.jl
+  - travis_wait 40 julia --project=. --color=yes docs/make.jl
