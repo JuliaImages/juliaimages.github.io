@@ -84,7 +84,7 @@ nothing # hide
 
 defines a 4d image (3 space dimensions plus one time dimension) with
 the specified name and physical pixel spacing for each coordinate.
-The `AxisArrays` package supports rich and efficient operations on such
+The [`AxisArrays`](https://github.com/JuliaArrays/AxisArrays.jl) package supports rich and efficient operations on such
 arrays, and can be useful to keep track of not just pixel spacing but
 the
 [orientation convention used for multidimensional images](http://www.grahamwideman.com/gw/brain/orientation/orientterms.htm).
@@ -92,17 +92,17 @@ the
 JuliaImages interoperates smoothly with `AxisArrays` and many other
 packages.  As further examples,
 
-- the `ImageMetadata` package (incorporated into `Images` itself)
+- the [`ImageMetadata`](https://github.com/JuliaImages/ImageMetadata.jl) package (incorporated into `Images` itself)
   allows you to "tag" images with custom metadata
 
-- the `IndirectArrays` package supports indexed (colormap) images
+- the [`IndirectArrays`](https://github.com/JuliaArrays/IndirectArrays.jl) package supports indexed (colormap) images
 
-- the `MappedArrays` package allows you to represent
+- the [`MappedArrays`](https://github.com/JuliaArrays/MappedArrays.jl) package allows you to represent
   [lazy](https://en.wikipedia.org/wiki/Lazy_evaluation)
   value-transformations, facilitating work with images that may be too
   large to store in memory at once
 
-- `ImageTransformations` allows you to encode rotations, shears,
+- [`ImageTransformations`](https://github.com/JuliaImages/ImageTransformations.jl) allows you to encode rotations, shears,
   deformations, etc., either eagerly or lazily
 
 It is very easy to define new array types in Julia--and consequently
@@ -138,10 +138,8 @@ img_rgb = rand(RGB, 2, 2)
 img_lab = rand(Lab, 2, 2)
 ```
 ```@example pixel
-mosaicview(cat(RGB.(img_gray), # hide
-               RGB.(img_rgb), # hide
-               RGB.(img_lab), dims=3), # hide
-           RGB(1, 1, 1), # hide
+mosaicview(RGB.(img_gray), RGB.(img_rgb), RGB.(img_lab), # hide
+           fillvalue=RGB(1, 1, 1), # hide
            nrow=1, npad=2) # hide
 ```
 
@@ -206,7 +204,7 @@ img_rgb = colorview(RGB, img_CHW) # 2 * 2
     adjacent storage in memory). For more details, please refer to the performance tip:
     [Access arrays in memory order, along columns](https://docs.julialang.org/en/v1/manual/performance-tips/#Access-arrays-in-memory-order,-along-columns-1)
 
-    You can use `permuteddimsview` to "reinterpret" the orientation of a
+    You can use `PermutedDimsArray` to "reinterpret" the orientation of a
     chunk of memory without making a copy, or `permutedims` if you want a
     copy.
 
@@ -263,11 +261,11 @@ img_n0f8_raw = rawview(img_n0f8)
 float.(img_n0f8_raw)
 ```
 
-Conversions between the storage type without changing the color type are supported
-by the following functions:
+Conversions between the storage type, i.e., the actual numeric type, without changing the color type
+are supported by the following functions:
 
-* `float32`, `float64`
-* `n0f8`, `n6f10`, `n4f12`, `n2f14`, `n0f16`
+* [`float32`](@ref), [`float64`](@ref)
+* [`n0f8`](@ref), [`n6f10`](@ref), [`n4f12`](@ref), [`n2f14`](@ref), [`n0f16`](@ref)
 
 ```@repl fixedpoint
 img = rand(Gray{N0f8}, 2, 2)
