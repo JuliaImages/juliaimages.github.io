@@ -52,10 +52,10 @@ RGB ImageMeta with:
     time: evening
 ```
 
-You can extract the data matrix with `data(img)`:
+You can extract the data matrix with `arraydata(img)`:
 
 ```jldoctest
-julia> data(img)
+julia> arraydata(img)
 3×2 Array{RGB{N0f8},2} with eltype RGB{FixedPointNumbers.Normed{UInt8,8}}:
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
@@ -139,14 +139,14 @@ Int64 ImageMeta with:
   data: 3×5 reshape(::UnitRange{Int64}, 3, 5) with eltype Int64
   properties:
     maxsum: [42, 45]
-    spatialproperties: Set(Symbol[:maxsum])
+    spatialproperties: Set([:maxsum])
 
 julia> imgp = permutedims(img, (2,1))
 Int64 ImageMeta with:
   data: 5×3 Array{Int64,2}
   properties:
     maxsum: [45, 42]
-    spatialproperties: Set(Symbol[:maxsum])
+    spatialproperties: Set([:maxsum])
 
 julia> maximum(sum(imgp, dims=1))
 45

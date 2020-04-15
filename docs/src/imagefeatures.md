@@ -7,7 +7,7 @@ descriptors in other images or other portions of the same image. This
 can be useful in many applications, such as object recognition,
 localization, or image registration.
 
-ImagesFeatures has [its own documentation](http://juliaimages.github.io/ImageFeatures.jl/latest/index.html), and you should consult that for a comprehensive overview of the functionality of the package. Here, we'll briefly illustrate one type of feature and its application to image registration, the *BRISK* descriptor.
+ImagesFeatures has [its own documentation](https://juliaimages.org/ImageFeatures.jl/stable), and you should consult that for a comprehensive overview of the functionality of the package. Here, we'll briefly illustrate one type of feature and its application to image registration, the *BRISK* descriptor.
 
 The *BRISK* descriptor examines the structure of an image around a
 *keypoint*. Given a keypoint, the mean intensity (loosely-speaking) is

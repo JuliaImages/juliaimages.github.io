@@ -395,12 +395,12 @@ julia> a2 = [1.0,2.0]'
 julia> a1p, a2p = paddedviews(0, a1, a2);   # 0 is the fill value
 
 julia> a1p
-2×2 PaddedViews.PaddedView{Int64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},Array{Int64,2}}:
+2×2 PaddedView(0, ::Array{Int64,2}, (Base.OneTo(2), Base.OneTo(2))) with eltype Int64:
  1  0
  2  0
 
 julia> a2p
-2×2 PaddedViews.PaddedView{Float64,2,Tuple{Base.OneTo{Int64},Base.OneTo{Int64}},LinearAlgebra.Adjoint{Float64,Array{Float64,1}}}:
+2×2 PaddedView(0.0, ::LinearAlgebra.Adjoint{Float64,Array{Float64,1}}, (Base.OneTo(2), Base.OneTo(2))) with eltype Float64:
  1.0  2.0
  0.0  0.0
 ```

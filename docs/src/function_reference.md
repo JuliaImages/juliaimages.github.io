@@ -31,7 +31,10 @@ normedview
 rawview
 permuteddimsview
 StackedView
+PaddedView
 paddedviews
+sym_paddedviews
+StreamingContainer
 ```
 
 Images with defined geometry and axis meaning can be constructed using the [`AxisArrays`](https://github.com/JuliaArrays/AxisArrays.jl) package:
@@ -67,14 +70,22 @@ coords_spatial
 size_spatial
 indices_spatial
 nimages
+timeaxis
+istimeaxis
+timedim
 assert_timedim_last
+StreamIndexStyle
+IndexAny
+IndexIncremental
 ```
 
 ## Element transformation and intensity scaling
 
 ```@docs
 clamp01
+clamp01!
 clamp01nan
+clamp01nan!
 scaleminmax
 scalesigned
 colorsigned
@@ -93,6 +104,26 @@ n2f14
 n0f16
 ```
 
+## Color channels
+
+You can extract the numeric value of particular color channels:
+
+```@docs
+gray
+red
+green
+blue
+alpha
+```
+
+You can also perform operations on channels:
+
+```@docs
+mapc
+reducec
+mapreducec
+```
+
 ## Color conversion
 
 ```julia
@@ -105,6 +136,10 @@ calculates a grayscale representation of a color image using the
 imghsv = HSV.(img)
 ```
 converts to an HSV representation of color information.
+
+The [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl)
+package has a rich set of traits that allow you to perform generic
+operations on color types, see its README for more information.
 
 ## Image algorithms
 
@@ -127,7 +162,10 @@ Kernel.ando5
 Kernel.gaussian
 Kernel.DoG
 Kernel.LoG
+Kernel.gabor
 Kernel.Laplacian
+Kernel.bickley
+Kernel.scharr
 ```
 
 #### KernelFactors
@@ -141,6 +179,8 @@ KernelFactors.ando5
 KernelFactors.gaussian
 KernelFactors.IIRGaussian
 KernelFactors.TriggsSdika
+KernelFactors.bickley
+KernelFactors.scharr
 ```
 
 #### Kernel utilities
@@ -194,6 +234,7 @@ magnitude_phase
 imedge
 thin_edges
 canny
+Percentile
 ```
 
 ### Corner Detection
@@ -208,7 +249,7 @@ fastcorners
 
 ### Feature Extraction
 
-See the [ImageFeatures]() package for a much more comprehensive set of tools.
+See the [ImageFeatures](https://juliaimages.org/ImageFeatures.jl/stable/) package for a much more comprehensive set of tools.
 
 ```@docs
 blob_LoG
@@ -220,23 +261,28 @@ findlocalminima
 ### Exposure
 
 ```@docs
-imhist
+build_histogram
+adjust_histogram
+adjust_histogram!
 cliphist
-histeq
-adjust_gamma
 imstretch
 imadjustintensity
 complement
-histmatch
-clahe
+AdaptiveEqualization
+GammaCorrection
 ```
 
 ### Spatial transformations and resizing
 
 ```@docs
 imresize
+imrotate
 restrict
 warp
+warpedview
+invwarpedview
+WarpedView
+InvWarpedView
 ```
 
 ### Image statistics
@@ -247,9 +293,10 @@ maxfinite
 maxabsfinite
 meanfinite
 ssd
-ssdn
+mse
 sad
-sadn
+mae
+entropy
 ```
 
 ### Morphological operations
@@ -271,6 +318,9 @@ component_subscripts
 component_centroids
 feature_transform
 distance_transform
+convexhull
+GuoAlgo
+thinning
 ```
 
 ### Interpolation
@@ -302,7 +352,7 @@ shepp_logan
 
 ```@docs
 ImageMeta
-data
+arraydata
 properties
 copyproperties
 shareproperties
@@ -314,6 +364,7 @@ spatialproperties
 ```@docs
 SegmentedImage
 ImageEdge
+otsu_threshold
 labels_map
 segment_labels
 segment_pixel_count
@@ -334,6 +385,13 @@ region_splitting
 
 ## ImageFeatures
 
+### Geometric features
+
+```@docs
+hough_transform_standard
+hough_circle_gradient
+```
+
 ### Types
 
 ```@docs
@@ -345,6 +403,7 @@ BRIEF
 ORB
 FREAK
 BRISK
+HOG
 ```
 
 ### Corners
