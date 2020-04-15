@@ -139,14 +139,14 @@ Int64 ImageMeta with:
   data: 3×5 reshape(::UnitRange{Int64}, 3, 5) with eltype Int64
   properties:
     maxsum: [42, 45]
-    spatialproperties: Set(Symbol[:maxsum])
+    spatialproperties: Set([:maxsum])
 
 julia> imgp = permutedims(img, (2,1))
 Int64 ImageMeta with:
   data: 5×3 Array{Int64,2}
   properties:
     maxsum: [45, 42]
-    spatialproperties: Set(Symbol[:maxsum])
+    spatialproperties: Set([:maxsum])
 
 julia> maximum(sum(imgp, dims=1))
 45

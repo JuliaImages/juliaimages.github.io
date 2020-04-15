@@ -34,7 +34,7 @@ julia> summary(img)
 "386×386 Array{Gray{N0f8},2} with eltype Gray{Normed{UInt8,8}}"
 
 julia> summary(imgrot)
-"OffsetArray(::Array{Gray{N0f8},2}, -59:446, -59:446) with eltype Gray{Normed{UInt8,8}} with indices -59:446×-59:446"
+"506×506 OffsetArray(::Array{Gray{N0f8},2}, -59:446, -59:446) with eltype Gray{Normed{UInt8,8}} with indices -59:446×-59:446"
 ```
 
 While `img` has axes that start with the conventional 1, the
