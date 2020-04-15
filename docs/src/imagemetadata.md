@@ -52,10 +52,10 @@ RGB ImageMeta with:
     time: evening
 ```
 
-You can extract the data matrix with `data(img)`:
+You can extract the data matrix with `arraydata(img)`:
 
 ```jldoctest
-julia> data(img)
+julia> arraydata(img)
 3×2 Array{RGB{N0f8},2} with eltype RGB{FixedPointNumbers.Normed{UInt8,8}}:
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)

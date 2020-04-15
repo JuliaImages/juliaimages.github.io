@@ -308,7 +308,7 @@ shepp_logan
 
 ```@docs
 ImageMeta
-data
+arraydata
 properties
 copyproperties
 shareproperties
