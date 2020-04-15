@@ -220,23 +220,28 @@ findlocalminima
 ### Exposure
 
 ```@docs
-imhist
+build_histogram
+adjust_histogram
+adjust_histogram!
 cliphist
-histeq
-adjust_gamma
 imstretch
 imadjustintensity
 complement
-histmatch
-clahe
+AdaptiveEqualization
+GammaCorrection
 ```
 
 ### Spatial transformations and resizing
 
 ```@docs
 imresize
+imrotate
 restrict
 warp
+warpedview
+invwarpedview
+WarpedView
+InvWarpedView
 ```
 
 ### Image statistics
@@ -247,9 +252,10 @@ maxfinite
 maxabsfinite
 meanfinite
 ssd
-ssdn
+mse
 sad
-sadn
+mae
+entropy
 ```
 
 ### Morphological operations
