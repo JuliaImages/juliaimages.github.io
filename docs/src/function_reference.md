@@ -208,7 +208,7 @@ fastcorners
 
 ### Feature Extraction
 
-See the [ImageFeatures]() package for a much more comprehensive set of tools.
+See the [ImageFeatures](https://juliaimages.org/ImageFeatures.jl/stable/) package for a much more comprehensive set of tools.
 
 ```@docs
 blob_LoG

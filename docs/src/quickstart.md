@@ -301,7 +301,7 @@ location across multiple images. More information can be found in
 
 ## Examples of usage
 
-If you feel ready to get started, see the [Demonstrations](@ref) page for inspiration.
+If you feel ready to get started, see the [Demonstrations](@ref demonstrations) page for inspiration.
 
 ## Function categories
 
