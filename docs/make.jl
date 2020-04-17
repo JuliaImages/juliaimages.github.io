@@ -1,5 +1,6 @@
 using Documenter, DemoCards
 using Images, ImageFiltering, ImageSegmentation, ImageFeatures, PaddedViews
+using ImageContrastAdjustment
 
 branch = "master"
 
@@ -11,7 +12,7 @@ format = Documenter.HTML(edit_link = "source",
                          assets = [theme])
 
 makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, ImageAxes,
-                    ImageFeatures, ImageFiltering, ImageMetadata,
+                    ImageFeatures, ImageFiltering, ImageMetadata, ImageContrastAdjustment,
                     ImageSegmentation, ImageTransformations, PaddedViews, ImageMorphology],
          format   = format,
          sitename = "JuliaImages",

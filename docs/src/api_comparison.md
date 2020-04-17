@@ -24,12 +24,12 @@ welcome.
 |                                       |                                           |                                   |                                           |
 | **Intensity & quantization**          |                                           |                                   |                                           |
 | Clamping                              | `clamp01`, `clamp01nan`                   |                                   |                                           |
-| Linear scaling                        | `scaleminmax`, `scalesigned`, etc.        | `rescale_intensity`               | `imadjust`                                |
-| Nonlinear scaling                     | `GammaCorrection`, `imstretch`            | `adjust_gamma`                    | `imadjust`                                |
+| Linear scaling                        | `LinearStretching`, `scaleminmax`, etc.   | `rescale_intensity`               | `imadjust`                                |
+| Nonlinear scaling                     | `GammaCorrection`                         | `adjust_gamma`                    | `imadjust`                                |
 | Compute histogram                     | `build_histogram`                         | `histogram`                       | `imhist`                                  |
-| Histogram equalization                | `adjust_histogram`                        | `equalize_hist`                   | `histeq`                                  |
+| Histogram equalization                | `Equalization    `                        | `equalize_hist`                   | `histeq`                                  |
 | Adaptive equalization                 | `AdaptiveEqualization`                    | `equalize_adapthist`              | `adapthisteq`                             |
-| Reference histogram matching          | `adjust_histogram`                        | `match_histograms`                | `imhistmatch`                             |
+| Reference histogram matching          | `Matching        `                        | `match_histograms`                | `imhistmatch`                             |
 | Quantization                          | map anonymous function                    |                                   | `imquantize`                              |
 | Threshold estimation                  | `otsu_threshold`                          | `threshold_otsu` etc.             | `graythresh` etc.                         |
 |                                       |                                           |                                   |                                           |
