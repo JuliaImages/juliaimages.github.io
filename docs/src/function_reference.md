@@ -264,12 +264,16 @@ findlocalminima
 build_histogram
 adjust_histogram
 adjust_histogram!
+AdaptiveEqualization
+Equalization
+GammaCorrection
+LinearStretching
+Matching
+MidwayEqualization
 cliphist
 imstretch
 imadjustintensity
 complement
-AdaptiveEqualization
-GammaCorrection
 ```
 
 ### Spatial transformations and resizing
