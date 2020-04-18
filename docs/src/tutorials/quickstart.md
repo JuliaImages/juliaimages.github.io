@@ -1,4 +1,4 @@
-# Quickstart
+# [Quickstart](@id page_quickstart)
 
 If you're comfortable with Julia or have used another image-processing
 package before, this page may help you get started quickly. If some of

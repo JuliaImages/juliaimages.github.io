@@ -8,8 +8,8 @@
 # [OffsetArrays](https://github.com/JuliaArrays/OffsetArrays.jl) and
 # [PaddedViews](https://github.com/JuliaArrays/PaddedViews.jl)
 
-using Images, MosaicViews
-using OffsetArrays, PaddedViews # provide `OffsetArray` and `paddedviews`
+using Images
+using OffsetArrays # provide `OffsetArray`
 
 # ## 1. basic offset and pad operation
 
@@ -100,4 +100,4 @@ color_panel = color_panel[axes(red_c)...] # crop empty region
 
 # --- save covers --- #src
 using FileIO #src
-save("assets/alpha_compositing.png", color_panel) #src
+save("assets/alpha_compositing.png", map(clamp01nan, color_panel)) #src

@@ -38,5 +38,5 @@ img_medium = imresize(img_small, size(img_small).*2)
 ```
 
 Resulting images (small and medium):
-![img_small](assets/transform/img_small.png)
-![img_medium](assets/transform/img_medium.png)
+![img_small](assets/img_small.png)
+![img_medium](assets/img_medium.png)

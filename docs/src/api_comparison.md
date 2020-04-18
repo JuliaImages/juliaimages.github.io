@@ -11,30 +11,30 @@ welcome.
 | Operation                             | JuliaImages                               | scikit-image + NumPy              | Matlab (ImageProcessing + ComputerVision) |
 |---------------------------------------|-------------------------------------------|-----------------------------------|-------------------------------------------|
 | **Input/output**                      |                                           |                                   |                                           |
-| Read image file                       | `load` (FileIO.jl)                        | `imread`                          | `imread`                                  |
-| Write image file                      | `save` (FileIO.jl)                        | `imsave`                          | `imwrite`                                 |
+| Read image file                       | [`load`](@ref)                            | `imread`                          | `imread`                                  |
+| Write image file                      | [`save`](@ref)                            | `imsave`                          | `imwrite`                                 |
 | Image file metadata                   | `magickinfo` (ImageMagick.jl)             |                                   | `imfinfo`                                 |
-| Test images                           | `testimage` (TestImages.jl)               | `astronaut` etc.                  | “cameraman.tif” etc                       |
+| Test images                           | [`testimage`](@ref)                       | `astronaut` etc.                  | “cameraman.tif” etc                       |
 |                                       |                                           |                                   |                                           |
 | **Element type and color**            |                                           |                                   |                                           |
-| Change numeric precision              | `float32`, `float64`, `n0f8`, etc.        | `img_as_float` etc                | `im2double` etc                           |
+| Change numeric precision              | [`float32`](@ref), [`float64`](@ref), [`n0f8`](@ref), etc. | `img_as_float` etc  | `im2double` etc                        |
 | Change color space                    | `HSV.(img)` etc.                          | `rgb2hsv` etc.                    | `rgb2lab` etc.                            |
 | Whitepoint adjustment                 | map `whitebalance` (Colors.jl)            |                                   | `makecform`                               |
 | High dynamic range                    |                                           |                                   | `tonemap`                                 |
 |                                       |                                           |                                   |                                           |
 | **Intensity & quantization**          |                                           |                                   |                                           |
-| Clamping                              | `clamp01`, `clamp01nan`                   |                                   |                                           |
-| Linear scaling                        | `LinearStretching`, `scaleminmax`, etc.   | `rescale_intensity`               | `imadjust`                                |
-| Nonlinear scaling                     | `GammaCorrection`                         | `adjust_gamma`                    | `imadjust`                                |
-| Compute histogram                     | `build_histogram`                         | `histogram`                       | `imhist`                                  |
-| Histogram equalization                | `Equalization    `                        | `equalize_hist`                   | `histeq`                                  |
-| Adaptive equalization                 | `AdaptiveEqualization`                    | `equalize_adapthist`              | `adapthisteq`                             |
-| Reference histogram matching          | `Matching        `                        | `match_histograms`                | `imhistmatch`                             |
+| Clamping                              | [`clamp01`](@ref), [`clamp01nan`](@ref)   |                                   |                                           |
+| Linear scaling                        | [`LinearStretching`](@ref), [`scaleminmax`](@ref), etc.  | `rescale_intensity`| `imadjust`                                |
+| Nonlinear scaling                     | [`GammaCorrection`](@ref)                 | `adjust_gamma`                    | `imadjust`                                |
+| Compute histogram                     | [`build_histogram`](@ref)                 | `histogram`                       | `imhist`                                  |
+| Histogram equalization                | [`Equalization`](@ref)                    | `equalize_hist`                   | `histeq`                                  |
+| Adaptive equalization                 | [`AdaptiveEqualization`](@ref)            | `equalize_adapthist`              | `adapthisteq`                             |
+| Reference histogram matching          | [`Matching`](@ref)                        | `match_histograms`                | `imhistmatch`                             |
 | Quantization                          | map anonymous function                    |                                   | `imquantize`                              |
-| Threshold estimation                  | `otsu_threshold`                          | `threshold_otsu` etc.             | `graythresh` etc.                         |
+| Threshold estimation                  | [`otsu_threshold`](@ref)                  | `threshold_otsu` etc.             | `graythresh` etc.                         |
 |                                       |                                           |                                   |                                           |
 | **Visualization and interactivity**   |                                           |                                   |                                           |
-| Visualization                         | `imshow` (ImageView.jl)                   | `imshow`                          | `imshow`, `implay`, etc.                  |
+| Visualization                         | `imshow` (ImageView.jl), [`mosaicview`](@ref) | `imshow`                      | `imshow`, `implay`, `montage`, etc.       |
 | Contrast adjustment                   | ImageView.jl                              |                                   | `imcontrast`                              |
 | Pixel information                     | ImageView.jl                              |                                   | `impixelinfo`                             |
 | Distance measurement                  |                                           |                                   | `imdistline`                              |
@@ -42,7 +42,7 @@ welcome.
 | Zooming/scrolling                     | ImageView.jl and GtkUtilities.jl          | `imshow`                          | `imscrollpanel` etc.                      |
 | Interactive colormap                  |                                           |                                   | `imcolormaptool`                          |
 | Region selection                      |                                           | `RecatangleTool` etc.             | `imrect`, `imellipse`, `imfreehand`, etc. |
-| Image comparison                      | `colorview`                               |                                   | `imshowpair`, `imfuse`                    |
+| Image comparison                      | [`colorview`](@ref), [`mosaicview`](@ref) |                                   | `imshowpair`, `imfuse`                    |
 | Label colorization                    | `IndirectArray`, `ColorizedArray`         | `label2rgb`                       | `label2rgb`                               |
 |                                       |                                           |                                   |                                           |
 | **Annotation**                        |                                           |                                   |                                           |
@@ -50,35 +50,37 @@ welcome.
 | Draw circles/ellipses                 | `circle!`, `ellipse!` (ImageDraw.jl)      | `circle`, `ellipse`               | `viscircles` (visualization only)         |
 |                                       |                                           |                                   |                                           |
 | **Transformations**                   |                                           |                                   |                                           |
-| Resize                                | `imresize`, `restrict`                    | `resize`                          | `imresize`                                |
-| Image pyramids                        | `gaussian_pyramid` (or use `restrict`)    | `pyramid_gaussian` etc.           | `impyramid`                               |
-| Rotate                                | `imrotate`                                    | `rotate`                          | `imrotate`                                |
-| Translate                             | `warp`                                    |                                   | `imtranslate`                             |
-| General geometric transformation      | `warp`                                    | `warp`                            | `imwarp`                                  |
-| Hough transform                       | `hough_transform_standard`, `hough_circle_gradient` | `hough_circle`, etc.              | `hough`                                   |
+| Resize                                | [`imresize`](@ref), [`restrict`](@ref)    | `resize`                          | `imresize`                                |
+| Image pyramids                        | [`gaussian_pyramid`](@ref), [`restrict`](@ref) | `pyramid_gaussian` etc.      | `impyramid`                               |
+| Rotate                                | [`imrotate`](@ref)                        | `rotate`                          | `imrotate`                                |
+| Translate                             | [`warp`](@ref)                            |                                   | `imtranslate`                             |
+| General geometric transformation      | [`warp`](@ref)                            | `warp`                            | `imwarp`                                  |
+| Hough transform                       | [`hough_transform_standard`](@ref), [`hough_circle_gradient`](@ref) | `hough_circle`, etc.  | `hough`                     |
 | Radon transform                       |                                           | `radon`, `iradon`                 | `radon`, `iradon`                         |
-| Distance transform                    | `feature_transform`, `distance_transform` |                                   | `bwdist`, `graydist`                      |
+| Distance transform                    | [`feature_transform`](@ref), [`distance_transform`](@ref) |                   | `bwdist`, `graydist`                      |
 |                                       |                                           |                                   |                                           |
 | **Registration**                      |                                           |                                   |                                           |
 |                                       |                                           |                                   |                                           |
 | **Statistics and image comparison**   |                                           |                                   |                                           |
-| Image differences                     | `ssd`, `sad`, etc.                        |                                   | `immse`, `ssim`                           |
-| Min/max/mean                          | `minfinite`, `maxfinite`, `meanfinite`    | `minimum`, `maximum`, `mean`      | `nanmax`, etc.                            |
-| Entropy                               | `entropy`                                 | `entropy`                         | `entropy`                                 |
+| Image differences                     | `ssd`, `sad`, `mse`, `rmse` etc.          | `compare_mse`, `compare_nrmse`    | `immse`           |
+| Min/max/mean                          | [`minfinite`](@ref), [`maxfinite`](@ref), [`meanfinite`](@ref)    | `minimum`, `maximum`, `mean`      | `nanmax`, etc.    |
+| Entropy                               | [`entropy`](@ref)                         | `entropy`                         | `entropy`                                 |
+| quality assessment                    | [`PSNR`](@ref), [`SSIM`](@ref)            | `compare_psnr`, `compare_ssim`    | `psnr`, `ssim`                        |
+| colorfulness                          | [`colorfulness`](@ref)                    |                                   |                                           |
 |                                       |                                           |                                   |                                           |
 | **Filtering and padding**             |                                           |                                   |                                           |
-| Linear filtering                      | `imfilter`                                | `gaussian`, etc.                  | `imfilter`                                |
-| Median/max/quantile filtering         | `mapwindow`                               | `median`/`max` etc.               | `nlfilter`, `medfilt2`, etc.              |
-| Other nonlinear filtering (e.g., std) | `mapwindow`                               |                                   | `nlfilter`, `stdfilt`                     |
-| Gradients                             | `imgradients`                             | `sobel_h` etc.                    | `imgradientxy` etc.                       |
-| Integral image                        | `integral_image`                          | `integral_image`                  | `integralImage`                           |
-| Padding                               | `padarray`                                | `pad`                             | `padarray`                                |
+| Linear filtering                      | [`imfilter`](@ref)                        | `gaussian`, etc.                  | `imfilter`                                |
+| Median/max/quantile filtering         | [`mapwindow`](@ref)                       | `median`/`max` etc.               | `nlfilter`, `medfilt2`, etc.              |
+| Other nonlinear filtering (e.g., std) | [`mapwindow`](@ref)                       |                                   | `nlfilter`, `stdfilt`                     |
+| Gradients                             | [`imgradients`](@ref)                     | `sobel_h` etc.                    | `imgradientxy` etc.                       |
+| Integral image                        | [`integral_image`](@ref)                  | `integral_image`                  | `integralImage`                           |
+| Padding                               | [`padarray`](@ref)                        | `pad`                             | `padarray`                                |
 | Deconvolution                         | `wiener` (Deconvolution.jl)               | `richardson_lucy`, `weiner`, etc. | `deconvlucy`, `deconvwnr`, etc.           |
 |                                       |                                           |                                   |                                           |
 | **Features**                          |                                           |                                   |                                           |
-| Edge detection                        | `imedge`, `canny`                         | `canny`                           | `edge`                                    |
-| Corner detection                      | `imcorner`, `fastcorners`                 | `corner_harris` etc.              | `detectFASTFeatures`                      |
-| Blob detection                        | `blob_LoG`                                | `blob_log` etc.                   |                                           |
+| Edge detection                        | [`imedge`](@ref), [`canny`](@ref)         | `canny`                           | `edge`                                    |
+| Corner detection                      | [`imcorner`](@ref), [`fastcorners`](@ref) | `corner_harris` etc.              | `detectFASTFeatures`                      |
+| Blob detection                        | [`blob_LoG`](@ref)                        | `blob_log` etc.                   |                                           |
 | Local binary patterns                 | `lbp` etc. (ImageFeatures.jl)             | `local_binary_pattern`            | `extractLBPFeatures`                      |
 | Histogram of oriented gradients       | `HOG` (ImageFeatures.jl)                  | `hog`                             | `extractHOGFeatures`                      |
 | Gray-level co-occurence               | `glcm` etc. (ImageFeatures.jl)            | `greycomatrix`                    | `graycomatrix`                            |
@@ -86,21 +88,21 @@ welcome.
 | Feature matching                      | `match_keypoints` (ImageFeatures.jl)      | `match_descriptors`               | `matchFeatures`                           |
 |                                       |                                           |                                   |                                           |
 | **Segmentation**                      |                                           |                                   |                                           |
-| Connected components                  | `label_components`                        | `label`                           | `bwconncomp`, `bwlabel`                   |
+| Connected components                  | [`label_components`](@ref)                | `label`                           | `bwconncomp`, `bwlabel`                   |
 | Foreground/background                 |                                           | `active_contour`                  | `activecontour`                           |
-| Clustering                            | `kmeans`, `fuzzy_cmeans`, `mean_shift`    | `quickshift`, `slic`                      |                                           |
-| Marker segmentation                   | `seeded_region_growing`                   | `random_walker`                   | `imsegfmm`                                |
-| Watershed                             |  `watershed`                              | `watershed`                       | `watershed`                               |
+| Clustering                            | `kmeans`, `fuzzy_cmeans`, `mean_shift` (Clustering.jl) | `quickshift`, `slic` |                                           |
+| Marker segmentation                   | [`seeded_region_growing`](@ref)           | `random_walker`                   | `imsegfmm`                                |
+| Watershed                             | [`watershed`](@ref)                       | `watershed`                       | `watershed`                               |
 |                                       |                                           |                                   |                                           |
 | **Morphological operations**          |                                           |                                   |                                           |
-| Dilation                              | `dilate`                                  | `dilation`, `binary_dilation`     | `imdilate`                                |
-| Erosion                               | `erode`                                   |                                   |                                           |
-| Opening                               | `opening`                                 | `opening`                         | `imopen`                                  |
-| Closing                               | `closing`                                 | `closing`                         | `imclose`                                 |
-| Top-hat filtering                     | `tophat`                                  | `tophat` etc.                     | `imtophat`                                |
-| Bottom-hat filtering                  | `bothat`                                  | `bottomhat`                       | `imbothat`                                |
-| Regional max/min                      | `mapwindow`                               | `filters.rank.maximum` etc.       | `imregionalmax` etc.                      |
-| Convex hull                           | `convexhull`                              | `convex_hull_image`               | `bwconvhull`                              |
+| Dilation                              | [`dilate`](@ref)                          | `dilation`, `binary_dilation`     | `imdilate`                                |
+| Erosion                               | [`erode`](@ref)                           |                                   |                                           |
+| Opening                               | [`opening`](@ref)                         | `opening`                         | `imopen`                                  |
+| Closing                               | [`closing`](@ref)                         | `closing`                         | `imclose`                                 |
+| Top-hat filtering                     | [`tophat`](@ref)                          | `tophat` etc.                     | `imtophat`                                |
+| Bottom-hat filtering                  | [`bothat`](@ref)                          | `bottomhat`                       | `imbothat`                                |
+| Regional max/min                      | [`mapwindow`](@ref)                       | `filters.rank.maximum` etc.       | `imregionalmax` etc.                      |
+| Convex hull                           | [`convexhull`](@ref)                      | `convex_hull_image`               | `bwconvhull`                              |
 | Borders                               | `clearborder`                             | `clear_border`                    | `imclearborder`                           |
 | Boundaries                            |                                           | `find_boundaries`                 | `boundarymask`                            |
 | Filling                               | `imfill`                                  | `remove_small_holes`              | `imfill`, `regionfill`                    |

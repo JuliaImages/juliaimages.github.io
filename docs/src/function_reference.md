@@ -2,20 +2,38 @@
 
 Below, `[]` in an argument list means an optional argument.
 
-## Image loading and saving
-
-```julia
-using FileIO
-img = load("myimage.png")
-save("imagecopy.jpg", img)
-```
-Standard test images are available in the [TestImages](http://juliaimages.github.io/TestImages.jl) package:
-```julia
-using TestImages
-img = testimage("mandrill")
+```@contents
+Pages=["function_reference.md"]
+depth=3
 ```
 
-## Image construction, conversion, and views
+## [Image loading and saving](@id ref_io)
+
+[FileIO.jl](https://github.com/JuliaIO/FileIO.jl) is an IO frontend that provides `save` and `load`
+to load images easily. The current available backends for image files are:
+
+* [ImageMagick.jl](https://github.com/JuliaIO/ImageMagick.jl) covers most image formats and has extra
+  functionality. This can be your first choice if you don't have a preference.
+* [QuartzImageIO.jl](https://github.com/JuliaIO/QuartzImageIO.jl) exposes macOS's native image IO
+  functionality to Julia. In some cases it's faster than ImageMagick, but it might not cover all your
+  needs.
+* [ImageIO.jl](https://github.com/JuliaIO/ImageIO.jl) is a new image IO backend (requires julia >=v"1.3")
+  that provides an optimized performance for PNG files. Check benchmark
+  [here](https://github.com/JuliaIO/PNGFiles.jl/issues/1)
+* [OMETIFF.jl](https://github.com/tlnagy/OMETIFF.jl) supports
+  [OME-TIFF](https://docs.openmicroscopy.org/ome-model/6.0.0/index.html#ome-tiff) files. If you don't
+  know what it is, then it is likely that you don't need this package.
+
+Standard test images are provided by [TestImages.jl](https://github.com/JuliaImages/TestImages.jl)
+
+```@docs
+load
+save
+testimage
+shepp_logan
+```
+
+## [Image construction, conversion, and views](@id ref_construction)
 
 Any array can be treated as an Image.  In graphical environments, only
 arrays with
@@ -29,11 +47,12 @@ colorview
 channelview
 normedview
 rawview
-permuteddimsview
 StackedView
 PaddedView
 paddedviews
 sym_paddedviews
+MosaicView
+mosaicview
 StreamingContainer
 ```
 
@@ -291,16 +310,47 @@ InvWarpedView
 
 ### Image statistics
 
+Functions for image statistics are spreaded out in Images.jl, ImageDistances.jl and ImageQualityIndexes.jl
+
 ```@docs
 minfinite
 maxfinite
 maxabsfinite
 meanfinite
-ssd
-mse
-sad
-mae
 entropy
+```
+
+### General Distances
+
+| type name               |  convenient syntax         | math definition                   |
+| ----------------------- | -------------------------- | --------------------------------- |
+|  Euclidean              |  `euclidean(x, y)`         | `sqrt(sum((x - y) .^ 2))`         |
+|  SqEuclidean            |  `sqeuclidean(x, y)`       | `sum((x - y).^2)`                 |
+|  Cityblock              |  `cityblock(x, y)`         | `sum(abs(x - y))`                 |
+|  TotalVariation         |  `totalvariation(x, y)`    | `sum(abs(x - y)) / 2`             |
+|  Minkowski              |  `minkowski(x, y, p)`      | `sum(abs(x - y).^p) ^ (1/p)`      |
+|  Hamming                |  `hamming(x, y)`           | `sum(x .!= y)`                    |
+|  SumAbsoluteDifference  |  `sad(x, y)`               | `sum(abs(x - y))`                 |
+|  SumSquaredDifference   |  `ssd(x, y)`               | `sum((x - y).^2)`                 |
+|  MeanAbsoluteError      |  `mae(x, y)`, `sadn(x, y)` | `sum(abs(x - y))/len(x)`          |
+|  MeanSquaredError       |  `mse(x, y)`, `ssdn(x, y)` | `sum((x - y).^2)/len(x)`          |
+|  RootMeanSquaredError   |  `rmse(x, y)`              | `sqrt(sum((x - y) .^ 2))`         |
+|  NCC                    |  `ncc(x, y)`               | `dot(x,y)/(norm(x)*norm(y))`      |
+
+#### Image-specific Distances
+
+| Distance type | Convenient syntax | References |
+|----------|------------------------|------------|
+| `Hausdorff` and `ModifiedHausdorff` | `hausdorff(imgA,imgB)` and `modified_hausdorff(imgA,imgB)` | Dubuisson, M-P et al. 1994. A Modified Hausdorff Distance for Object-Matching. |
+| `CIEDE2000` | `ciede2000(imgA,imgB)` and `ciede2000(imgA,imgB; metric=DE_2000())` | Sharma, G., Wu, W., and Dalal, E. N., 2005. The CIEDE2000 color‐difference formula. |
+
+#### Image metrics
+
+```@docs
+PSNR
+SSIM
+colorfulness
+HASLER_AND_SUSSTRUNK_M3
 ```
 
 ### Morphological operations
@@ -344,12 +394,6 @@ boxdiff
 
 ```@docs
 gaussian_pyramid
-```
-
-### Phantoms
-
-```@docs
-shepp_logan
 ```
 
 ## Image metadata utilities

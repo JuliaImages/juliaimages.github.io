@@ -1,8 +1,8 @@
-# Conversions vs. views
+# [Conversions vs. views](@id page_conversions_views)
 
 ## Sharing memory: an introduction to views
 
-In [Arrays, Numbers, and Colors](@ref) we discussed how one can
+In [Arrays, Numbers, and Colors](@ref page_arrays_colors) we discussed how one can
 convert the element type of an array `a = [1,2,3,4]` using a syntax
 like `Float64.(a)`. You might be curious what affect, if any,
 `Int.(a)` has:
@@ -161,7 +161,7 @@ in the other.
 
 ## Views for "converting" between fixed-point and raw representations
 
-[Arrays, Numbers, and Colors](@ref) also introduced the fixed-point
+[Arrays, Numbers, and Colors](@ref page_arrays_colors) also introduced the fixed-point
 numbers used in some representations of color (or grayscale)
 information. If you want to switch representation, you can use the
 `reinterpret` function:
@@ -256,7 +256,7 @@ depending on the types of the inputs.
 
 ## Color separations: views for converting between numbers and colors
 
-In [Arrays, Numbers, and Colors](@ref), we pointed out that one can
+In [Arrays, Numbers, and Colors](@ref page_arrays_colors), we pointed out that one can
 convert a numeric array to a grayscale array with `Gray.(a)`; the
 opposite transformation can be performed with `real.(b)`. Handling RGB
 colors is a little more complicated, because the dimensionality of the

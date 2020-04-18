@@ -16,7 +16,7 @@ Image segmentation is not a mathematically well-defined problem: for example, th
 
 Let's see an example on how to use the segmentation algorithms in this package. We will try to separate the horse, the ground and the sky in the image below. We will explore two algorithms - seeded region growing and felzenszwalb. Seeded region growing requires us to know the number of segments and some points on each segment beforehand whereas felzenszwalb uses a more abstract parameter controlling degree of within-segment similarity.
 
-![Original](assets/segmentation/horse.jpg)
+![Original](assets/horse.jpg)
 
 [source](https://ibb.co/hUQMnQ)
 
@@ -25,13 +25,13 @@ The documentation for `seeded_region_growing` says that it needs two arguments -
 ```julia
 using Images, ImageView
 
-img = load("src/assets/segmentation/horse.jpg")
+img = load("src/packages/imagesegmentation/assets/horse.jpg")
 imshow(img)
 ```
 
 Hover over the different objects you'd like to segment, and read out the coordinates of one or more points inside each object. We will store the seed points as a vector of `(seed position, label)` tuples and use `seeded_region_growing` with the recorded seed points.
 
-```jldoctest; setup = :(using Images; img = load("src/assets/segmentation/horse.jpg")), filter = r"\\s"
+```jldoctest; setup = :(using Images; img = load("src/packages/imagesegmentation/assets/horse.jpg")), filter = r"\\s"
 using ImageSegmentation
 seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex(213,97),3)]
 segments = seeded_region_growing(img, seeds)
@@ -50,7 +50,7 @@ All the segmentation algorithms (except Fuzzy C-means) return a struct `Segmente
 ```@meta
 DocTestSetup = quote
     using Images, ImageSegmentation
-    img = load("src/assets/segmentation/horse.jpg")
+    img = load("src/packages/imagesegmentation/assets/horse.jpg")
     seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex(213,97),3)]
     segments = seeded_region_growing(img, seeds)
 end
@@ -73,7 +73,7 @@ We can visualize each segment using its mean color:
 julia> imshow(map(i->segment_mean(segments,i), labels_map(segments)));
 ```
 
-![Original](assets/segmentation/horse_seg1.jpg)
+![Original](assets/horse_seg1.jpg)
 
 This display form is used for many of the demonstrations below.
 
@@ -85,7 +85,7 @@ seeds = [(CartesianIndex(126,81), 1), (CartesianIndex(93,255), 2), (CartesianInd
 segments = seeded_region_growing(img, seeds)
 ```
 
-![Original](assets/segmentation/horse_seg5.jpg)
+![Original](assets/horse_seg5.jpg)
 
 ```@meta
 DocTestSetup = nothing
@@ -96,7 +96,7 @@ Now let's segment this image using felzenszwalb algorithm. `felzenswalb` only ne
 ```jldoctest
 julia> using Images, ImageSegmentation
 
-julia> img = load("src/assets/segmentation/horse.jpg");
+julia> img = load("src/packages/imagesegmentation/assets/horse.jpg");
 
 julia> segments = felzenszwalb(img, 100)
 Segmented Image with:
@@ -111,7 +111,7 @@ Segmented Image with:
 
 | k = 100 | k = 10 |
 |:------:|:---:|
-| ![Original](assets/segmentation/horse_seg2.jpg) | ![Original](assets/segmentation/horse_seg3.jpg) |
+| ![Original](assets/horse_seg2.jpg) | ![Original](assets/horse_seg3.jpg) |
 
 We only got two "major" segments with `k = 100`. Setting `k = 10` resulted in smaller but rather noisy segments. `felzenzwalb` also takes an optional argument `min_size` - it removes all segments smaller than `min_size` pixels. (Most methods don't remove small segments in their core algorithm. We can use the `prune_segments` method to postprocess the segmentation result and remove small segments.)
 
@@ -120,7 +120,7 @@ segments = felzenszwalb(img, 10, 100)  # removes segments with fewer than 100 pi
 imshow(map(i->segment_mean(segments,i), labels_map(segments)))
 ```
 
-![Original](assets/segmentation/horse_seg4.jpg)
+![Original](assets/horse_seg4.jpg)
 
 ## Result
 
@@ -184,7 +184,7 @@ If more than one point has the same label then they will be contribute to the sa
 ```jldoctest
 julia> using Images, ImageSegmentation
 
-julia> img = load("src/assets/segmentation/worm.jpg");
+julia> img = load("src/packages/imagesegmentation/assets/worm.jpg");
 
 julia> seeds = [(CartesianIndex(104, 48), 1), (CartesianIndex( 49, 40), 1),
                 (CartesianIndex( 72,131), 1), (CartesianIndex(109,217), 1),
@@ -198,11 +198,11 @@ Segmented Image with:
 ```
 **Original** [(source)](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Davidraju_Worm_Snake.jpg/275px-Davidraju_Worm_Snake.jpg):
 
-![Original](assets/segmentation/worm.jpg)
+![Original](assets/worm.jpg)
 
 **Segmented Image with labels replaced by their intensity means:**
 
-![SegmentedImage](assets/segmentation/worm_seg.jpg)
+![SegmentedImage](assets/worm_seg.jpg)
 
 #### Unseeded Region Growing
 
@@ -237,7 +237,7 @@ all the pixels have been assigned to some region.
 ```jldoctest
 julia> using ImageSegmentation, Images
 
-julia> img = load("src/assets/segmentation/tree.jpg");
+julia> img = load("src/packages/imagesegmentation/assets/tree.jpg");
 
 julia> seg = unseeded_region_growing(img, 0.05) # here 0.05 is the threshold
 Segmented Image with:
@@ -247,10 +247,10 @@ Segmented Image with:
 
 | Threshold | Output | Compression percentage|
 | ------------- | ----------| -------------------------|
-| Original [(source)](http://maxpixel.freegreatpicture.com/static/photo/1x/Plant-Wood-Tissue-Leaves-Nature-Green-Tree-2387626.jpg)  | ![tree](assets/segmentation/tree.jpg) | 0 % |
-| 0.05 | ![tree_seg1](assets/segmentation/tree_seg1.jpg) | 60.63% |
-| 0.1 | ![tree_seg2](assets/segmentation/tree_seg2.jpg) | 71.27% |
-| 0.2 | ![tree_seg3](assets/segmentation/tree_seg3.jpg) | 79.96% |
+| Original [(source)](http://maxpixel.freegreatpicture.com/static/photo/1x/Plant-Wood-Tissue-Leaves-Nature-Green-Tree-2387626.jpg)  | ![tree](assets/tree.jpg) | 0 % |
+| 0.05 | ![tree_seg1](assets/tree_seg1.jpg) | 60.63% |
+| 0.1 | ![tree_seg2](assets/tree_seg2.jpg) | 71.27% |
+| 0.2 | ![tree_seg3](assets/tree_seg3.jpg) | 79.96% |
 
 
 #### Felzenswalb's Region Merging Algorithm
@@ -279,7 +279,7 @@ end
 imshow(map(i->get_random_color(i), labels_map(segments)))
 ```
 
-![img1](assets/segmentation/house.jpg) ![img2](assets/segmentation/felzenszwalb.jpg)
+![img1](assets/house.jpg) ![img2](assets/felzenszwalb.jpg)
 
 #### MeanShift Segmentation
 
@@ -299,7 +299,7 @@ Segmented Image with:
   labels map: 128×128 Array{Int64,2}
   number of labels: 42
 ```
-![img1](assets/segmentation/small_house.jpg) ![img2](assets/segmentation/meanshift.jpg)
+![img1](assets/small_house.jpg) ![img2](assets/meanshift.jpg)
 
 #### Fast Scanning
 
@@ -339,11 +339,11 @@ Segmented Image with:
 
 **Original:**
 
-![Original](assets/segmentation/camera.jpg)
+![Original](assets/camera.jpg)
 
 **Segmented Image:**
 
-![SegmentedImage](assets/segmentation/camera_seg.jpg)
+![SegmentedImage](assets/camera_seg.jpg)
 
 #### Region Splitting using RegionTrees
 
@@ -376,11 +376,11 @@ Segmented Image with:
 
 **Original:**
 
-![Original](assets/segmentation/lena.jpg)
+![Original](assets/lena.jpg)
 
 **Segmented Image with labels replaced by their intensity means:**
 
-![SegmentedImage](assets/segmentation/lena_seg.jpg)
+![SegmentedImage](assets/lena_seg.jpg)
 
 #### Fuzzy C-means
 
@@ -404,7 +404,7 @@ number of clusters and ``iter`` is the number of iterations.
 ```jldoctest; filter=r"converged in [0-9]+ iterations"
 julia> using ImageSegmentation, Images
 
-julia> img = load("src/assets/segmentation/flower.jpg");
+julia> img = load("src/packages/imagesegmentation/assets/flower.jpg");
 
 julia> r = fuzzy_cmeans(img, 3, 2)
 FuzzyCMeansResult: 3 clusters for 135360 points in 3 dimensions (converged in 27 iterations)
@@ -420,13 +420,13 @@ See the documentation in [Clustering.jl](https://github.com/JuliaStats/Clusterin
 **Original** [(source)](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flower-631765_960_720.jpg/800px-Flower-631765_960_720.jpg)
 
 
-![Original](assets/segmentation/flower.jpg)
+![Original](assets/flower.jpg)
 
 **Output with pixel intensity = cluster center intensity * membership of pixel in that class**
 
 | Magenta petals | Greenish Leaves | White background |
 |----------------|-----------------|------------------|
-| ![SegmentedImage1](assets/segmentation/flower_s1.jpg) |![SegmentedImage2](assets/segmentation/flower_s2.jpg) | ![SegmentedImage3](assets/segmentation/flower_s3.jpg) |
+| ![SegmentedImage1](assets/flower_s1.jpg) |![SegmentedImage2](assets/flower_s2.jpg) | ![SegmentedImage3](assets/flower_s3.jpg) |
 
 #### Watershed
 
@@ -457,15 +457,15 @@ julia> imshow(map(i->get_random_color(i), labels_map(segments)) .* (1 .-bw))    
 
 | Original Image | Thresholded Image |
 |:------:|:---:|
-| ![img1](assets/segmentation/water_coins.jpg) | ![img1](assets/segmentation/coins2.jpg) |
+| ![img1](assets/water_coins.jpg) | ![img1](assets/coins2.jpg) |
 
 | Inverted Distance Transform Image | Markers |
 |:------:|:---:|
-| ![img1](assets/segmentation/coins3.jpg) |![img1](assets/segmentation/coins4.jpg) |
+| ![img1](assets/coins3.jpg) |![img1](assets/coins4.jpg) |
 
 | Segmented Image |
 |:------:|
-| ![img2](assets/segmentation/watershed.jpg) |
+| ![img2](assets/watershed.jpg) |
 
 
 

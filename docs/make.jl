@@ -1,6 +1,6 @@
 using Documenter, DemoCards
 using Images, ImageFiltering, ImageSegmentation, ImageFeatures, PaddedViews
-using ImageContrastAdjustment
+using ImageContrastAdjustment, TestImages, FileIO, MosaicViews, ImageMorphology
 
 branch = "master"
 
@@ -13,27 +13,29 @@ format = Documenter.HTML(edit_link = "source",
 
 makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, ImageAxes,
                     ImageFeatures, ImageFiltering, ImageMetadata, ImageContrastAdjustment,
+                    ImageDistances, ImageQualityIndexes, MosaicViews, TestImages, FileIO,
                     ImageSegmentation, ImageTransformations, PaddedViews, ImageMorphology],
          format   = format,
          sitename = "JuliaImages",
          pages    = ["Home" => "index.md",
-                     "install.md",
-                     "Manual" => Any[
-                         "quickstart.md",
-                         "arrays_colors.md",
-                         "conversions_views.md",
-                         "indexing.md",
-                         "imageaxes.md",
-                         "imagefiltering.md",
-                         "imagemetadata.md",
-                         "imagesegmentation.md",
-                         "imagetransformations.md",
-                         "imagefeatures.md",
-                         "troubleshooting.md",
+                     "Tutorials" => Any[
+                         joinpath("tutorials", "install.md"),
+                         joinpath("tutorials", "quickstart.md"),
+                         joinpath("tutorials", "arrays_colors.md"),
+                         joinpath("tutorials", "conversions_views.md"),
+                         joinpath("tutorials", "indexing.md")
+                     ],
+                     "Packages" => Any[
+                         joinpath("packages", "imageaxes", "index.md"),
+                         joinpath("packages", "imagemetadata", "index.md"),
+                         joinpath("packages", "imagesegmentation", "index.md"),
+                         joinpath("packages", "imagetransformations", "index.md"),
+                         joinpath("packages", "imagefeatures", "index.md")
                      ],
                      "Demos" => demos,
                      "function_reference.md",
                      "api_comparison.md",
+                    #  "faqs.md"
                     ])
 
 demos_cb()

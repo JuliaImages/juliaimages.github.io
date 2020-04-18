@@ -9,7 +9,7 @@
 # [`imshowpair`](https://www.mathworks.com/help/images/ref/imshowpair.html), but in JuliaImages
 # it is not that indispensable.
 
-using Images, MosaicViews
+using Images
 using TestImages
 
 img = float.(testimage("cameraman"))
@@ -41,4 +41,4 @@ mosaicview(plain_diffview, RGB_diffview, Gray_diffview;
 
 # --- save covers --- #src
 using FileIO #src
-save("assets/image_diffview.png", RGB_diffview) #src
+save("assets/image_diffview.png", map(clamp01nan, RGB_diffview)) #src

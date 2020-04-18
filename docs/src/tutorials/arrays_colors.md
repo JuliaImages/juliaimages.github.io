@@ -1,4 +1,4 @@
-# Arrays, Numbers, and Colors
+# [Arrays, Numbers, and Colors](@id page_arrays_colors)
 
 ```@meta
 DocTestSetup = quote
@@ -135,7 +135,7 @@ julia> img == imgg
 true
 ```
 
-There's more to say on this topic, but we'll wait until we discuss [Conversions vs. views](@ref).
+There's more to say on this topic, but we'll wait until we discuss [Conversions vs. views](@ref page_conversions_views).
 
 ## Colors beyond the pale
 

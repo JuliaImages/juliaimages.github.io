@@ -6,7 +6,7 @@
 # This demonstration shows how to work with color channels to explore image compression
 # using the Singular Value Decomposition (SVD).
 
-using Images, TestImages, MosaicViews
+using Images, TestImages
 using LinearAlgebra
 
 img = float.(testimage("mandrill"))
