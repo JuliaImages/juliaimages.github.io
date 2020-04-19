@@ -1,5 +1,5 @@
-using Images, MosaicViews
-using OffsetArrays, PaddedViews # provide `OffsetArray` and `paddedviews`
+using Images
+using OffsetArrays # provide `OffsetArray`
 
 red_patch = fill(RGBA(1., 0., 0., 1), 24, 24)
 green_patch = fill(RGBA(0., 1., 0., 1), 32, 32)

@@ -1,4 +1,4 @@
-using Images, MosaicViews
+using Images
 using TestImages
 
 img = float.(testimage("cameraman"))

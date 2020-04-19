@@ -1,4 +1,4 @@
-using Images, TestImages, MosaicViews
+using Images, TestImages
 using LinearAlgebra
 
 img = float.(testimage("mandrill"))
