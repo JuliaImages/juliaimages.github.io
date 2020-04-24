@@ -29,9 +29,9 @@ nothing #hide #md
 # $512 \times 512$ numbers. Hence this gives us a compression ratio $19.55\%$ if we don't consider
 # the storage type.
 
-## after julia v1.1:
-## svdfactors = svd.(eachslice(channels; dims=1))
-svdfactors = (svd(channels[1,:,:]), svd(channels[2,:,:]), svd(channels[3,:,:]))
+## before julia v1.1:
+## svdfactors = (svd(channels[1,:,:]), svd(channels[2,:,:]), svd(channels[3,:,:]))
+svdfactors = svd.(eachslice(channels; dims=1))
 imgs = map((10, 50, 100)) do k
     colorview(RGB, rank_approx.(svdfactors, k)...)
 end
