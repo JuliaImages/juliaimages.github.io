@@ -34,7 +34,7 @@ makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, I
                          "ImageFeatures.jl" => joinpath("pkgs", "features", "index.md")
                      ],
                      "Demos" => demos,
-                     "function_reference.md",
+                     "References" => "function_reference.md",
                      "api_comparison.md",
                     #  "faqs.md"
                     ])
