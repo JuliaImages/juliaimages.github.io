@@ -26,6 +26,8 @@ in Julia.
     Your changes will be vetted by developers before becoming permanent, so don't
     worry about whether you might say something wrong.
 
+It's not useful to have these contents here since they are in the margin.
+
 ```@contents
 Pages = ["install.md", "quickstart.md", "arrays_colors.md", "conversions_views.md", "indexing.md", "imageaxes.md", "imagefiltering.md", "imagemetadata.md", "imagesegmentation.md", "function_reference.md", "api_comparison.md"]
 ```
