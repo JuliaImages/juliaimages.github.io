@@ -112,5 +112,5 @@ mosaicview(img; fillvalue=0.5, npad=2, ncol=7, rowmajor=true)
 ## Troubleshooting
 
 Reading and writing images, as well as graphical display, involve interactions with external software libraries;
-occasionally, the installation of these libraries goes badly. Fortunately, the [artifact system](https://julialang.org/blog/2019/11/artifacts/) shipped with Julia at least 1.3 has made this process much reliable, so if you're experiencing any installation
-trouble, please try with a newer Julia release.
+occasionally, the installation of these libraries goes badly. Fortunately, the [artifact system](https://julialang.org/blog/2019/11/artifacts/) shipped since Julia 1.3 has made this process much more reliable, so if you're experiencing any installation
+trouble, please try with Julia 1.3 or higher.

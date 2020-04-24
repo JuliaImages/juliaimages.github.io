@@ -26,11 +26,12 @@ makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, I
                          joinpath("tutorials", "indexing.md")
                      ],
                      "Packages" => Any[
-                         joinpath("packages", "imageaxes", "index.md"),
-                         joinpath("packages", "imagemetadata", "index.md"),
-                         joinpath("packages", "imagesegmentation", "index.md"),
-                         joinpath("packages", "imagetransformations", "index.md"),
-                         joinpath("packages", "imagefeatures", "index.md")
+                         "Introduction" => joinpath("pkgs", "index.md"),
+                         "ImageAxes.jl" => joinpath("pkgs", "axes", "index.md"),
+                         "ImageMetaData.jl" => joinpath("pkgs", "metadata", "index.md"),
+                         "ImageSegmentation.jl" => joinpath("pkgs", "segmentation", "index.md"),
+                         "ImageTransformations.jl" => joinpath("pkgs", "transformations", "index.md"),
+                         "ImageFeatures.jl" => joinpath("pkgs", "features", "index.md")
                      ],
                      "Demos" => demos,
                      "function_reference.md",
