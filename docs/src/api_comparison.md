@@ -1,4 +1,4 @@
-# Comparison with other image processing frameworks
+# [Comparison with other image processing frameworks](@id page_api_comparison)
 
 The following table may be useful for people migrating from other
 frameworks, and for identifying missing functionality in

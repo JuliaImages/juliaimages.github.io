@@ -30,25 +30,13 @@ This documentation is a collection of two parts: a top-level documentation that 
 JuliaImages ecosystem, and a list of more specific documentation of sub-packages that gives you more
 information of each image processing subfields.
 
+This documentation is a collection of several parts.
 The "Tutorials" part contains a list of tutorials that help you gain better understanding of the JuliaImages
-ecosystems. The ["Packages"](@ref page_packages_index) part contains all related sub-packages in JuliaImages,
-users can get more information on the specific image processing subfields by reading them. The "Demos"
-part gives you a task-by-task introduction of how you could do your daily work with JuliaImages.
-The "References" part is a collection of function references, it's a dictionary of functions in JuliaImages
-and the recommended way to use it is by the searching function of your browser `Ctrl-F`/`Cmd-F`.
-
-This documentation is generated with the following environment setup. While reading the documentation,
-if you encounter any errors or if the outputs in your local machine differ from the documentation,
-you could first check the Julia and package versions you're using. If the error or inconsistency still exists,
-please [file an issue](https://github.com/JuliaImages/juliaimages.github.io/issues/new) for that; it
-helps us improve the documentation.
-
-```@setup versions
-using InteractiveUtils
-```
-```@repl versions
-using Pkg, Dates
-today()
-versioninfo()
-Pkg.status()
-```
+ecosystem.
+The ["Packages"](@ref page_packages_index) part contains information about specific components (themselves
+Julia packages) that together comprise JuliaImages and address specific subfields of image processing.
+The "Demos" part gives you demonstrations of how to carry out specific tasks with JuliaImages.
+The ["References"](@ref page_references) part is a collection of function references provided by JuliaImages.
+The recommended way to use the references is by the searching function of your browser `Ctrl-F`/`Cmd-F`.
+If you've used other frameworks previously, you may also be interested in
+the ["Comparison with other image processing frameworks"](@ref page_api_comparison).

@@ -18,8 +18,8 @@ makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, I
          format   = format,
          sitename = "JuliaImages",
          pages    = ["Home" => "index.md",
+                     "install.md",
                      "Tutorials" => Any[
-                         joinpath("tutorials", "install.md"),
                          joinpath("tutorials", "quickstart.md"),
                          joinpath("tutorials", "arrays_colors.md"),
                          joinpath("tutorials", "conversions_views.md"),

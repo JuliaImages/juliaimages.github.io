@@ -299,16 +299,12 @@ it straightforward to keep track of the correspondence between
 location across multiple images. More information can be found in
 [Keeping track of location with unconventional indices](@ref).
 
-## Examples of usage
-
-If you feel ready to get started, see the [Demonstrations](@ref demonstrations) page for inspiration.
-
 ## Function categories
 
-See [Summary and function reference](@ref) for more information about
+See [Summary and function reference](@ref page_references) for more information about
 each of the topics below. The list below is accessible via `?Images`
 from the Julia REPL. If you've used other frameworks previously, you
-may also be interested in the [Comparison with other image processing frameworks](@ref).
+may also be interested in the [Comparison with other image processing frameworks](@ref page_api_comparison).
 Also described are the [ImageFeatures.jl](@ref) and [ImageSegmentation.jl](@ref)
 packages, which support a number of algorithms important for computer vision.
 

@@ -1,13 +1,14 @@
 # [Packages under JuliaImages](@id page_packages_index)
 
 !!! tip
-    It's recommended to gone through the tutorials before you dive into the package documentation to get
-    a basic understanding of the JuliaImages ecosystem. Otherwise, you might find yourself lost in the
-    details and get frustrated.
+    Most users should probably start with the tutorials before diving into the documentation for individual packages.
+    Much of JuliaImages' functionality comes from composing very basic operations that are not always
+    available in other environments, and the tutorials will make this workflow clearer.
 
-🚧 This section consists of documentations of packages that are closely related to JuliaImages ecosystem.
-Most of them are also maintained by members of JuliaImages. They're ordered alphabetically so you can
-start with whatever you are interested in most.
+🚧This section documents the individual components that form the JuliaImages ecosystem.
+The ones marked with a `*` are available via `using Images`, but you can also use packages individually.
+Below, they're grouped into broad categories, then ordered alphabetically so you can start with whatever
+you are interested in most.
 
 * Low-level core packages
   * [ColorTypes.jl](https://github.com/JuliaGraphics/ColorTypes.jl)\*,
@@ -52,9 +53,6 @@ start with whatever you are interested in most.
   * [ImageSegmentation.jl](https://github.com/JuliaImages/ImageSegmentation.jl) provides several image
     segmentation algorithms.
 
-Items marked with \* means that they are reexported by `Images.jl` via
-[Reexport.jl](https://github.com/simonster/Reexport.jl) so that you can import all of them with only `using Images`.
-
 !!! tip
     For package developers, `Images.jl` is usually a large dependency to be included in the `deps` section of
     your `Project.toml`. Hence it is reccomended to add only `ImageCore` together with the exact sub-packages
@@ -65,6 +63,6 @@ The following is an incomplete list of third-party packages that are widely used
 
 * [Augmentor.jl](https://github.com/Evizero/Augmentor.jl) provides several basic image augmentation
   operations for image-related machine learning tasks.
-* [Flux.jl](https://github.com/FluxML/Flux.jl) is a featured deep learning toolbox in Julia.
+* [Flux.jl](https://github.com/FluxML/Flux.jl) is a deep learning toolbox in Julia.
 
 

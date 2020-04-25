@@ -114,3 +114,19 @@ mosaicview(img; fillvalue=0.5, npad=2, ncol=7, rowmajor=true)
 Reading and writing images, as well as graphical display, involve interactions with external software libraries;
 occasionally, the installation of these libraries goes badly. Fortunately, the [artifact system](https://julialang.org/blog/2019/11/artifacts/) shipped since Julia 1.3 has made this process much more reliable, so if you're experiencing any installation
 trouble, please try with Julia 1.3 or higher.
+
+This documentation is generated with the following environment setup. While reading the documentation,
+if you encounter any errors or if the outputs in your local machine differ from the documentation,
+you could first check the Julia and package versions you're using. If the error or inconsistency still exists,
+please [file an issue](https://github.com/JuliaImages/juliaimages.github.io/issues/new) for that; it
+helps us improve the documentation.
+
+```@setup versions
+using InteractiveUtils
+```
+```@repl versions
+using Pkg, Dates
+today()
+versioninfo()
+Pkg.status()
+```

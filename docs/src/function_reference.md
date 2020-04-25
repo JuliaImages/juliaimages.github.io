@@ -1,4 +1,4 @@
-# Summary and function reference
+# [Summary and function reference](@id page_references)
 
 Below, `[]` in an argument list means an optional argument.
 
