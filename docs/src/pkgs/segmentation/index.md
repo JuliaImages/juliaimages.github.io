@@ -25,13 +25,13 @@ The documentation for `seeded_region_growing` says that it needs two arguments -
 ```julia
 using Images, ImageView
 
-img = load("src/packages/imagesegmentation/assets/horse.jpg")
+img = load("src/pkgs/segmentation/assets/horse.jpg")
 imshow(img)
 ```
 
 Hover over the different objects you'd like to segment, and read out the coordinates of one or more points inside each object. We will store the seed points as a vector of `(seed position, label)` tuples and use `seeded_region_growing` with the recorded seed points.
 
-```jldoctest; setup = :(using Images; img = load("src/packages/imagesegmentation/assets/horse.jpg")), filter = r"\\s"
+```jldoctest; setup = :(using Images; img = load("src/pkgs/segmentation/assets/horse.jpg")), filter = r"\\s"
 using ImageSegmentation
 seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex(213,97),3)]
 segments = seeded_region_growing(img, seeds)
@@ -50,7 +50,7 @@ All the segmentation algorithms (except Fuzzy C-means) return a struct `Segmente
 ```@meta
 DocTestSetup = quote
     using Images, ImageSegmentation
-    img = load("src/packages/imagesegmentation/assets/horse.jpg")
+    img = load("src/pkgs/segmentation/assets/horse.jpg")
     seeds = [(CartesianIndex(126,81),1), (CartesianIndex(93,255),2), (CartesianIndex(213,97),3)]
     segments = seeded_region_growing(img, seeds)
 end
@@ -96,7 +96,7 @@ Now let's segment this image using felzenszwalb algorithm. `felzenswalb` only ne
 ```jldoctest
 julia> using Images, ImageSegmentation
 
-julia> img = load("src/packages/imagesegmentation/assets/horse.jpg");
+julia> img = load("src/pkgs/segmentation/assets/horse.jpg");
 
 julia> segments = felzenszwalb(img, 100)
 Segmented Image with:
@@ -184,7 +184,7 @@ If more than one point has the same label then they will be contribute to the sa
 ```jldoctest
 julia> using Images, ImageSegmentation
 
-julia> img = load("src/packages/imagesegmentation/assets/worm.jpg");
+julia> img = load("src/pkgs/segmentation/assets/worm.jpg");
 
 julia> seeds = [(CartesianIndex(104, 48), 1), (CartesianIndex( 49, 40), 1),
                 (CartesianIndex( 72,131), 1), (CartesianIndex(109,217), 1),
@@ -237,7 +237,7 @@ all the pixels have been assigned to some region.
 ```jldoctest
 julia> using ImageSegmentation, Images
 
-julia> img = load("src/packages/imagesegmentation/assets/tree.jpg");
+julia> img = load("src/pkgs/segmentation/assets/tree.jpg");
 
 julia> seg = unseeded_region_growing(img, 0.05) # here 0.05 is the threshold
 Segmented Image with:
@@ -404,7 +404,7 @@ number of clusters and ``iter`` is the number of iterations.
 ```jldoctest; filter=r"converged in [0-9]+ iterations"
 julia> using ImageSegmentation, Images
 
-julia> img = load("src/packages/imagesegmentation/assets/flower.jpg");
+julia> img = load("src/pkgs/segmentation/assets/flower.jpg");
 
 julia> r = fuzzy_cmeans(img, 3, 2)
 FuzzyCMeansResult: 3 clusters for 135360 points in 3 dimensions (converged in 27 iterations)
