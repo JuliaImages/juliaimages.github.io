@@ -1,4 +1,4 @@
-# Arrays: more advanced indexing
+# [Arrays: more advanced indexing](@id page_indexing)
 
 In addition to the handling of numbers and colors, one of the main
 ways that JuliaImages leverages Julia is through a number of more
@@ -22,7 +22,7 @@ overlay the two images
 ([Using colorview to make color overlays](@ref)) to see how well we're
 doing.
 
-```jldoctest; setup = :(using Images; img = load(joinpath(@__DIR__, "src/assets/indexing/cmrot.png")))
+```jldoctest; setup = :(using Images; img = load(joinpath(@__DIR__, "src/tutorials/assets/indexing/cmrot.png")))
 julia> using Images, CoordinateTransformations
 
 julia> tfm = recenter(RotMatrix(pi/8), center(img))

@@ -1,4 +1,4 @@
-# Getting started
+# [Getting started](@id page_get_started)
 
 Most users probably want to start with the `Images.jl` package, which bundles
 much (but not all) of the functionality in JuliaImages.
@@ -16,7 +16,7 @@ You can install `Images.jl` via the [package manager](https://docs.julialang.org
     People in some regions such as China might fail to install/precompile `Images` due to poor network
     status. Using proxy/VPN that has stable connection to Amazon S3 and Github can solve this issue.
 
-## Loading your first image
+## [Loading your first image](@id sec_imageio)
 
 If this is your first time working with images in julia, it's likely that you'll need to install some
 image IO backends to load the images. The current available backends for image files are:
@@ -73,14 +73,14 @@ using TestImages
 img = testimage("mandrill")
 ```
 
-## Displaying images
+## [Displaying images](@id sec_visualization)
 
 When working with images, it's obviously helpful to be able to look at
 them.  If you use Julia through [Juno](http://junolab.org/) or
 [IJulia](https://github.com/JuliaLang/IJulia.jl), images should
 display automatically:
 
-![IJulia](assets/ijulia.png)
+![IJulia](assets/installation/ijulia.png)
 
 Currently there're five julia packages can be used to display an image:
 
@@ -90,8 +90,43 @@ Currently there're five julia packages can be used to display an image:
 * [`Plots`](https://github.com/JuliaPlots/Plots.jl) maintained by JuliaPlots is a general plotting package that support image display.
 * [`Makie`](https://github.com/JuliaPlots/Makie.jl) is also maintained by JuliaPlots but provides rich interactive functionality. 
 
+To visualize multiple images in one frame, you can create a bigger image from multiple image sources with [`mosaicview`](@ref),
+which is an enhanced version of `cat`s.
+
+```@setup mosaicview
+using Images, TestImages
+```
+
+```@example mosaicview
+img1 = testimage("mandrill") # 512*512 RGB image
+img2 = testimage("blobs") # 254*256 Gray image
+mosaicview(img1, img2; nrow=1)
+```
+
+```@example mosaicview
+img = testimage("mri-stack") # 226×186×27 Gray image
+mosaicview(img; fillvalue=0.5, npad=2, ncol=7, rowmajor=true)
+```
+
+
 ## Troubleshooting
 
 Reading and writing images, as well as graphical display, involve interactions with external software libraries;
-occasionally, the installation of these libraries goes badly.
-If you experience any difficulties with any of the above steps, please see the [Installation troubleshooting](@ref) page for more information.
+occasionally, the installation of these libraries goes badly. Fortunately, the [artifact system](https://julialang.org/blog/2019/11/artifacts/) shipped since Julia 1.3 has made this process much more reliable, so if you're experiencing any installation
+trouble, please try with Julia 1.3 or higher.
+
+This documentation is generated with the following environment setup. While reading the documentation,
+if you encounter any errors or if the outputs in your local machine differ from the documentation,
+you could first check the Julia and package versions you're using. If the error or inconsistency still exists,
+please [file an issue](https://github.com/JuliaImages/juliaimages.github.io/issues/new) for that; it
+helps us improve the documentation.
+
+```@setup versions
+using InteractiveUtils
+```
+```@repl versions
+using Pkg, Dates
+today()
+versioninfo()
+Pkg.status()
+```

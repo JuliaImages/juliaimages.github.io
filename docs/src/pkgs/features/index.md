@@ -13,7 +13,7 @@ The *BRISK* descriptor examines the structure of an image around a
 *keypoint*. Given a keypoint, the mean intensity (loosely-speaking) is
 computed in a set of patches surrounding the point:
 
-![BRISK Sampling Pattern](assets/features/brisk_pattern.png)
+![BRISK Sampling Pattern](assets/brisk_pattern.png)
 
 BRISK then re-represents these intensities in a way that is invariant
 under rotations. This allows you to compare descriptors in two images,
@@ -76,11 +76,11 @@ We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) packa
 grid = hcat(img1, img2)
 offset = CartesianIndex(0, size(img1, 2))
 map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)
-save("assets/features/brisk_example.jpg", grid); nothing # hide
+save("assets/brisk_example.jpg", grid); nothing # hide
 
 ```
 
-![](assets/features/brisk_example.jpg)
+![](assets/brisk_example.jpg)
 
 You can see that the points have been accurately matched despite the
 large magnitude of this rotation.
