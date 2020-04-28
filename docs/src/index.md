@@ -26,17 +26,14 @@ in Julia.
     Your changes will be vetted by developers before becoming permanent, so don't
     worry about whether you might say something wrong.
 
-This documentation is a collection of two parts: a top-level documentation that guides you into the
-JuliaImages ecosystem, and a list of more specific documentation of sub-packages that gives you more
-information of each image processing subfields.
+This documentation is a collection of several parts:
 
-This documentation is a collection of several parts.
-The "Tutorials" part contains a list of tutorials that help you gain better understanding of the JuliaImages
-ecosystem.
-The ["Packages"](@ref page_packages_index) part contains information about specific components (themselves
-Julia packages) that together comprise JuliaImages and address specific subfields of image processing.
-The "Demos" part gives you demonstrations of how to carry out specific tasks with JuliaImages.
-The ["References"](@ref page_references) part is a collection of function references provided by JuliaImages.
-The recommended way to use the references is by the searching function of your browser `Ctrl-F`/`Cmd-F`.
-If you've used other frameworks previously, you may also be interested in
-the ["Comparison with other image processing frameworks"](@ref page_api_comparison).
+* The "Tutorials" part contains a list of tutorials that help you gain better understanding of the JuliaImages
+  ecosystem.
+* The ["Packages"](@ref page_packages_index) part contains information about specific components (themselves
+  Julia packages) that together comprise JuliaImages and address specific subfields of image processing.
+* The "Demos" part gives you demonstrations of how to carry out specific tasks with JuliaImages.
+* The ["References"](@ref page_references) part is a collection of function references provided by JuliaImages.
+  The recommended way to use the references is by the searching function of your browser `Ctrl-F`/`Cmd-F`.
+* The ["Comparison with other image processing frameworks"](@ref page_api_comparison) would be helpful
+  if you've used other frameworks previously.
