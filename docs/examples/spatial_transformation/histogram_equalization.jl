@@ -26,5 +26,6 @@ hist_adapt = adjust_histogram(img, AdaptiveEqualization(nbins = 256, rblocks = 4
 
 hcat(img, hist_equal, gamma_correction, hist_adapt)
 
-
+# --- save covers --- #src
+using Images #src
 save("assets/histogram_equalization.png", hist_equal) #src
