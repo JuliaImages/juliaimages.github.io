@@ -13,7 +13,7 @@
 # a wide range on the intensity scale. The transformation is based on mapping of
 # cumulative histogram
 
-using ImageContrastAdjustment, TestImages
+using ImageContrastAdjustment, TestImages, ImageCore
 
 img = testimage("moonsurface")
 
@@ -24,8 +24,8 @@ hist_equal = adjust_histogram(img, Equalization(nbins = 256))
 gamma_correction = adjust_histogram(img, GammaCorrection(gamma = 2))
 hist_adapt = adjust_histogram(img, AdaptiveEqualization(nbins = 256, rblocks = 4, cblocks = 4, clip = 0.2))
 
-hcat(img, hist_equal, gamma_correction, hist_adapt)
+mosaicview(img, hist_equal, gamma_correction, hist_adapt; nrow = 1)
 
 # --- save covers --- #src
-using Images #src
+using FileIO #src
 save("assets/histogram_equalization.png", hist_equal) #src
