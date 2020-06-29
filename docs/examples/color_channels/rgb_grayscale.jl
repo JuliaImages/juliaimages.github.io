@@ -10,7 +10,7 @@ using Images, TestImages
 
 rgb_image = testimage("lighthouse")
 
-# I = Gray.(rgb_image) converts an RGB image to Grayscale. 
+# `I = Gray.(rgb_image)` converts an RGB image to Grayscale. 
 
 gray_image = Gray.(rgb_image)
 mosaicview(rgb_image, gray_image; nrow = 1)
