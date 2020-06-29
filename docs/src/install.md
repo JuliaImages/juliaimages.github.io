@@ -49,7 +49,7 @@ Adding these gives you a basic image IO setup:
 and to load an image, you can use
 
 ```@example
-using FileIO
+using Images, FileIO
 using ImageShow # hide
 # specify the path to your local image file
 img_path = "/path/to/image.png"
