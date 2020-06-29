@@ -52,6 +52,7 @@ you are interested in most.
     related to geometric transformations.
   * [ImageSegmentation.jl](https://github.com/JuliaImages/ImageSegmentation.jl) provides several image
     segmentation algorithms.
+  * [ImageInpainting.jl](https://github.com/JuliaImages/ImageInpainting.jl) provides image inpainting algorithms in Julia
 
 !!! tip
     For package developers, `Images.jl` is usually a large dependency to be included in the `deps` section of
