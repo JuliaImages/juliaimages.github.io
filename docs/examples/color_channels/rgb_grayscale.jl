@@ -6,7 +6,7 @@
 # This example illustrates RGB to Grayscale Conversion
 
 
-using Images, TestImages
+using ImageCore, TestImages
 
 rgb_image = testimage("lighthouse")
 
