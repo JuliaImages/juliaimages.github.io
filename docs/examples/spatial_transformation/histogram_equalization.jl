@@ -3,7 +3,7 @@
 # cover: assets/histogram_equalization.png
 # ---
 
-# This demo issustrates the use of [Histogram equalization](https://juliaimages.org/ImageContrastAdjustment.jl/stable/reference/#Equalization-1), [gamma correction matching](https://juliaimages.org/ImageContrastAdjustment.jl/stable/reference/#Matching-1)
+# This demo illustrates the use of [Histogram equalization](https://juliaimages.org/ImageContrastAdjustment.jl/stable/reference/#Equalization-1), [gamma correction matching](https://juliaimages.org/ImageContrastAdjustment.jl/stable/reference/#Matching-1)
 # and [Contrast Limited Adaptive Histogram Equalization](https://juliaimages.org/ImageContrastAdjustment.jl/stable/reference/#AdaptiveEqualization-1)
 
 # Histogram equalisation is used to imporve the contrast in an
