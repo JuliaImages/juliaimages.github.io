@@ -28,7 +28,9 @@ These functions all have docstrings that give more details about their usage.
 
 There are in-place version of many of the functions, e.g., `imresize!` etc.
     
-## Example
+## Examples
+
+- Resize
 
 ```julia
 using ImageTransformations, TestImages
@@ -40,3 +42,18 @@ img_medium = imresize(img_small, size(img_small).*2)
 Resulting images (small and medium):
 ![img_small](assets/img_small.png)
 ![img_medium](assets/img_medium.png)
+
+- Warping
+
+```julia
+using ImageTransformations, TestImages, CoordinateTransformations, Rotations
+
+img = testimage("camera");
+
+# define transformation
+trfm = recenter(RotMatrix(pi/8), center(img));
+imgw = warp(img, trfm);
+```
+
+Resulting image:  
+![img_warp](assets/img_warp.png)
