@@ -4,6 +4,9 @@ os:
   - linux
 julia:
   - 1
+cache:
+  directories:
+  - $HOME/.julia/artifacts
 env:
   - DOCUMENTER_DEBUG=true
 notifications:
