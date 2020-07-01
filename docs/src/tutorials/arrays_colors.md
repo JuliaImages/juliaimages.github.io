@@ -309,14 +309,9 @@ However, you should be aware that for *integer* inputs, the default is
 to use the `N0f8` element type, and this type cannot represent values
 outside the range from 0 to 1:
 
-```jldoctest; setup = :(using ColorTypes), filter = r"at \(.*\)"
-julia> RGB(8,2,0)
-ERROR: ArgumentError: (8, 2, 0) are integers in the range 0-255, but integer inputs are encoded with the N0f8
-  type, an 8-bit type representing 256 discrete values between 0 and 1.
-  Consider dividing your input values by 255, for example: RGB{N0f8}(8/255,2/255,0/255)
-  See the READMEs for FixedPointNumbers and ColorTypes for more information.
-Stacktrace:
-[...]
+```@repl
+using ColorTypes # hide
+RGB(8,2,0)
 ```
 
 The error message here reminds you how to resolve a common mistake,

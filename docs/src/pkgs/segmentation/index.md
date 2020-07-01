@@ -62,9 +62,9 @@ julia> length(segment_labels(segments))
 
 julia> segment_mean(segments)
 Dict{Int64,RGB{Float64}} with 3 entries:
-  2 => RGB{Float64}(0.793679,0.839473,0.932494)
-  3 => RGB{Float64}(0.329867,0.357842,0.237361)
-  1 => RGB{Float64}(0.0650002,0.0586348,0.074091)
+  2 => RGB{Float64}(0.793598,0.839543,0.932374)
+  3 => RGB{Float64}(0.329863,0.35779,0.237457)
+  1 => RGB{Float64}(0.0646509,0.0587034,0.0743471)
 ```
 
 We can visualize each segment using its mean color:
@@ -106,7 +106,7 @@ Segmented Image with:
 julia> segments = felzenszwalb(img, 10)  #smaller segments but noisy segmentation
 Segmented Image with:
   labels map: 240×360 Array{Int64,2}
-  number of labels: 275
+  number of labels: 312
 ```
 
 | k = 100 | k = 10 |
@@ -242,7 +242,7 @@ julia> img = load("src/pkgs/segmentation/assets/tree.jpg");
 julia> seg = unseeded_region_growing(img, 0.05) # here 0.05 is the threshold
 Segmented Image with:
   labels map: 320×480 Array{Int64,2}
-  number of labels: 774
+  number of labels: 698
 ```
 
 | Threshold | Output | Compression percentage|
@@ -297,7 +297,7 @@ julia> img = imresize(img, (128, 128));
 julia> segments = meanshift(img, 16, 8/255) # parameters are smoothing radii: spatial=16, intensity-wise=8/255
 Segmented Image with:
   labels map: 128×128 Array{Int64,2}
-  number of labels: 42
+  number of labels: 44
 ```
 ![img1](assets/small_house.jpg) ![img2](assets/meanshift.jpg)
 
@@ -329,7 +329,7 @@ julia> img = testimage("camera");
 julia> seg = fast_scanning(img, 0.1)  # threshold = 0.1
 Segmented Image with:
   labels map: 512×512 Array{Int64,2}
-  number of labels: 2536
+  number of labels: 2538
 
 julia> seg = prune_segments(seg, i->(segment_pixel_count(seg,i)<50), (i,j)->(-segment_pixel_count(seg,j)))
 Segmented Image with:

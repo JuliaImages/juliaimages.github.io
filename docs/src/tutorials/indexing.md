@@ -23,10 +23,10 @@ overlay the two images
 doing.
 
 ```jldoctest; setup = :(using Images; img = load(joinpath(@__DIR__, "src/tutorials/assets/indexing/cmrot.png")))
-julia> using Images, CoordinateTransformations
+julia> using Images, CoordinateTransformations, Rotations
 
 julia> tfm = recenter(RotMatrix(pi/8), center(img))
-AffineMap([0.92388 -0.382683; 0.382683 0.92388], [88.7786, -59.3199])
+AffineMap([0.9238795325112867 -0.3826834323650898; 0.3826834323650898 0.9238795325112867], [88.7785546217109, -59.31993370357884])
 
 julia> imgrot = warp(img, tfm);
 
