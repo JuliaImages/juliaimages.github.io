@@ -29,7 +29,7 @@ this example.
 First, let us create the two images we will match using BRISK.
 
 ```@example 3
-using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
+using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations, Rotations
 
 img = testimage("lighthouse")
 img1 = Gray.(img)
