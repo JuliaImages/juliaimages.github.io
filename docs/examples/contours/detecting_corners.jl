@@ -58,7 +58,7 @@ mosaicview(img_copies; nrow=1)
 
 # The *FAST (Features from Accelarated Segment Test) Corner Detector* is a feature
 # detection algorithm which is designed to be computationally cheaper, and hence much faster.
-# It classifies a pixel $P$ as a corner if atleast $n$ contiguous points out of the 16
+# It classifies a pixel $P$ as a corner if at least $n$ contiguous points out of the 16
 # points in a circle around it have intensities either higher (or lower) than that of $P$
 # by a certain threshold $t$.
 
