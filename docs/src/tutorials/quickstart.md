@@ -17,7 +17,7 @@ make_roi(xs::UnitRange, ys::UnitRange) = make_roi(Point(ys[1], xs[1]), Point(ys[
 For most purposes, any `AbstractArray` can be treated as an image. For example, numeric array can be interpreted as a grayscale image.
 
 ```@repl array
-img = rand(4, 4)
+img = rand(4, 3)
 ```
 ```@example array
 Gray.(img) #hide
