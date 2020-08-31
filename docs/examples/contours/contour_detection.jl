@@ -97,7 +97,7 @@ end
 function find_contours(image)
     nbd = 1
     lnbd = 1
-    image = convert(Array{Float64}, image)
+    image = Float64.(image)
     contour_list =  Vector{typeof(CartesianIndex[])}()
     done = [false, false, false, false, false, false, false, false]
 

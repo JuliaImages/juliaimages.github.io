@@ -37,10 +37,9 @@ julia> a = [1,2,3,4]
  4
 ```
 
-then all of the following create a new array where the element type is `Float64`:
+then either of the following creates a new array where the element type is `Float64`:
 
 ```julia
-convert(Array{Float64}, a)
 map(Float64, a)
 Float64.(a)     # short for broadcast(Float64, a)
 ```
@@ -184,7 +183,7 @@ tools. For example, certain C libraries permit or prefer the order of
 the color channels to be different:
 
 ```julia
-julia> dump(convert(BGR, c))
+julia> dump(BGR(c))
 ColorTypes.BGR{Float32}
   b: Float32 0.65485954
   g: Float32 0.9650581
@@ -195,7 +194,7 @@ or even to pack the red, green, and blue colors---together with a
 dummy "alpha" (transparency) channel---into a single 32-bit integer:
 
 ```julia
-julia> c24 = convert(RGB24, c); dump(c24)
+julia> c24 = RGB24(c); dump(c24)
 ColorTypes.RGB24
   color: UInt32 12711591
 
