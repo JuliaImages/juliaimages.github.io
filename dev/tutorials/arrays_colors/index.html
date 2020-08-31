@@ -7,8 +7,7 @@
  1
  2
  3
- 4</code></pre><p>then all of the following create a new array where the element type is <code>Float64</code>:</p><pre><code class="language-julia">convert(Array{Float64}, a)
-map(Float64, a)
+ 4</code></pre><p>then either of the following creates a new array where the element type is <code>Float64</code>:</p><pre><code class="language-julia">map(Float64, a)
 Float64.(a)     # short for broadcast(Float64, a)</code></pre><p>For example,</p><pre><code class="language-julia">julia&gt; Float64.(a)
 4-element Array{Float64,1}:
  1.0
@@ -34,11 +33,11 @@ ColorTypes.RGB{Float32}
   r: Float32 0.7550899
   g: Float32 0.9650581
   b: Float32 0.65485954</code></pre><p>Here we see one of the primary differences between Julia&#39;s approach to images and that of several other popular frameworks: <code>imgc</code> does not have a dimension of the array devoted to the &quot;color channel.&quot; Instead, every element of the array corresponds to a complete pixel&#39;s worth of information. Often this simplifies the logic of many algorithms, sometimes allowing a single implementation to work for both color and grayscale images.</p><p>You can extract the individual color channels using their field names (<code>r</code>, <code>g</code>, and <code>b</code>), but as you&#39;ll see in a moment, a more universal approach is to use accessor functions:</p><pre><code class="language-julia">julia&gt; c = imgc[1,1]; (red(c), green(c), blue(c))
-(0.7550899f0,0.9650581f0,0.65485954f0)</code></pre><p>Julia&#39;s Colors package allows the same color to be represented in several different ways, and this can facilitate interaction with other tools. For example, certain C libraries permit or prefer the order of the color channels to be different:</p><pre><code class="language-julia">julia&gt; dump(convert(BGR, c))
+(0.7550899f0,0.9650581f0,0.65485954f0)</code></pre><p>Julia&#39;s Colors package allows the same color to be represented in several different ways, and this can facilitate interaction with other tools. For example, certain C libraries permit or prefer the order of the color channels to be different:</p><pre><code class="language-julia">julia&gt; dump(BGR(c))
 ColorTypes.BGR{Float32}
   b: Float32 0.65485954
   g: Float32 0.9650581
-  r: Float32 0.7550899</code></pre><p>or even to pack the red, green, and blue colors–-together with a dummy &quot;alpha&quot; (transparency) channel–-into a single 32-bit integer:</p><pre><code class="language-julia">julia&gt; c24 = convert(RGB24, c); dump(c24)
+  r: Float32 0.7550899</code></pre><p>or even to pack the red, green, and blue colors–-together with a dummy &quot;alpha&quot; (transparency) channel–-into a single 32-bit integer:</p><pre><code class="language-julia">julia&gt; c24 = RGB24(c); dump(c24)
 ColorTypes.RGB24
   color: UInt32 12711591
 
@@ -77,4 +76,4 @@ julia&gt; 1N0f8 + 1N0f8
 0.996N0f8
 
 julia&gt; 0xfe/0xff      # the first result corresponds to the second result
-0.996078431372549</code></pre><p>Consequently, if you&#39;re accumulating values, it&#39;s advisable to accumulate them in an appropriate floating-point type, such as <code>Float32</code>, <code>Gray{Float64}</code>, or <code>RGB{Float32}</code>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../quickstart/">« Quickstart</a><a class="docs-footer-nextpage" href="../conversions_views/">Conversions vs. views »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 1 July 2020 23:52">Wednesday 1 July 2020</span>. Using Julia version 1.4.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+0.996078431372549</code></pre><p>Consequently, if you&#39;re accumulating values, it&#39;s advisable to accumulate them in an appropriate floating-point type, such as <code>Float32</code>, <code>Gray{Float64}</code>, or <code>RGB{Float32}</code>.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../quickstart/">« Quickstart</a><a class="docs-footer-nextpage" href="../conversions_views/">Conversions vs. views »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 31 August 2020 13:47">Monday 31 August 2020</span>. Using Julia version 1.5.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
