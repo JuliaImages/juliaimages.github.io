@@ -1,6 +1,8 @@
 # ---
 # title: RGB to GrayScale
 # cover: assets/rgb_grayscale.gif
+# author: Gautam Mishra
+# date: 2020-07-01
 # ---
 
 # This example illustrates RGB to Grayscale Conversion

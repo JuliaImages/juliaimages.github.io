@@ -1,6 +1,8 @@
 # ---
 # title: RGB to HSV and thresholding
 # cover: assets/rgb_hsv_thresholding.png
+# author: Johnny Chen
+# date: 2019-12-07
 # ---
 
 # This example illustrates how RGB to HSV (Hue, Saturation, Value) conversion

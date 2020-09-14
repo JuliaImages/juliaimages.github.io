@@ -4,12 +4,14 @@ using ImageContrastAdjustment, TestImages, FileIO, MosaicViews, ImageMorphology
 
 branch = "master"
 
-templates, theme = cardtheme("grid")
-demos, demos_cb = makedemos("examples", templates; branch = branch)
+demos, demos_cb, demo_assets = makedemos("examples"; branch = branch)
+
+assets = []
+isnothing(demo_assets) || push!(assets, demo_assets)
 
 format = Documenter.HTML(edit_link = "source",
                          prettyurls = get(ENV, "CI", nothing) == "true",
-                         assets = [theme])
+                         assets = assets)
 
 makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, ImageAxes,
                     ImageFeatures, ImageFiltering, ImageMetadata, ImageContrastAdjustment,
