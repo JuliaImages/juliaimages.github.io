@@ -486,22 +486,18 @@ UInt8` array representing an RGB movie (`t` being the time axis). To
 have it display as an RGB movie, you might create the following view of
 the array `A`:
 
-```julia
-mov = colorview(RGB, normedview(PermutedDimsArray(A, (3,1,2,4))))
+```@setup view
+using Images
+using Random
+Random.seed!(1234)
 ```
 
-If you show `mov` at the REPL, the `summary` prints like this:
+```@repl view
+A = rand(UInt8, 5, 6, 3, 10);
+mov = colorview(RGB, normedview(PermutedDimsArray(A, (3,1,2,4))));
 
-```jldoctest; setup = :(using Images; A = rand(UInt8, 5, 6, 3, 10); mov = colorview(RGB, normedview(PermutedDimsArray(A, (3,1,2,4)))))
-julia> summary(mov)
-"5×6×10 reshape(reinterpret(RGB{N0f8}, normedview(N0f8, PermutedDimsArray(::Array{UInt8,4}, (3, 1, 2, 4)))), 5, 6, 10) with eltype RGB{Normed{UInt8,8}}"
-```
-
-which may be somewhat easier to read than the type:
-
-```jldoctest; setup = :(using Images; A = rand(UInt8, 5, 6, 3, 10); mov = colorview(RGB, normedview(PermutedDimsArray(A, (3,1,2,4))))), filter=r"Symbol\(.*\)"
-julia> typeof(mov)
-Base.ReshapedArray{RGB{Normed{UInt8,8}},3,Base.ReinterpretArray{RGB{Normed{UInt8,8}},4,Normed{UInt8,8},MappedArrays.MappedArray{Normed{UInt8,8},4,PermutedDimsArray{UInt8,4,(3, 1, 2, 4),(2, 3, 1, 4),Array{UInt8,4}},ImageCore.var"#37#38"{Normed{UInt8,8}},typeof(reinterpret)}},Tuple{Base.MultiplicativeInverses.SignedMultiplicativeInverse{Int64},Base.MultiplicativeInverses.SignedMultiplicativeInverse{Int64},Base.MultiplicativeInverses.SignedMultiplicativeInverse{Int64}}}
+summary(mov)
+typeof(mov)
 ```
 
 While there is little or no performance cost to making use of

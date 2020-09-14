@@ -67,7 +67,7 @@ and the properties dictionary with `properties`:
 ```jldoctest
 julia> properties(img)
 Dict{Symbol,Any} with 2 entries:
-  :date => 2016-07-31
+  :date => Date("2016-07-31")
   :time => "high noon"
 ```
 
