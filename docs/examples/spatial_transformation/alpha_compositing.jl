@@ -1,6 +1,8 @@
 # ---
 # title: Alpha Compositing
 # cover: assets/alpha_compositing.png
+# author: Johnny Chen
+# date: 2020-03-07
 # ---
 
 # This demonstration shows how [alpha compositing](https://en.wikipedia.org/wiki/Alpha_compositing)

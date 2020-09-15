@@ -1,6 +1,8 @@
 # ---
 # title: Image Difference View
 # cover: assets/image_diffview.png
+# author: Johnny Chen
+# date: 2020-03-07
 # ---
 
 # This demonstration shows some common tricks in image comparision -- difference view

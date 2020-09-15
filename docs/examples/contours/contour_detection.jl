@@ -1,6 +1,8 @@
 # ---
 # cover: assets/contour_detection.png
 # title: Contour Detection and Drawing
+# author: Archit Rungta
+# date: 2020-01-12
 # ---
 
 # This demonstration shows how to detect contours on binary images

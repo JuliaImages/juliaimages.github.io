@@ -1,6 +1,8 @@
 # ---
 # title: Histogram equalisation
 # cover: assets/histogram_equalization.png
+# author: Archit Rungta
+# date: 2020-01-12
 # ---
 
 # This demo issustrates the use of [Histogram equalization](https://juliaimages.org/ImageContrastAdjustment.jl/stable/reference/#Equalization-1), [gamma correction matching](https://juliaimages.org/ImageContrastAdjustment.jl/stable/reference/#Matching-1)

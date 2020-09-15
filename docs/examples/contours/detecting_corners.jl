@@ -1,6 +1,8 @@
 # ---
 # cover: assets/corner.png
 # title: Detecting Corners
+# author: Jivetesh Jain
+# date: 2020-07-01
 # ---
 
 # Corner Detection, which is a subset of Interest Point Detection, tries to detect

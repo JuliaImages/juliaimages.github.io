@@ -1,6 +1,8 @@
 # ---
 # cover: assets/color_separations_svd.gif
 # title: Image Compression using SVD
+# author: Tim Holy
+# date: 2020-03-17
 # ---
 
 # This demonstration shows how to work with color channels to explore image compression

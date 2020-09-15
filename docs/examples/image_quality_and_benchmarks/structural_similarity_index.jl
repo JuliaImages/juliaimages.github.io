@@ -1,6 +1,9 @@
 # ---
 # cover: assets/ssim.png
 # title: Structural Similarity Index
+# description: This demo shows how SSIM and MSE are used to evaluate the image quality
+# author: Jivetesh Jain
+# date: 2020-07-01
 # ---
 
 # When comparing images, the **Mean Squared Error** (or MSE), though straightforward to calculate,
