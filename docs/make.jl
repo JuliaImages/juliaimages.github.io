@@ -5,6 +5,7 @@ using ImageContrastAdjustment, TestImages, FileIO, MosaicViews, ImageMorphology
 branch = "master"
 
 demos, demos_cb, demo_assets = makedemos("examples"; branch = branch)
+pkgs, pkgs_cb, _ = makedemos("pkgs"; branch = branch)
 
 assets = []
 isnothing(demo_assets) || push!(assets, demo_assets)
@@ -27,14 +28,7 @@ makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, I
                          joinpath("tutorials", "conversions_views.md"),
                          joinpath("tutorials", "indexing.md")
                      ],
-                     "Packages" => Any[
-                         "Introduction" => joinpath("pkgs", "index.md"),
-                         "ImageAxes.jl" => joinpath("pkgs", "axes", "index.md"),
-                         "ImageMetaData.jl" => joinpath("pkgs", "metadata", "index.md"),
-                         "ImageSegmentation.jl" => joinpath("pkgs", "segmentation", "index.md"),
-                         "ImageTransformations.jl" => joinpath("pkgs", "transformations", "index.md"),
-                         "ImageFeatures.jl" => joinpath("pkgs", "features", "index.md")
-                     ],
+                     pkgs,
                      "Demos" => demos,
                      "References" => "function_reference.md",
                      "api_comparison.md",
@@ -42,6 +36,7 @@ makedocs(modules  = [Images, ImageCore, Colors, ColorTypes, FixedPointNumbers, I
                     ])
 
 demos_cb()
+pkgs_cb()
 
 deploydocs(repo      = "github.com/JuliaImages/juliaimages.github.io.git",
            target    = "build",
