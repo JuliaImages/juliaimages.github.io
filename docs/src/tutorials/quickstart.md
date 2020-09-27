@@ -311,7 +311,7 @@ packages, which support a number of algorithms important for computer vision.
 Constructors, conversions, and traits:
 
 - Construction: use constructors of specialized packages, e.g., `AxisArray`, `ImageMeta`, etc.
-- "Conversion": `colorview`, `channelview`, `rawview`, `normedview`, `permuteddimsview`, `paddedviews`
+- "Conversion": `colorview`, `channelview`, `rawview`, `normedview`, `PermutedDimsArray`, `paddedviews`
 - Traits: `pixelspacing`, `sdims`, `timeaxis`, `timedim`, `spacedirections`
 
 Contrast/coloration:

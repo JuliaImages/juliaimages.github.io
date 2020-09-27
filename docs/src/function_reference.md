@@ -72,7 +72,7 @@ Any of these operations may be composed together, e.g., if you have an
 metadata:
 
 ```julia
-img = ImageMeta(colorview(RGB, normedview(permuteddimsview(A, (3,1,2)))), sample="control")
+img = ImageMeta(colorview(RGB, normedview(PermutedDimsArray(A, (3,1,2)))), sample="control")
 ```
 
 ## Traits
