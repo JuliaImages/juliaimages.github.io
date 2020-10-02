@@ -312,7 +312,7 @@ Another use for `colorview` is to combine multiple grayscale images into a singl
 ```jldoctest
 using Colors, Images
 r = range(0,stop=1,length=11)
-b = range(0,stop=1,length=11)
+b = range(1,stop=0,length=11)
 img1d = colorview(RGB, r, zeroarray, b)
 
 # output
