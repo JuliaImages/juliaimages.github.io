@@ -41,14 +41,14 @@ palatte[[1 2; 2 1]] == [palatte[1] palatte[2]; palatte[2] palatte[1]]
 #md nothing #hide
 
 # Now, let's do some math on it. For this example, we are storing the data using type `Float64`,
-# each `Float64` number requires 8 bytes (1 byte=8bits). Hence the normal representation format
-# requires `5*5*3*8 = 600` bytes storage in total. As a comparison, we only need `5*5*8 + 5*3*8 =
-# 320` bytes storage if we use the indexed image format. This is why indexed image requires less
-# memories.
+# where each `Float64` number requires 8 bytes (1 byte=8bits). Hence the normal representation
+# format requires `5*5*3*8 = 600` bytes storage in total. As a comparison, we only need `5*5*8 +
+# 5*3*8 = 320` bytes storage if we use the indexed image format. This is why indexed image requires
+# less memories.
 #
 # Although it does compress the data in this example, in real world applications, it can be quite
-# complicated on whether you should or should not use indexed image format. There are two main
-# drawbacks of it:
+# complicated and unclear whether you should or should not use indexed image format. There are two
+# main drawbacks of it:
 #
 # - indexed images can require more memories if `length(unique(img))` is too large.
 # - indexing into an indexed image requires two `getindex` operations, so using it can be
