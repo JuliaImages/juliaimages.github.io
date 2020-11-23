@@ -68,4 +68,4 @@ mosaicview(img, img_edge, img_edge₀₁; nrow = 1)
 
 
 # save covers #src
-save("assets/sedge.png", img_edge) #src
+save("assets/sedge.png", img_edge₀₁) #src
