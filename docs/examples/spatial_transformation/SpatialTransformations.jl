@@ -2,7 +2,7 @@
 # title: Cropping,Resizing and Rescaling
 # cover: assets/lighthouse.png
 # author: Ashwani Rathee
-# data: 2020-11-24
+# date: 2020-11-24
 # ---
 
 # This demonstration shows how to use cropping,resizing and rescaling operations on an 
