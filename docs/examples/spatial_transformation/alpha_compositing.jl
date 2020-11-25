@@ -8,7 +8,9 @@
 # This demonstration shows how [alpha compositing](https://en.wikipedia.org/wiki/Alpha_compositing)
 # can be done in 10 lines of code using
 # [OffsetArrays](https://github.com/JuliaArrays/OffsetArrays.jl) and
-# [PaddedViews](https://github.com/JuliaArrays/PaddedViews.jl)
+# [PaddedViews](https://github.com/JuliaArrays/PaddedViews.jl).
+# If you are looking for more well-organized utilities, [ColorBlendModes](https://github.com/kimikage/ColorBlendModes.jl)
+# provides the definitions and compositing operations of the blend modes.
 
 using Images
 using OffsetArrays # provide `OffsetArray`
