@@ -8,7 +8,7 @@
 # This demonstration shows how to use cropping,resizing and rescaling operations on an 
 # image in Julia using ImageTransformations.jl
 
-using ImageCore, ImageShow, ImageTransformations, TestImages
+using ImageCore, ImageShow, ImageTransformations, TestImages, OffsetArrays, ImageShow
 ## load an example image
 img_source = testimage("lighthouse")  
 
@@ -34,16 +34,18 @@ img_size = size(img_source)
 
 # Easiest way to do this is indexing: `img_source[y1:y2, x1:x2]`
 
-# # Region of Interest: [y1, y2] sets the range for y-axis and [x1, x2] sets the range for
+# Region of Interest: [y1, y2] sets the range for y-axis and [x1, x2] sets the range for
 # x-axis of source image.
 
-img_cropped = img_source[ :,floor(Int, 1/8*img_size[2]) : floor(Int, 7/8*img_size[2])]
+img_cropped = @view img_source[ :,floor(Int, 1/8*img_size[2]) : floor(Int, 7/8*img_size[2])]
 
 # Let's see the size of the cropped image:
 
 size(img_cropped)
 
-# Ther is another method to do this and that is through using PaddedView,which is shown [here](https://juliaimages.org/stable/democards/examples/spatial_transformation/alpha_compositing/#Alpha-Compositing/)
+# We can also do size-preserved cropping of the image by replacing the contents of image to white pixels or transparent pixels using PaddedView:
+
+img_padded = PaddedView(ARGB(0, 0, 0, 0), OffsetArray(img_cropped, OffsetArrays.Origin(1, floor(Int, 1/8*img_size[2]))), axes(img_source))
 
 # ## Resizing Operation
 
