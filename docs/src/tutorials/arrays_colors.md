@@ -292,8 +292,8 @@ go to compare images: in most number systems we would agree that `255
 careful when converting from one representation to another.
 Conversely, using these Julia packages **there is no discrepancy in
 "meaning" between the encoding of images represented as floating point
-or 8-bit (or 16-bit) fixed-point numbers: 0 always means "black" and 1
-always means "white" or "saturated."**
+or 8-bit (or 16-bit) fixed-point numbers: 0 always means "black" and 1 or something
+greater than 1 always means "white" or "saturated."**
 
 Now, this doesn't prevent you from constructing pixels with values out
 of this range:
