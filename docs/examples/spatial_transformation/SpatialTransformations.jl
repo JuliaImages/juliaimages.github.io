@@ -8,7 +8,7 @@
 # This demonstration shows how to use cropping,resizing and rescaling operations on an 
 # image in Julia using ImageTransformations.jl
 
-using ImageCore, ImageShow, ImageTransformations, TestImages, OffsetArrays, ImageShow
+using Images, ImageTransformations, TestImages, OffsetArrays
 ## load an example image
 img_source = testimage("lighthouse")  
 
