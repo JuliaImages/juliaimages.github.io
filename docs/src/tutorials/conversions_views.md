@@ -231,10 +231,9 @@ julia> a
 
 We can understand clearly from below code that `v` is an immutable object, or is just 
 a reference of `a`. It doesn't has a separate memory allocated to it:
-```
-julia> using Images
 
-julia>  a = [0.2N0f8,0.8N0f8]
+```jldoctest; setup = :(using Images)
+julia> a = [0.2N0f8,0.8N0f8]
 2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
  0.2N0f8
  0.8N0f8
