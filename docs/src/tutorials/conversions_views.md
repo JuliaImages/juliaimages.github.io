@@ -343,17 +343,17 @@ img1d = colorview(RGB, r, zeroarray, b)
 # output
 
 11-element mappedarray(RGB{Float64}, ImageCore.extractchannels, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::ImageCore.ZeroArray{Float64,1,Base.OneTo{Int64}}, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}) with eltype RGB{Float64}:
- RGB{Float64}(0.0,0.0,0.0)
- RGB{Float64}(0.1,0.0,0.1)
- RGB{Float64}(0.2,0.0,0.2)
- RGB{Float64}(0.3,0.0,0.3)
- RGB{Float64}(0.4,0.0,0.4)
+ RGB{Float64}(0.0,0.0,1.0)
+ RGB{Float64}(0.1,0.0,0.9)
+ RGB{Float64}(0.2,0.0,0.8)
+ RGB{Float64}(0.3,0.0,0.7)
+ RGB{Float64}(0.4,0.0,0.6)
  RGB{Float64}(0.5,0.0,0.5)
- RGB{Float64}(0.6,0.0,0.6)
- RGB{Float64}(0.7,0.0,0.7)
- RGB{Float64}(0.8,0.0,0.8)
- RGB{Float64}(0.9,0.0,0.9)
- RGB{Float64}(1.0,0.0,1.0)
+ RGB{Float64}(0.6,0.0,0.4)
+ RGB{Float64}(0.7,0.0,0.3)
+ RGB{Float64}(0.8,0.0,0.2)
+ RGB{Float64}(0.9,0.0,0.1)
+ RGB{Float64}(1.0,0.0,0.0)
 ```
 
 results (in IJulia) in
