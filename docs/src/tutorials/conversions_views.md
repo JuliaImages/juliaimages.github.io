@@ -228,25 +228,26 @@ julia> a
  0.2N0f8
  1.0N0f8
 ```
-We can understand clearly from below code that v is a immutable object ,or is just 
-a reference of a.It doesn't has a separate memory allocated to it:
+
+We can understand clearly from below code that `v` is an immutable object, or is just 
+a reference of `a`. It doesn't has a separate memory allocated to it:
 ```
 julia> using Images
 
-julia>  a=[0.2N0f8,0.8N0f8]
+julia>  a = [0.2N0f8,0.8N0f8]
 2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
  0.2N0f8
  0.8N0f8
 
-julia> v=rawview(a)
+julia> v = rawview(a)
 2-element reinterpret(UInt8, ::Array{N0f8,1}):
  0x33
  0xcc
 
-julia> pointer_from_objref(a)#function used to find address of an object
+julia> pointer_from_objref(a) #function used to find address of an object
 Ptr{Nothing} @0x00000000144adc90
 
-julia> pointer_from_objref(v)#v is just a immutable reference to a,no separate memory allocated to it.
+julia> pointer_from_objref(v) #v is just a immutable reference to a, no separate memory allocated to it.
 ERROR: pointer_from_objref cannot be used on immutable objects
 Stacktrace:
  [1] error(::String) at .\error.jl:33
