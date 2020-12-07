@@ -34,26 +34,27 @@ palatte[indices] == img
 
 # This is doable because it follows the Julia [indexing
 # rules](https://docs.julialang.org/en/v1/manual/arrays/#man-supported-index-types) that `indices`
-# is an array of scalar indices. For example, the following equivalence holds:
+# is an array of scalar indices, and the dimensionality of the output is the dimensionality of the
+# `indices`. For example, the following equivalence holds:
 
 palatte[[1, 2]] == [palatte[1], palatte[2]]
 palatte[[1 2; 2 1]] == [palatte[1] palatte[2]; palatte[2] palatte[1]]
 #md nothing #hide
 
-# Now, let's do some math on it. For this example, we are storing the data using type `Float64`,
-# where each `Float64` number requires 8 bytes (1 byte=8bits). Hence the normal representation
-# format requires `5*5*3*8 = 600` bytes storage in total. As a comparison, we only need `5*5*8 +
-# 5*3*8 = 320` bytes storage if we use the indexed image format. This is why indexed image requires
-# less memories.
+# Now, let's analyze the resource usage of these two approaches. For this example, we are storing
+# the data using type `Float64`, where each `Float64` number requires 8 bytes (1 byte=8bits). Hence
+# the normal representation format requires `5*5*3*8 = 600` bytes storage in total. As a comparison,
+# we only need `5*5*8 + 5*3*8 = 320` bytes storage if we use the indexed image format. This is why
+# images with few distinct values can often be encoded more compactly as an indexed image.
 #
-# Although it does compress the data in this example, in real world applications, it can be quite
-# complicated and unclear whether you should or should not use indexed image format. There are two
-# main drawbacks of it:
+# Although it does compress the data in this example, in real world applications, it is not always
+# clear whether you should or should not use indexed image format. There are two main drawbacks of
+# it:
 #
-# - indexed images can require more memories if `length(unique(img))` is too large.
-# - indexing into an indexed image requires two `getindex` operations, so using it can be
-#   theoratically slower than a normal image representation. This is a typical [space-time
-#   tradeoff](https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff) case.
+# - indexed images can require more memory if `length(unique(img))` is too large.
+# - indexing into an indexed image requires two `getindex` operations, so using it can be slower
+#   than a direct image representation (and not amenable to SIMD vectorization). This is a typical
+#   [space-time tradeoff](https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff) case.
 #
 # Benchmarks are always recommended before you choose to use the indexed image format.
 
