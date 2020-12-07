@@ -1,14 +1,16 @@
 # ---
-# title: Alpha Compositing
-# cover: assets/alpha_compositing.png
+# title: Layer Compositing
+# cover: assets/layer_compositing.png
 # author: Johnny Chen
 # date: 2020-03-07
 # ---
 
-# This demonstration shows how [alpha compositing](https://en.wikipedia.org/wiki/Alpha_compositing)
+# This demonstration shows how the layer version [alpha compositing](https://en.wikipedia.org/wiki/Alpha_compositing)
 # can be done in 10 lines of code using
 # [OffsetArrays](https://github.com/JuliaArrays/OffsetArrays.jl) and
-# [PaddedViews](https://github.com/JuliaArrays/PaddedViews.jl)
+# [PaddedViews](https://github.com/JuliaArrays/PaddedViews.jl).
+# If you are looking for more well-organized utilities, [ColorBlendModes](https://github.com/kimikage/ColorBlendModes.jl)
+# provides the definitions and compositing operations of the blend modes.
 
 using Images
 using OffsetArrays # provide `OffsetArray`
@@ -102,4 +104,4 @@ color_panel = color_panel[axes(red_c)...] # crop empty region
 
 # --- save covers --- #src
 using FileIO #src
-save("assets/alpha_compositing.png", map(clamp01nan, color_panel)) #src
+save("assets/layer_compositing.png", map(clamp01nan, color_panel)) #src
