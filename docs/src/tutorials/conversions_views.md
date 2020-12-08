@@ -252,7 +252,7 @@ Stacktrace:
  [1] error(::String) at .\error.jl:33
  [2] pointer_from_objref(::Any) at .\pointer.jl:146
  [3] top-level scope at none:1
- ```
+```
 
 The opposite transformation is `normedview`:
 
