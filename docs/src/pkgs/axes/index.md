@@ -33,7 +33,13 @@ img = AxisArray(reshape(1:192, (8,8,3)), :x, :y, :z)
 As described in more detail in the [AxisArrays documentation](https://github.com/mbauman/AxisArrays.jl), you can now take slices like this:
 
 ```@example 1
-sl = img[Axis{:z}(2)]
+slz = img[Axis{:z}(2)]
+```
+```@example 1
+slx = img[Axis{:x}(2)]
+```
+```@example 1
+sly = img[Axis{:y}(2)]
 ```
 
 You can also give units to the axes:
