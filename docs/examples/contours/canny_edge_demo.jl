@@ -31,34 +31,34 @@ using Noise
 # For most purposes, any AbstractArray can be treated as an image.
 # For example, numeric array can be interpreted as a grayscale image.
 
-# First,We create our test image.
+# First, we create our test image.
 
-img_gray = zeros( Gray{Float64}, 200, 200)
-img_gray[ 50:150, 50:150] .= 1
-mosaicview( img_gray; nrow=1)
+img_gray = zeros(Gray{Float64}, 200, 200)
+img_gray[50:150, 50:150] .= 1
+img_gray #hide #md
 
 # Creates a basic image.
 
-# Now,we rotate our image by pi/4.
+# Now, we rotate our image by pi/4.
 
-# First,we need to define the transformation and then implement it with
+# First, we need to define the transformation and then implement it with
 # warp function in ImageTransformations.jl
 
-tfm = recenter( RotMatrix(pi/4), center(img_gray))
-img_rot = warp( img_gray, tfm)
+tfm = recenter(RotMatrix(pi/4), center(img_gray))
+img_rot = warp(img_gray, tfm)
 
-# Now,we blur our image with gaussian filter with sigma=2
+# Now, we blur our image with gaussian filter with sigma=2
 
-img_gauss = imfilter( img_rot, Kernel.gaussian(2))
+img_gauss = imfilter(img_rot, Kernel.gaussian(2))
 
-# Now,let's add random noise which makes our canny edge detection 
+# Now, let's add random noise which makes our canny edge detection 
 # function work little harder since canny filter is based on idea of finding gradients.
 
 # We use salt_pepper filter from noise.jl,salt and pepper noise in general 
 # is a noise which modifies a pixel with two different values of noise. 
 # Usually it sets randomly black and white spots on the image.
 
-img_noise = salt_pepper( img_gauss, 0.05, salt_prob=0, pepper=0.9)
+img_noise = salt_pepper(img_gauss, 0.05, salt_prob=0, pepper=0.9)
 
 # We will now compute the canny filter values for 2 different values of
 # sigma(sigma=1,sigma=3),`spatial_scale` can be used to specify sigma.
@@ -79,13 +79,13 @@ algo_sigma3 = Canny(spatial_scale = 5,
 
 # Let's now compute the results with `detect_edges` function
 
-img_edges1 = detect_edges( img_noise, algo_sigma1);
-img_edges3 = detect_edges( img_noise, algo_sigma3);
+img_edges1 = detect_edges(img_noise, algo_sigma1);
+img_edges3 = detect_edges(img_noise, algo_sigma3);
 
 # Let's see how we created the images and the results in a single view 
-# with mosaicviews.jl
+# with `mosaicview` from [MosaicViews.jl](https://github.com/JuliaArrays/MosaicViews.jl), which is reexported by `ImageCore.jl`.
 
-mosaicview( img_gray, img_rot, img_gauss, img_noise, img_edges1, img_edges3; nrow=1)
+mosaicview(img_gray, img_rot, img_gauss, img_noise, img_edges1, img_edges3; nrow=1)
     
 # From left to right: initial gray image,rotated image,blurred image,image with 
 # random noise,resulting images with edges detected sigma = 1,edge detected image with sigma = 3
