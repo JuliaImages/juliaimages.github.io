@@ -34,6 +34,7 @@ img_transformed=adjust_histogram(img_source, Matching(targetimg = img_reference)
 # **Results** : 
 
 mosaicview(img_source,img_reference,img_transformed;nrow=1)
+save("assets/chelsea.png",img_source) #src
 
 # From Left to Right: Source Image,Reference Image,Transformed Image
 
