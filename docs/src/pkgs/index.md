@@ -13,7 +13,7 @@ you are interested in most.
 * Low-level core packages
   * [ColorTypes.jl](https://github.com/JuliaGraphics/ColorTypes.jl)\*,
     [Colors.jl](https://github.com/JuliaGraphics/Colors.jl)\*
-    and [ColorVectorSpaces.jl](https://github.com/JuliaGraphics/ColorVectorSpace.jl)\*
+    and [ColorVectorSpace.jl](https://github.com/JuliaGraphics/ColorVectorSpace.jl)\*
     provides pixel-level definitions and functions.
   * [FixedPointNumbers.jl](https://github.com/JuliaMath/FixedPointNumbers.jl)\* provides several data
     types (e.g., `N0f8`) for image storage usage.
