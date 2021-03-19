@@ -1,6 +1,6 @@
 
 # ---
-# cover: assets/chelsea.png
+# cover: assets/chelsea.gif
 # title: Histogram Matching
 # author: Ashwani Rathee
 # date: 2020-11-21
@@ -46,7 +46,7 @@ img_transformed = adjust_histogram(img_source, Matching(targetimg = img_referenc
 
 
 mosaicview(img_source, img_reference, img_transformed; nrow = 1)
-save("assets/chelsea.png",cat(img_source,img_transformed;dims=3)) #src
+save("assets/chelsea.gif",cat(img_source,img_transformed;dims=3)) #src
 
 # From Left to Right: Source Image, Reference Image, Transformed Image
 
