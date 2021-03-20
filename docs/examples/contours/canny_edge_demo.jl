@@ -16,7 +16,7 @@ using TestImages
 # !!! info
 #     `ImageEdgeDetection.jl` rewrites many functions which previously exists in `Images.jl` and
 #     will be reexported in `Images` in the future, so you don't need to `using ImageEdgeDetection`
-#     explicitly in the future.
+#     explicitly after that.
 
 # In JuliaImages, any `AbstractArray` can be treated as an image. In this demo, we'll use a generated
 # image for illustration purpose.
@@ -44,16 +44,13 @@ img = make_simple_image((200, 200))
 # `ImageEdgeDetection` offers a unified API `detect_edges(img, alg)` with
 # various algorithms. In this demo we'll show how to use the `Canny`
 # operator [1]. First we'll need to create an algorithm instance of `Canny`.
-# Canny has three adjustable parameters: the width of the Gaussian (the noisier
-# the image, the greater the width), and the low and high threshold for the 
-# hysteresis thresholding.
 
 alg = Canny(spatial_scale=1, high=Percentile(80), low=Percentile(20))
 
 # and then apply this instance as parameters to `detect_edges`, with the Julia
-# [multiple dispatch mechanism](https://docs.julialang.org/en/v1/manual/methods/#Methods)
+# [multiple dispatch mechanism](https://docs.julialang.org/en/v1/manual/methods/#Methods),
 # `detect_edges` knows which algorithm implementation should be called with
-# this `alg` information.
+# the `alg` information.
 
 edges = detect_edges(img, alg)
 mosaicview(img, edges; nrow=1)
