@@ -1,21 +1,22 @@
 # ---
 # title: Cropping, Resizing and Rescaling
-# cover: assets/lighthouse.png
+# cover: assets/transformations.gif
 # author: Ashwani Rathee
 # date: 2020-11-24
 # ---
 
-# This demonstration shows how to use cropping,resizing and rescaling operations on an 
+# This demonstration shows how to use cropping, resizing and rescaling operations on an 
 # image in Julia using ImageTransformations.jl
 
-using Images, ImageTransformations, TestImages, OffsetArrays
+using Images, TestImages, OffsetArrays
+## ImageTransformations is reexported by Images
 ## load an example image
-img_source = testimage("lighthouse")  
+img_source = testimage("lighthouse")
 
 # ## Cropping Operation
 
-# Cropping is one of the most basic photo manipulation processes, and it is carried out to 
-# remove an unwanted object or irrelevant noise from the periphery of a photograph, to 
+# Cropping is one of the most basic photo manipulation processes, and it is carried out to
+# remove an unwanted object or irrelevant noise from the periphery of a photograph, to
 # change its aspect ratio, or to improve the overall composition.
 
 # Let's first check the size of the image
@@ -29,7 +30,7 @@ img_size = size(img_source)
 # !!! tip
 #     An related issue about the memory order is the indexing performance, see [Performance Tips](https://docs.julialang.org/en/v1/manual/performance-tips/#man-performance-column-major) for more details.
 
-# Let's crop the image from sides by 1/8 of img_source each side and leave it as it is from
+# Let's crop the image from sides by `1/8` of `img_source` each side and leave it as it is from
 # top to bottom.
 
 # Easiest way to do this is indexing: `img_source[y1:y2, x1:x2]`
@@ -45,7 +46,10 @@ size(img_cropped)
 
 # We can also do size-preserved cropping of the image by replacing the contents of image to white pixels or transparent pixels using PaddedView:
 
-img_padded = PaddedView(ARGB(0, 0, 0, 0), OffsetArray(img_cropped, OffsetArrays.Origin(1, floor(Int, 1/8*img_size[2]))), axes(img_source))
+img_padded = PaddedView(
+    zero(eltype(img_source)),
+    OffsetArray(img_cropped, OffsetArrays.Origin(1, floor(Int, 1/8*img_size[2]))),
+    axes(img_source))
 
 # ## Resizing Operation
 
@@ -59,9 +63,9 @@ mosaicview(img_source, img_square, img_small, img_medium; nrow=1)
 
 # ## Rescaling
 
-# Rescale operation resizes an image by a given scaling factor. The scaling factor can 
-# either be a single floating point value, or multiple values - one along each axis. 
-# Image scaling is the process of changing the size of an image while preserving the 
+# Rescale operation resizes an image by a given scaling factor. The scaling factor can
+# either be a single floating point value, or multiple values - one along each axis.
+# Image scaling is the process of changing the size of an image while preserving the
 # original aspect ratio.
 
 # ### Rescaling by percentage
@@ -82,13 +86,17 @@ new_size = trunc.(Int, size(img_source) .* percentage_scale);
 img_rescaled = imresize(img_source, new_size);
 mosaicview(img_source, img_rescaled; nrow=1)
 
-# We have updated our scale by percentage solution to calculate scale-percentage 
+# We have updated our scale by percentage solution to calculate scale-percentage
 # dynamically based on a change in one of the dimensions.
-# Remember: `size(sourceimage) == (height, width)
+# Remember: `size(sourceimage) == (height, width)`
 
 # ### Rescaling by two-fold using restrict function
 
 rescaled_both = restrict(img_source); # both side
-rescaled_height = restrict(img_source, 1); # height
-rescaled_width = restrict(img_source, 2); # width
+rescaled_height = restrict(img_source, 1); # dims=1, i.e., height dimension
+rescaled_width = restrict(img_source, 2); # dims=2, i.e., width dimension
 mosaicview(img_source, rescaled_both, rescaled_height, rescaled_width; nrow=1)
+
+using ImageMagick #src
+out_img = cat(sym_paddedviews(colorant"black", img_source, img_cropped, img_square, rescaled_both)...; dims=3); #src
+ImageMagick.save("assets/transformations.gif", out_img; fps=2) #src
