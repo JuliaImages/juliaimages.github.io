@@ -18,6 +18,9 @@ You can install `Images.jl` via the [package manager](https://docs.julialang.org
 
 ## [Loading your first image](@id sec_imageio)
 
+!!! note
+    As of Images v0.24.0, `ImageIO`/`ImageMagick` IO backends are automatically installed.
+
 If this is your first time working with images in julia, it's likely that you'll need to install some
 image IO backends to load the images. The current available backends for image files are:
 
