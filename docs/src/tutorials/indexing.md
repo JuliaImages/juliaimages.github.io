@@ -26,15 +26,15 @@ doing.
 julia> using Images, CoordinateTransformations, Rotations
 
 julia> tfm = recenter(RotMatrix(pi/8), center(img))
-AffineMap([0.9238795325112867 -0.3826834323650898; 0.3826834323650898 0.9238795325112867], [88.7785546217109, -59.31993370357884])
+AffineMap([0.9238795325112867 -0.3826834323650898; 0.3826834323650898 0.9238795325112867], [88.77855462171088, -59.31993370357884])
 
 julia> imgrot = warp(img, tfm);
 
 julia> summary(img)
-"386×386 Array{Gray{N0f8},2} with eltype Gray{Normed{UInt8,8}}"
+"386×386 Array{Gray{N0f8},2} with eltype Gray{N0f8}"
 
 julia> summary(imgrot)
-"506×506 OffsetArray(::Array{Gray{N0f8},2}, -59:446, -59:446) with eltype Gray{Normed{UInt8,8}} with indices -59:446×-59:446"
+"506×506 OffsetArray(::Array{Gray{N0f8},2}, -59:446, -59:446) with eltype Gray{N0f8} with indices -59:446×-59:446"
 ```
 
 While `img` has axes that start with the conventional 1, the
@@ -89,7 +89,7 @@ julia> println(summary(img))
     :P, 0:1:225
     :R, 0:1:185
     :S, 0:5:130
-And data, a 226×186×27 Array{Gray{N0f8},3} with eltype Gray{Normed{UInt8,8}}
+And data, a 226×186×27 Array{Gray{N0f8},3} with eltype Gray{N0f8}
 ```
 
 TestImages uses the [AxisArrays package](https://github.com/JuliaArrays/AxisArrays.jl) to name the axes of

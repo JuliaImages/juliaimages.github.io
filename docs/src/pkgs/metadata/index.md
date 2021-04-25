@@ -15,7 +15,7 @@ julia> using Colors, ImageMetadata, Dates
 
 julia> img = ImageMeta(fill(RGB(1,0,0), 3, 2), date=Date(2016, 7, 31), time="high noon")
 RGB ImageMeta with:
-  data: 3×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
+  data: 3×2 Array{RGB{N0f8},2} with eltype RGB{N0f8}
   properties:
     date: 2016-07-31
     time: high noon
@@ -46,7 +46,7 @@ julia> img.time = "evening"
 
 julia> img
 RGB ImageMeta with:
-  data: 3×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
+  data: 3×2 Array{RGB{N0f8},2} with eltype RGB{N0f8}
   properties:
     date: 2016-07-31
     time: evening
@@ -56,7 +56,7 @@ You can extract the data matrix with `arraydata(img)`:
 
 ```jldoctest
 julia> arraydata(img)
-3×2 Array{RGB{N0f8},2} with eltype RGB{FixedPointNumbers.Normed{UInt8,8}}:
+3×2 Array{RGB{N0f8},2} with eltype RGB{FixedPointNumbers.N0f8}:
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
  RGB{N0f8}(1.0,0.0,0.0)  RGB{N0f8}(1.0,0.0,0.0)
@@ -66,7 +66,7 @@ and the properties dictionary with `properties`:
 
 ```jldoctest
 julia> properties(img)
-Dict{Symbol,Any} with 2 entries:
+Dict{Symbol, Any} with 2 entries:
   :date => Date("2016-07-31")
   :time => "high noon"
 ```
@@ -84,7 +84,7 @@ of that pixel. But if you index a range, you get another `ImageMeta`:
 ```jldoctest
 julia> c = img[1:2, 1:2]
 RGB ImageMeta with:
-  data: 2×2 Array{RGB{N0f8},2} with eltype RGB{Normed{UInt8,8}}
+  data: 2×2 Array{RGB{N0f8},2} with eltype RGB{N0f8}
   properties:
     date: 2016-07-31
     time: high noon
@@ -95,7 +95,7 @@ This copies both the data (just the relevant portions) and the properties dictio
 ```jldoctest
 julia> v = view(img, 1:2, 1:2)
 RGB ImageMeta with:
-  data: 2×2 view(::Array{RGB{N0f8},2}, 1:2, 1:2) with eltype RGB{Normed{UInt8,8}}
+  data: 2×2 view(::Array{RGB{N0f8},2}, 1:2, 1:2) with eltype RGB{N0f8}
   properties:
     date: 2016-07-31
     time: high noon
@@ -143,7 +143,7 @@ Int64 ImageMeta with:
 
 julia> imgp = permutedims(img, (2,1))
 Int64 ImageMeta with:
-  data: 5×3 Array{Int64,2}
+  data: 5×3 Matrix{Int64}
   properties:
     maxsum: [45, 42]
     spatialproperties: Set([:maxsum])

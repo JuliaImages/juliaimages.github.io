@@ -9,14 +9,14 @@ like `Float64.(a)`. You might be curious what affect, if any,
 
 ```jldoctest
 julia> a = [1,2,3,4]
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  1
  2
  3
  4
 
 julia> b = Int.(a)
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  1
  2
  3
@@ -41,14 +41,14 @@ julia> b[1] = 5
 5
 
 julia> b
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  5
  2
  3
  4
 
 julia> a
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  1
  2
  3
@@ -65,7 +65,7 @@ all functions operate this way. One good example is `view`:
 
 ```jldoctest; setup = :(a = [1,2,3,4])
 julia> v = view(a, :)
-4-element view(::Array{Int64,1}, :) with eltype Int64:
+4-element view(::Vector{Int64}, :) with eltype Int64:
  1
  2
  3
@@ -89,14 +89,14 @@ julia> v[1] = 10
 10
 
 julia> v
-4-element view(::Array{Int64,1}, :) with eltype Int64:
+4-element view(::Vector{Int64}, :) with eltype Int64:
  10
   2
   3
   4
 
 julia> a
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  10
   2
   3
@@ -117,7 +117,7 @@ array:
 
 ```jldoctest; setup = :(a = [10,2,3,4])
 julia> r = reshape(a, 2, 2)
-2×2 Array{Int64,2}:
+2×2 Matrix{Int64}:
  10  3
   2  4
 
@@ -125,12 +125,12 @@ julia> r[1,2] = 7
 7
 
 julia> r
-2×2 Array{Int64,2}:
+2×2 Matrix{Int64}:
  10  7
   2  4
 
 julia> a
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  10
   2
   7
@@ -183,12 +183,12 @@ You can apply this to arrays:
 
 ```jldoctest; setup = :(using FixedPointNumbers)
 julia> a = [0.2N0f8, 0.8N0f8]
-2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
+2-element Array{N0f8,1} with eltype N0f8:
  0.2N0f8
  0.8N0f8
 
 julia> b = reinterpret.(a)
-2-element Array{UInt8,1}:
+2-element Vector{UInt8}:
  0x33
  0xcc
 ```
@@ -200,7 +200,7 @@ julia> b[2] = 0xff
 0xff
 
 julia> a
-2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
+2-element Array{N0f8,1} with eltype N0f8:
  0.2N0f8
  0.8N0f8
 ```
@@ -224,7 +224,7 @@ julia> v[2] = 0xff
 0xff
 
 julia> a
-2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
+2-element Array{N0f8,1} with eltype N0f8:
  0.2N0f8
  1.0N0f8
 ```
@@ -234,7 +234,7 @@ a reference of `a`. It doesn't has a separate memory allocated to it:
 
 ```jldoctest; setup = :(using Images)
 julia> a = [0.2N0f8,0.8N0f8]
-2-element Array{N0f8,1} with eltype Normed{UInt8,8}:
+2-element Array{N0f8,1} with eltype N0f8:
  0.2N0f8
  0.8N0f8
 
@@ -242,28 +242,33 @@ julia> v = rawview(a)
 2-element reinterpret(UInt8, ::Array{N0f8,1}):
  0x33
  0xcc
+```
 
+```julia
 julia> pointer_from_objref(a) #function used to find address of an object
-Ptr{Nothing} @0x00000000144adc90
+Ptr{Nothing} @0x000000011cbb19f0
 
 julia> pointer_from_objref(v) #v is just a immutable reference to a, no separate memory allocated to it.
 ERROR: pointer_from_objref cannot be used on immutable objects
 Stacktrace:
- [1] error(::String) at .\error.jl:33
- [2] pointer_from_objref(::Any) at .\pointer.jl:146
- [3] top-level scope at none:1
+ [1] error(s::String)
+   @ Base ./error.jl:33
+ [2] pointer_from_objref(x::Any)
+   @ Base ./pointer.jl:146
+ [3] top-level scope
+   @ none:1
 ```
 
 The opposite transformation is `normedview`:
 
 ```jldoctest; setup = :(using Images)
 julia> c = [0x11, 0x22]
-2-element Array{UInt8,1}:
+2-element Vector{UInt8}:
  0x11
  0x22
 
 julia> normedview(c)
-2-element reinterpret(N0f8, ::Array{UInt8,1}):
+2-element reinterpret(N0f8, ::Vector{UInt8}):
  0.067N0f8
  0.133N0f8
 ```
@@ -289,7 +294,7 @@ array changes. One approach is to use Julia's comprehensions:
 
 ```jldoctest; setup = :(using ColorTypes)
 julia> a = reshape(collect(0.1:0.1:0.6), 3, 2)
-3×2 Array{Float64,2}:
+3×2 Matrix{Float64}:
  0.1  0.4
  0.2  0.5
  0.3  0.6
@@ -300,7 +305,7 @@ julia> c = [RGB(a[1,j], a[2,j], a[3,j]) for j = 1:2]
  RGB{Float64}(0.4,0.5,0.6)
 
 julia> x = [getfield(c[j], i) for i = 1:3, j = 1:2]
-3×2 Array{Float64,2}:
+3×2 Matrix{Float64}:
  0.1  0.4
  0.2  0.5
  0.3  0.6
@@ -316,12 +321,12 @@ To address these weaknesses, JuliaImages provides two complementary view functio
 
 ```jldoctest; setup = :(using Images; a = reshape(collect(0.1:0.1:0.6), 3, 2); c = [RGB(a[1,j], a[2,j], a[3,j]) for j = 1:2])
 julia> colv = colorview(RGB, a)
-2-element reshape(reinterpret(RGB{Float64}, ::Array{Float64,2}), 2) with eltype RGB{Float64}:
+2-element reinterpret(reshape, RGB{Float64}, ::Matrix{Float64}) with eltype RGB{Float64}:
  RGB{Float64}(0.1,0.2,0.3)
  RGB{Float64}(0.4,0.5,0.6)
 
 julia> chanv = channelview(c)
-3×2 reinterpret(Float64, ::Array{RGB{Float64},2}):
+3×2 reinterpret(reshape, Float64, ::Array{RGB{Float64},1}) with eltype Float64:
  0.1  0.4
  0.2  0.5
  0.3  0.6
@@ -342,7 +347,7 @@ img1d = colorview(RGB, r, zeroarray, b)
 
 # output
 
-11-element mappedarray(RGB{Float64}, ImageCore.extractchannels, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}, ::ImageCore.ZeroArray{Float64,1,Base.OneTo{Int64}}, ::StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}) with eltype RGB{Float64}:
+11-element mappedarray(RGB{Float64}, ImageCore.extractchannels, ::StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}}, ::ImageCore.ZeroArray{Float64, 1, Base.OneTo{Int64}}, ::StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}}) with eltype RGB{Float64}:
  RGB{Float64}(0.0,0.0,1.0)
  RGB{Float64}(0.1,0.0,0.9)
  RGB{Float64}(0.2,0.0,0.8)
@@ -372,7 +377,7 @@ convert directly using Julia's `permutedims` function:
 
 ```jldoctest; setup = :(a = reshape(collect(0.1:0.1:0.6), 3, 2))
 julia> pc = permutedims(a, (2,1))
-2×3 Array{Float64,2}:
+2×3 Matrix{Float64}:
  0.1  0.2  0.3
  0.4  0.5  0.6
 ```
@@ -382,7 +387,7 @@ as a view:
 
 ```jldoctest; setup = :(using Images; a = reshape(collect(0.1:0.1:0.6), 3, 2))
 julia> pv = PermutedDimsArray(a, (2,1))
-2×3 PermutedDimsArray(::Array{Float64,2}, (2, 1)) with eltype Float64:
+2×3 PermutedDimsArray(::Matrix{Float64}, (2, 1)) with eltype Float64:
  0.1  0.2  0.3
  0.4  0.5  0.6
 ```
@@ -409,23 +414,23 @@ common indices with `paddedviews`:
 
 ```jldoctest; setup = :(using Images)
 julia> a1 = reshape([1,2], 2, 1)
-2×1 Array{Int64,2}:
+2×1 Matrix{Int64}:
  1
  2
 
 julia> a2 = [1.0,2.0]'
-1×2 LinearAlgebra.Adjoint{Float64,Array{Float64,1}}:
+1×2 adjoint(::Vector{Float64}) with eltype Float64:
  1.0  2.0
 
 julia> a1p, a2p = paddedviews(0, a1, a2);   # 0 is the fill value
 
 julia> a1p
-2×2 PaddedView(0, ::Array{Int64,2}, (Base.OneTo(2), Base.OneTo(2))) with eltype Int64:
+2×2 PaddedView(0, ::Matrix{Int64}, (Base.OneTo(2), Base.OneTo(2))) with eltype Int64:
  1  0
  2  0
 
 julia> a2p
-2×2 PaddedView(0.0, ::LinearAlgebra.Adjoint{Float64,Array{Float64,1}}, (Base.OneTo(2), Base.OneTo(2))) with eltype Float64:
+2×2 PaddedView(0.0, adjoint(::Vector{Float64}), (Base.OneTo(2), Base.OneTo(2))) with eltype Float64:
  1.0  2.0
  0.0  0.0
 ```
@@ -452,7 +457,7 @@ julia> img2 = reshape(11:18, (2,4))
  12  14  16  18
 
 julia> sv = StackedView(img1, img2)
-2×2×4 StackedView{Int64,3,Tuple{Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}},Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}}}:
+2×2×4 StackedView{Int64, 3, Tuple{Base.ReshapedArray{Int64, 2, UnitRange{Int64}, Tuple{}}, Base.ReshapedArray{Int64, 2, UnitRange{Int64}, Tuple{}}}}:
 [:, :, 1] =
   1   2
  11  12
@@ -470,7 +475,7 @@ julia> sv = StackedView(img1, img2)
  17  18
 
 julia> imgMatrix = reshape(sv, (2, 8))
-2×8 reshape(::StackedView{Int64,3,Tuple{Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}},Base.ReshapedArray{Int64,2,UnitRange{Int64},Tuple{}}}}, 2, 8) with eltype Int64:
+2×8 reshape(::StackedView{Int64, 3, Tuple{Base.ReshapedArray{Int64, 2, UnitRange{Int64}, Tuple{}}, Base.ReshapedArray{Int64, 2, UnitRange{Int64}, Tuple{}}}}, 2, 8) with eltype Int64:
   1   2   3   4   5   6   7   8
  11  12  13  14  15  16  17  18
 ```
@@ -492,13 +497,13 @@ information about certain kinds of arrays. For example, the type of
 `pv` above is
 
 ```julia
-PermutedDimsArray{Float64,2,(2,1),(2,1),Array{Float64,2}}
+PermutedDimsArray{Float64,2,(2,1),(2,1),Matrix{Float64}}
 ```
 
 but when you display such an object, in the summary line it prints as
 
 ```julia
-2×3 PermutedDimsArray(::Array{Float64,2}, (2, 1)) with eltype Float64
+2×3 PermutedDimsArray(::Matrix{Float64}, (2, 1)) with eltype Float64
 ```
 
 This is intended to result in more easily-readable information about
