@@ -15,7 +15,7 @@ example,
 
 ```jldoctest
 julia> img = rand(2,2)
-2×2 Array{Float64,2}:
+2×2 Matrix{Float64}:
  0.366796  0.210256
  0.523879  0.819338
 ```
@@ -30,7 +30,7 @@ you're new to Julia, if `a` is an array of integers:
 
 ```jldoctest
 julia> a = [1,2,3,4]
-4-element Array{Int64,1}:
+4-element Vector{Int64}:
  1
  2
  3
@@ -48,7 +48,7 @@ For example,
 
 ```julia
 julia> Float64.(a)
-4-element Array{Float64,1}:
+4-element Vector{Float64}:
  1.0
  2.0
  3.0
@@ -243,7 +243,7 @@ unsigned integer `UInt8`
 
 ```julia
 julia> dump(r)
-FixedPointNumbers.Normed{UInt8,8}
+FixedPointNumbers.N0f8
   i: UInt8 193
 ```
 
