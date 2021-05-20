@@ -60,6 +60,8 @@ img_path = joinpath("assets", "installation", "mandrill.tiff") # hide
 img = load(img_path)
 ```
 
+To save an image, you can just use `save("output.png", img)`, where `save` is also provided by `FileIO`.
+
 When testing ideas or just following along with the documentation, it can be useful to have some
 images to work with. The [TestImages.jl](https://github.com/JuliaImages/TestImages.jl) package
 bundles several "standard" images for you.
