@@ -23,6 +23,9 @@ img = rand(4, 3)
 Gray.(img) #hide
 ```
 
+Don't worry if you don't get the "image" result, that's expected and you'll
+learn how to automatically display an image later in JuliaImages.
+
 We could also select a region-of-interest from a larger image
 
 ```@example array
@@ -68,9 +71,6 @@ draw!(out, roi_c, RGB{Float64}(1, 0, 0)) # hide
 draw!(out, roi_v_boundary, RGB{Float64}(0, 0, 1)) # hide
 draw!(out, roi_v, RGB{Float64}(0, 0, 1)) # hide
 ```
-
-Don't worry if you don't get the "image" result, that's expected and you'll
-learn how to automatically display an image later in JuliaImages.
 
 Some add-on packages enable additional behavior. For example,
 
