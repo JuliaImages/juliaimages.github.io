@@ -1,18 +1,24 @@
 # [Quickstart](@id page_quickstart)
 
-If you're comfortable with Julia or have used another image-processing
-package before, this page may help you get started quickly. If some of
-the terms or concepts here seem strange, don't worry---there are much
-more detailed explanations in the following sections.
-
-## Images are just arrays
-
 ```@setup array
 using Images, ImageDraw
 
 make_roi(tl::Point, br::Point) = Polygon([tl, Point(br.x, tl.y), br, Point(tl.x, br.y)])
 make_roi(xs::UnitRange, ys::UnitRange) = make_roi(Point(ys[1], xs[1]), Point(ys[end], xs[end]))
 ```
+
+If you're comfortable with Julia or have used another image-processing
+package before, this page may help you get started quickly. If some of
+the terms or concepts here seem strange, don't worry---there are much
+more detailed explanations in the following sections.
+
+To start with, let's load the `Images.jl` package:
+
+```@repl array
+using Images
+```
+
+## Images are just arrays
 
 For most purposes, any `AbstractArray` can be treated as an image. For example, numeric array can be interpreted as a grayscale image.
 
@@ -22,6 +28,9 @@ img = rand(4, 3)
 ```@example array
 Gray.(img) #hide
 ```
+
+Don't worry if you don't get the "image" result, that's expected because it's actually recognized as a numerical array
+and not an image. You will learn how to automatically display an image later in JuliaImages.
 
 We could also select a region-of-interest from a larger image
 
@@ -68,9 +77,6 @@ draw!(out, roi_c, RGB{Float64}(1, 0, 0)) # hide
 draw!(out, roi_v_boundary, RGB{Float64}(0, 0, 1)) # hide
 draw!(out, roi_v, RGB{Float64}(0, 0, 1)) # hide
 ```
-
-Don't worry if you don't get the "image" result, that's expected and you'll
-learn how to automatically display an image later in JuliaImages.
 
 Some add-on packages enable additional behavior. For example,
 
