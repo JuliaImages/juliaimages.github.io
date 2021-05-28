@@ -1,18 +1,24 @@
 # [Quickstart](@id page_quickstart)
 
-If you're comfortable with Julia or have used another image-processing
-package before, this page may help you get started quickly. If some of
-the terms or concepts here seem strange, don't worry---there are much
-more detailed explanations in the following sections.
-
-## Images are just arrays
-
 ```@setup array
 using Images, ImageDraw
 
 make_roi(tl::Point, br::Point) = Polygon([tl, Point(br.x, tl.y), br, Point(tl.x, br.y)])
 make_roi(xs::UnitRange, ys::UnitRange) = make_roi(Point(ys[1], xs[1]), Point(ys[end], xs[end]))
 ```
+
+If you're comfortable with Julia or have used another image-processing
+package before, this page may help you get started quickly. If some of
+the terms or concepts here seem strange, don't worry---there are much
+more detailed explanations in the following sections.
+
+To start with, let's load the `Images.jl` package:
+
+```@repl array
+using Images
+```
+
+## Images are just arrays
 
 For most purposes, any `AbstractArray` can be treated as an image. For example, numeric array can be interpreted as a grayscale image.
 
