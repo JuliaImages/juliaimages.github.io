@@ -29,8 +29,8 @@ img = rand(4, 3)
 Gray.(img) #hide
 ```
 
-Don't worry if you don't get the "image" result, that's expected and you'll
-learn how to automatically display an image later in JuliaImages.
+Don't worry if you don't get the "image" result, that's expected because it's actually recognized as a numerical array
+and not an image. You will learn how to automatically display an image later in JuliaImages.
 
 We could also select a region-of-interest from a larger image
 
