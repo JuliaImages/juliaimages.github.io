@@ -212,20 +212,20 @@ with region ``A_1`` containing a single pixel of the image. Let an intermediate 
 of the algorithm consist of a set of identified regions ``A_1, A_2, ..., A_n``.
 Let ``T`` be the set of all unallocated pixels which borders at least one of these
 regions. The growing process involves selecting a point ``z \in T`` and region ``A_j``
-where ``j \in [ \, 1,n ] \,`` such that
+where ``j \in [ 1,n ] `` such that
 
 ```math
-\delta ( \, z, A_j ) \, = min_{x \in T, k \in [ \, 1,n ] \, } \{ \delta ( \, x, A_k ) \, \}
+\delta(z, A_j)= \min_{x \in T, k \in [ 1,n ] } \{ \delta(x, A_k)\}
 ```
-where `` \delta ( \, x, A_i ) \, = | img ( \, x ) \, - mean_{y \in A_i} [ \, img ( \, y ) \, ] \, |``
+where `` \delta(x, A_i)= | \operatorname{img}(x) - \operatorname{mean}_{y \in A_i} [ \operatorname{img}(y) ] |``
 
-If ``\delta ( \, z, A_j ) \,`` is less than `threshold` then the pixel `z` is added to ``A_j``.
+If ``\delta(z, A_j)`` is less than `threshold` then the pixel `z` is added to ``A_j``.
 Otherwise we choose the most similar region ``\alpha`` such that
 
 ```math
-\alpha = argmin_{A_k} \{ \delta ( \, z, A_k) \, \}
+\alpha = \argmin_{A_k} \{ \delta(z, A_k) \}
 ```
-If ``\delta ( \, z, \alpha ) \,`` is less than `threshold` then the pixel `z` is added to ``\alpha``.
+If ``\delta(z, \alpha)`` is less than `threshold` then the pixel `z` is added to ``\alpha``.
 If neither of the two conditions is satisfied, then the pixel is assigned a new region ``A_{n+1}``.
 After assignment of ``z``, we update the statistic of the assigned region. The algorithm halts when
 all the pixels have been assigned to some region.
@@ -245,8 +245,8 @@ Segmented Image with:
   number of labels: 698
 ```
 
-| Threshold | Output | Compression percentage|
-| ------------- | ----------| -------------------------|
+| Threshold | Output | Compression percentage |
+| :-------: | :----: | :--------------------: |
 | Original [(source)](http://maxpixel.freegreatpicture.com/static/photo/1x/Plant-Wood-Tissue-Leaves-Nature-Green-Tree-2387626.jpg)  | ![tree](assets/tree.jpg) | 0 % |
 | 0.05 | ![tree_seg1](assets/tree_seg1.jpg) | 60.63% |
 | 0.1 | ![tree_seg2](assets/tree_seg2.jpg) | 71.27% |
@@ -309,10 +309,10 @@ and assigns it to a new segment ``A_1``. Label count `lc` is assigned 1. Then it
 of the image and for every pixel, it computes the difference measure `diff_fn`
 between the pixel and its left neighbor, say ``\delta_{l}`` and between the pixel and
 its top neighbor, say ``\delta_{t}``. Four cases arise:
-1) ``\delta_{l}`` >= `threshold` and ``\delta_{t}`` < `threshold` : We can say that the point has similar intensity to that its top neighbor. Hence, we assign the point to the segment that contains its top neighbor.
-2) ``\delta_{l}`` < `threshold` and ``\delta_{t}`` >= `threshold` : Similar to case 1, we assign the point to the segment that contains its left neighbor.
-3) ``\delta_{l}`` >= `threshold` and ``\delta_{t}`` >= `threshold` : Point is significantly different from its top and left neighbors and is assigned a new label ``A_{lc+1}`` and `lc` is incremented.
-4) ``\delta_{l}`` < `threshold` and ``\delta_{t}`` < `threshold` : In this case, we merge the top and left semgents together and assign the point under consideration to this merged segment.
+1) ``\delta_{l} \ge`` `threshold` and ``\delta_{t} <``   `threshold` : We can say that the point has similar intensity to that its top neighbor. Hence, we assign the point to the segment that contains its top neighbor.
+2) ``\delta_{l} <``   `threshold` and ``\delta_{t} \ge`` `threshold` : Similar to case 1, we assign the point to the segment that contains its left neighbor.
+3) ``\delta_{l} \ge`` `threshold` and ``\delta_{t} \ge`` `threshold` : Point is significantly different from its top and left neighbors and is assigned a new label ``A_{\text{lc}+1}`` and `lc` is incremented.
+4) ``\delta_{l} <``   `threshold` and ``\delta_{t} <``   `threshold` : In this case, we merge the top and left segments together and assign the point under consideration to this merged segment.
 
 This algorithm segments the image in just two passes (one for segmenting and other for
 merging), hence it is very fast and can be used in real time applications.
@@ -353,7 +353,7 @@ image is split into two across every dimension and the smaller parts are
 segmented recursively. This procedure generates a region tree which can
 be used to create a segmented image.
 
-**Time Complexity:** ``O(n*log(n))`` where ``n`` is the number of pixels
+**Time Complexity:** ``O(n \log(n))`` where ``n`` is the number of pixels
 
 ###### Demo
 
@@ -396,8 +396,8 @@ for medical imaging like in the soft segmentation of brain tissue model.
 Note that both Fuzzy C-means and K-means have an element of randomness, and it's possible
 to get results that vary considerably from one run to the next.
 
-**Time Complexity:** ``O(n*C^2*iter)`` where ``n`` is the number of pixels, ``C`` is
-number of clusters and ``iter`` is the number of iterations.
+**Time Complexity:** ``O(n \cdot C^2 \cdot \text{iter})`` where ``n`` is the number of pixels, ``C`` is
+number of clusters and ``\text{iter}`` is the number of iterations.
 
 ###### Demo
 
@@ -425,7 +425,7 @@ See the documentation in [Clustering.jl](https://github.com/JuliaStats/Clusterin
 **Output with pixel intensity = cluster center intensity * membership of pixel in that class**
 
 | Magenta petals | Greenish Leaves | White background |
-|----------------|-----------------|------------------|
+| :------------: | :-------------: | :--------------: |
 | ![SegmentedImage1](assets/flower_s1.jpg) |![SegmentedImage2](assets/flower_s2.jpg) | ![SegmentedImage3](assets/flower_s3.jpg) |
 
 #### Watershed
