@@ -323,7 +323,7 @@ entropy
 ### General Distances
 
 | type name               |  convenient syntax         | math definition                   |
-| ----------------------- | -------------------------- | --------------------------------- |
+| :---------------------- | :------------------------- | :-------------------------------- |
 |  Euclidean              |  `euclidean(x, y)`         | `sqrt(sum((x - y) .^ 2))`         |
 |  SqEuclidean            |  `sqeuclidean(x, y)`       | `sum((x - y).^2)`                 |
 |  Cityblock              |  `cityblock(x, y)`         | `sum(abs(x - y))`                 |
@@ -340,7 +340,7 @@ entropy
 #### Image-specific Distances
 
 | Distance type | Convenient syntax | References |
-|----------|------------------------|------------|
+| :------------ | :---------------- | :--------- |
 | `Hausdorff` and `ModifiedHausdorff` | `hausdorff(imgA,imgB)` and `modified_hausdorff(imgA,imgB)` | Dubuisson, M-P et al. 1994. A Modified Hausdorff Distance for Object-Matching. |
 | `CIEDE2000` | `ciede2000(imgA,imgB)` and `ciede2000(imgA,imgB; metric=DE_2000())` | Sharma, G., Wu, W., and Dalal, E. N., 2005. The CIEDE2000 color‐difference formula. |
 

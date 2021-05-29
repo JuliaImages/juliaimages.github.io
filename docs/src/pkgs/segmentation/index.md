@@ -245,8 +245,8 @@ Segmented Image with:
   number of labels: 698
 ```
 
-| Threshold | Output | Compression percentage|
-| ------------- | ----------| -------------------------|
+| Threshold | Output | Compression percentage |
+| :-------: | :----: | :--------------------: |
 | Original [(source)](http://maxpixel.freegreatpicture.com/static/photo/1x/Plant-Wood-Tissue-Leaves-Nature-Green-Tree-2387626.jpg)  | ![tree](assets/tree.jpg) | 0 % |
 | 0.05 | ![tree_seg1](assets/tree_seg1.jpg) | 60.63% |
 | 0.1 | ![tree_seg2](assets/tree_seg2.jpg) | 71.27% |
@@ -425,7 +425,7 @@ See the documentation in [Clustering.jl](https://github.com/JuliaStats/Clusterin
 **Output with pixel intensity = cluster center intensity * membership of pixel in that class**
 
 | Magenta petals | Greenish Leaves | White background |
-|----------------|-----------------|------------------|
+| :------------: | :-------------: | :--------------: |
 | ![SegmentedImage1](assets/flower_s1.jpg) |![SegmentedImage2](assets/flower_s2.jpg) | ![SegmentedImage3](assets/flower_s3.jpg) |
 
 #### Watershed

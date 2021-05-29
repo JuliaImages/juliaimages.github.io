@@ -9,7 +9,7 @@ This table is certainly not complete, and additions/corrections are
 welcome.
 
 | Operation                             | JuliaImages                               | scikit-image + NumPy              | Matlab (ImageProcessing + ComputerVision) |
-|---------------------------------------|-------------------------------------------|-----------------------------------|-------------------------------------------|
+| :------------------------------------ | :---------------------------------------- | :-------------------------------- | :---------------------------------------- |
 | **Input/output**                      |                                           |                                   |                                           |
 | Read image file                       | [`load`](@ref)                            | `imread`                          | `imread`                                  |
 | Write image file                      | [`save`](@ref)                            | `imsave`                          | `imwrite`                                 |
