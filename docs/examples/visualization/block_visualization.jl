@@ -11,7 +11,7 @@ using PaddedViews, OffsetArrays
 using TestImages
 using ImageBinarization
 
-# !!! tip
+# !!! note
 #     It is recommended to read the demo [Layer Compositing](@ref Layer-Compositing) first to get an idea
 #     of how [OffsetArrays.jl](https://github.com/JuliaArrays/OffsetArrays.jl) and
 #     [PaddedViews.jl](https://github.com/JuliaArrays/PaddedViews.jl) can be used to simplify the
