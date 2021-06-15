@@ -37,6 +37,7 @@ you are interested in most.
   * Image visulization are supported by [various packages](@ref sec_visualization)
   * Image saving and loading are supported by packages under [JuliaIO](@ref sec_imageio)
 * high-level algorithms
+  * [DitherPunk.jl](https://github.com/JuliaImages/DitherPunk.jl) provides various image dithering operations.
   * [ImageBinarization.jl](https://github.com/zygmuntszpak/ImageBinarization.jl) provides various
     image binarization algorithms.
   * [ImageContrastAdjustment.jl](https://juliaimages.org/ImageContrastAdjustment.jl/stable/)\* supports
@@ -66,4 +67,8 @@ The following is an incomplete list of third-party packages that are widely used
   operations for image-related machine learning tasks.
 * [Flux.jl](https://github.com/FluxML/Flux.jl) is a deep learning toolbox in Julia.
 
+There are also some other packages outside JuliaImages that you might want to take a look at:
 
+* [MIRT.jl](https://github.com/JeffFessler/MIRT.jl) the Michigan Image Reconstruction Toolbox. As its name indicates, it is
+  a toolbox to solve image reconstruction problems.
+* [ImageClipboard.jl](https://github.com/hyrodium/ImageClipboard.jl) enables you to copy&paste image from/to your clipboard.
