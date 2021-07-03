@@ -28,11 +28,11 @@ in Julia.
 
 This documentation is a collection of several parts:
 
-* The "Tutorials" part contains a list of tutorials that help you gain better understanding of the JuliaImages
+* The ["Tutorials"](@ref page_quickstart) part contains a list of tutorials that help you gain better understanding of the JuliaImages
   ecosystem.
 * The ["Packages"](@ref page_packages_index) part contains information about specific components (themselves
   Julia packages) that together comprise JuliaImages and address specific subfields of image processing.
-* The "Demos" part gives you demonstrations of how to carry out specific tasks with JuliaImages.
+* The ["Demos"](@ref demonstrations) part gives you demonstrations of how to carry out specific tasks with JuliaImages.
 * The ["References"](@ref page_references) part is a collection of function references provided by JuliaImages.
   The recommended way to use the references is by the searching function of your browser `Ctrl-F`/`Cmd-F`.
 * The ["Comparison with other image processing frameworks"](@ref page_api_comparison) would be helpful
