@@ -91,7 +91,7 @@ segments = seeded_region_growing(img, seeds)
 DocTestSetup = nothing
 ```
 
-Now let's segment this image using felzenszwalb algorithm. `felzenswalb` only needs a single parameter `k` which controls the size of segments. Larger `k` will result in bigger segments. Using `k=5` to `k=500` generally gives good results.
+Now let's segment this image using felzenszwalb algorithm. `felzenszwalb` only needs a single parameter `k` which controls the size of segments. Larger `k` will result in bigger segments. Using `k=5` to `k=500` generally gives good results.
 
 ```jldoctest
 julia> using Images, ImageSegmentation
@@ -253,7 +253,7 @@ Segmented Image with:
 | 0.2 | ![tree_seg3](assets/tree_seg3.jpg) | 79.96% |
 
 
-#### Felzenswalb's Region Merging Algorithm
+#### felzenszwalb's Region Merging Algorithm
 
 This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is a node in the graph and adjacent pixels/regions have edges between them with weight measuring the dissimilarity between pixels/regions. The algorithm repeatedly merges similar regions till we get the final segmentation. It efficiently computes oversegmented “superpixels” in an image. The function can be directly called with an image (the implementation internally creates a RAG of the image first and then proceeds).
 
