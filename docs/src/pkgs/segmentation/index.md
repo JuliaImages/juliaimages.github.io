@@ -253,7 +253,7 @@ Segmented Image with:
 | 0.2 | ![tree_seg3](assets/tree_seg3.jpg) | 79.96% |
 
 
-#### felzenszwalb's Region Merging Algorithm
+#### Felzenszwalb's Region Merging Algorithm
 
 This algorithm operates on a Region Adjacency Graph (RAG). Each pixel/region is a node in the graph and adjacent pixels/regions have edges between them with weight measuring the dissimilarity between pixels/regions. The algorithm repeatedly merges similar regions till we get the final segmentation. It efficiently computes oversegmented “superpixels” in an image. The function can be directly called with an image (the implementation internally creates a RAG of the image first and then proceeds).
 
