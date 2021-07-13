@@ -2,7 +2,7 @@
 # cover: assets/brief.gif
 # title: BRIEF Descriptor
 # description: This demo shows BRIEF descriptor
-# author: Anchit Navelkar, Ashwani Rathee
+# author: Anchit Navelkar; Ashwani Rathee
 # date: 2021-07-12
 # ---
 

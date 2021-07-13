@@ -2,7 +2,7 @@
 # cover: assets/brisk.gif
 # title: BRISK Descriptor
 # description: This demo shows BRISK descriptor
-# author: Anchit Navelkar, Ashwani Rathee
+# author: Anchit Navelkar; Ashwani Rathee
 # date: 2021-07-12
 # ---
 

@@ -2,7 +2,7 @@
 # cover: assets/hog.gif
 # title: Object Detection using HOG
 # description: This demo shows HOG descriptor
-# author: Anchit Navelkar, Ashwani Rathee
+# author: Anchit Navelkar; Ashwani Rathee
 # date: 2021-07-12
 # ---
 

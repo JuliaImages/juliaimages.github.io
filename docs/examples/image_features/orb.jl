@@ -2,7 +2,7 @@
 # cover: assets/orb.gif
 # title: ORB Descriptor
 # description: This demo shows ORB descriptor
-# author: Anchit Navelkar, Ashwani Rathee
+# author: Anchit Navelkar; Ashwani Rathee
 # date: 2021-07-12
 # ---
 

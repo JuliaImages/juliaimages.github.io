@@ -2,7 +2,7 @@
 # cover: assets/freak.gif
 # title: FREAK Descriptor
 # description: This demo shows FREAK descriptor
-# author: Anchit Navelkar, Ashwani Rathee
+# author: Anchit Navelkar; Ashwani Rathee
 # date: 2021-07-12
 # ---
 
