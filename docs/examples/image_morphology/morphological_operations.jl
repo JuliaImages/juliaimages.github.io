@@ -9,7 +9,6 @@
 
 using Images, Noise, ImageMorphology
 using ImageBinarization
-using HistogramThresholding
 using ImageDraw
 using TestImages
 
