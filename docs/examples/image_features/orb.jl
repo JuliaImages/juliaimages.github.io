@@ -6,8 +6,8 @@
 # date: 2021-07-12
 # ---
 
-# The `ORB` (Oriented Fast and Rotated Brief) descriptor is a somewhat similar to [BRIEF](brief.md).
-# It doesn’t have an elaborate sampling pattern as [BRISK](brisk.md) or [FREAK](freak.md).
+# The `ORB` (Oriented Fast and Rotated Brief) descriptor is a somewhat similar to `BRIEF`.
+# It doesn’t have an elaborate sampling pattern as `BRISK` or `FREAK`.
 
 # However, there are two main differences between ORB and BRIEF:
 
@@ -49,18 +49,18 @@ rot = recenter(RotMatrix(5pi/6), [size(img1)...] .÷ 2)  # a rotation around the
 tform = rot ∘ Translation(-50, -40)
 img2 = warp(img1, tform, axes(img1))
 
-# The ORB descriptor calculates the keypoints as well as the descriptor, unlike [BRIEF](brief.md).
-# To create the ORB descriptor, we first need to define the parameters by calling the [`ORB`](@ref) constructor.
+# The ORB descriptor calculates the keypoints as well as the descriptor, unlike `BRIEF`.
+# To create the ORB descriptor, we first need to define the parameters by calling the `ORB` constructor.
 
 orb_params = ORB(num_keypoints = 1000)
 
-# Now pass the image with the parameters to the [`create_descriptor`](@ref) function.
+# Now pass the image with the parameters to the `create_descriptor` function.
 
 desc_1, ret_keypoints_1 = create_descriptor(img1, orb_params)
 desc_2, ret_keypoints_2 = create_descriptor(img2, orb_params)
 
 # The obtained descriptors can be used to find the matches between the two
-# images using the [`match_keypoints`](@ref) function.
+# images using the `match_keypoints` function.
 
 matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
 

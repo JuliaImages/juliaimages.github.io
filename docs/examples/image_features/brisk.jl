@@ -7,7 +7,7 @@
 # ---
 
 # The *BRISK* (Binary Robust Invariant Scalable Keypoints) descriptor has a predefined 
-# sampling pattern as compared to [BRIEF](brief.md) or [ORB](orb.md). 
+# sampling pattern as compared to `BRIEF` or `ORB`. 
 # Pixels are sampled over concentric rings. For each sampling point, a small patch 
 # is considered around it. Before starting the algorithm, the patch is smoothed 
 # using gaussian smoothing.
@@ -55,27 +55,27 @@ img2 = warp(img1, tform, axes(img1))
 mosaicview(img, img1, img2; nrow=1)
 
 # To calculate the descriptors, we first need to get the keypoints. For this 
-# tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref)).
+# tutorial, we will use the FAST corners to generate keypoints (see `fastcorners`).
 
 
 features_1 = Features(fastcorners(img1, 12, 0.35))
 features_2 = Features(fastcorners(img2, 12, 0.35))
 
 # To create the BRISK descriptor, we first need to define the parameters by 
-# calling the [`BRISK`](@ref) constructor.
+# calling the `BRISK` constructor.
 
 
 brisk_params = BRISK()
 
 
 # Now pass the image with the keypoints and the parameters to the 
-# [`create_descriptor`](@ref) function.
+# `create_descriptor` function.
 
 desc_1, ret_features_1 = create_descriptor(img1, features_1, brisk_params)
 desc_2, ret_features_2 = create_descriptor(img2, features_2, brisk_params)
 
 # The obtained descriptors can be used to find the matches between the two 
-# images using the [`match_keypoints`](@ref) function.
+# images using the `match_keypoints` function.
 
 matches = match_keypoints(Keypoints(ret_features_1), Keypoints(ret_features_2), desc_1, desc_2, 0.1)
 

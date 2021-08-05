@@ -6,13 +6,13 @@
 # date: 2021-07-12
 # ---
 
-# `FREAK` (Fast Retina Keypoint) has a defined sampling pattern like [BRISK](brisk.md).
+# `FREAK` (Fast Retina Keypoint) has a defined sampling pattern like `BRISK`.
 # It uses a retinal sampling grid with more density of points near the centre
 # with the density decreasing exponentially with distance from the centre.
 
-# FREAK’s measure of orientation is similar to [BRISK](brisk.md) but instead of using 
+# FREAK’s measure of orientation is similar to `BRISK` but instead of using 
 # long pairs, it uses a set of predefined 45 symmetric sampling pairs. The set of 
-# sampling pairs is determined using a method similar to [ORB](orb.md), by finding 
+# sampling pairs is determined using a method similar to `ORB`, by finding 
 # sampling pairs over keypoints in standard datasets and then extracting the most 
 # discriminative pairs. The orientation weights over these pairs are summed and the 
 # sampling window is rotated by this orientation to some canonical orientation to 
@@ -44,24 +44,24 @@ tform = rot ∘ Translation(-50, -40)
 img2 = warp(img1, tform, axes(img1))
 
 # To calculate the descriptors, we first need to get the keypoints. For this 
-# tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref)).
+# tutorial, we will use the FAST corners to generate keypoints (see `fastcorners`).
 
 keypoints_1 = Keypoints(fastcorners(img1, 12, 0.35))
 keypoints_2 = Keypoints(fastcorners(img2, 12, 0.35))
 
 
 # To create the FREAK descriptor, we first need to define the parameters 
-# by calling the [`FREAK`](@ref) constructor.
+# by calling the `FREAK` constructor.
 
 freak_params = FREAK()
 
-# Now pass the image with the keypoints and the parameters to the [`create_descriptor`](@ref) function.
+# Now pass the image with the keypoints and the parameters to the `create_descriptor` function.
 
 desc_1, ret_keypoints_1 = create_descriptor(img1, keypoints_1, freak_params)
 desc_2, ret_keypoints_2 = create_descriptor(img2, keypoints_2, freak_params)
 
 # The obtained descriptors can be used to find the matches between the two 
-# images using the [`match_keypoints`](@ref) function.
+# images using the `match_keypoints` function.
 
 matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
 
