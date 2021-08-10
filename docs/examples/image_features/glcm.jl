@@ -52,7 +52,6 @@
 
 using Images, TestImages
 using ImageFeatures
-using Plots
 
 img_src = testimage("coffee")
 
