@@ -151,5 +151,5 @@
 using FileIO #src
 img1 = load("assets/humans.jpg") #src
 img2 = load("assets/boxes.jpg") #src
-save("assets/hog.gif", cat(img1[1:342,1:342], img2[1:342,1:342]; dims=3); fps=2) #src
+save("assets/hog.gif", cat(img1[1:342,1:342], img2[1:342,1:342]; dims=3); fps=1) #src
 

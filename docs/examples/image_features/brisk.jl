@@ -86,4 +86,4 @@ offset = CartesianIndex(0, size(img1, 2))
 map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)
 grid
 
-save("assets/brisk.gif", cat(img, img2, grid[1:512,1:512], grid[1:512,513:1024]; dims=3); fps=2) #src
+save("assets/brisk.gif", cat(img, img2, grid[1:512,1:512], grid[1:512,513:1024]; dims=3); fps=1) #src

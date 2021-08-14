@@ -71,4 +71,4 @@ offset = CartesianIndex(0, size(img1, 2))
 map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)
 grid
 
-save("assets/orb.gif", cat(img1, img2, grid[1:512,1:512], grid[1:512,513:1024]; dims=3); fps=2) #src
+save("assets/orb.gif", cat(img1, img2, grid[1:512,1:512], grid[1:512,513:1024]; dims=3); fps=1) #src

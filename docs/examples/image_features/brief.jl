@@ -81,4 +81,4 @@ grid
 
 # `grid` shows the results
 
-save("assets/brief.gif", cat(img1, img2, grid[1:512,1:512], grid[1:512,513:1024]; dims=3); fps=2) #src
+save("assets/brief.gif", cat(img1, img2, grid[1:512,1:512], grid[1:512,513:1024]; dims=3); fps=1) #src
