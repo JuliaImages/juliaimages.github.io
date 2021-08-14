@@ -11,7 +11,7 @@
 # ImageMorphology.jl holds a collection of non-linear operations related to 
 # the shape or morphology of features in an image.
 
-# In this demonstration, we'll cover the 6 most common morphological operations:
+# In this demonstration, we'll cover the 8 most common morphological operations:
 # - Erosion
 # - Dilation
 # - Opening
@@ -26,10 +26,7 @@
 using Images
 using ImageMorphology, TestImages
 
-img = testimage("morphology_test_512")
-
-# This is an RGB image, which we would need to convert to either grayscale or
-# binary image as morphology functions only work on grayscale or binary images.
+img = Gray.(testimage("morphology_test_512"))
 
 # ## Erosion
 
@@ -45,7 +42,7 @@ img = testimage("morphology_test_512")
 
 # ![](assets/erodbin.png)
 
-img_erode = Gray.(Gray.(img) .< 0.8); # keeps white objects white
+img_erode = @. Gray(img < 0.8); # keeps white objects white
 img_erosion1 = erode(img_erode)
 img_erosion2 = erode(erode(img_erode))
 mosaicview(img_erode, img_erosion1, img_erosion2; nrow = 1)
@@ -64,7 +61,7 @@ mosaicview(img_erode, img_erosion1, img_erosion2; nrow = 1)
 
 # ![](assets/dilatebin.png)
 
-img_dilate = Gray.(1 .* Gray.(img) .> 0.9);
+img_dilate = @. Gray(img > 0.9);
 img_dilate1 = dilate(img_dilate)
 img_dilate2 = dilate(dilate(img_dilate))
 mosaicview(img_dilate, img_dilate1, img_dilate2; nrow = 1)
@@ -77,7 +74,7 @@ mosaicview(img_dilate, img_dilate1, img_dilate2; nrow = 1)
 # dimensions over which this operation is performed. Opening can remove 
 # small bright spots (i.e. “salt”) and connect small dark cracks.
 
-img_opening = Gray.(1 .* Gray.(img) .> 0.5);
+img_opening = @. Gray(1 * img > 0.5);
 img_opening1 = opening(img_opening)
 img_opening2 = opening(opening(img_opening))
 mosaicview(img_opening, img_opening1, img_opening2; nrow = 1)
@@ -89,7 +86,7 @@ mosaicview(img_opening, img_opening1, img_opening2; nrow = 1)
 # over which this operation is performed. Closing can remove small dark
 # spots (i.e. “pepper”) and connect small bright cracks.
 
-img_closing = Gray.(1 .* Gray.(img) .> 0.5);
+img_closing = @. Gray(1 * img > 0.5);
 img_closing1 = closing(img_closing)
 img_closing2 = closing(closing(img_closing))
 mosaicview(img_closing1, img_closing1, img_closing2; nrow = 1)
@@ -101,7 +98,7 @@ mosaicview(img_closing1, img_closing1, img_closing2; nrow = 1)
 # over which this operation is performed. This operation returns the bright
 # spots of the image that are smaller than the structuring element.
 
-img_tophat = Gray.(1 .* Gray.(img) .> 0.2);
+img_tophat = @. Gray(1 * img > 0.2);
 img_tophat1 = tophat(img_tophat)
 img_tophat2 = tophat(tophat(img_tophat))
 mosaicview(img_tophat, img_tophat1, img_tophat2; nrow = 1)
@@ -114,7 +111,7 @@ mosaicview(img_tophat, img_tophat1, img_tophat2; nrow = 1)
 # over which this operation is performed.  This operation returns the 
 # dark spots of the image that are smaller than the structuring element.
 
-img_bothat = Gray.(1 .* Gray.(img) .> 0.5);
+img_bothat = @. Gray(1 * img > 0.5);
 img_bothat1 = bothat(img_tophat)
 img_bothat2 = bothat(bothat(img_tophat))
 img_bothat3 = bothat(bothat(bothat(img_tophat)))
@@ -126,8 +123,8 @@ mosaicview(img_bothat, img_bothat1, img_bothat2; nrow = 1)
 # given image. In `morphogradient(img, [region])`, `region` allows you to
 # control the dimensions over which this operation is performed.
 
-img_gray = Gray.(0.8 .* Gray.(img) .> 0.7);
-img_morphograd = morphogradient(Gray.(0.8 * Gray.(img) .> 0.4))
+img_gray = @. Gray(0.8 * img > 0.7);
+img_morphograd = morphogradient(@. Gray(0.8 * img > 0.4))
 mosaicview(img_gray, img_morphograd; nrow = 1)
 
 # ## Morphological Laplace
@@ -136,7 +133,7 @@ mosaicview(img_gray, img_morphograd; nrow = 1)
 # the external gradient. In `morpholaplace(img, [region])`, `region` allows
 # you to control the dimensions over which this operation is performed.
 
-img_gray = Gray.(0.8 .* Gray.(img) .> 0.7);
+img_gray = @. Gray(0.8 * Gray.(img) > 0.7);
 img_morpholap = morpholaplace(img_gray)
 mosaicview(img_gray, img_morpholap; nrow = 1)
 
