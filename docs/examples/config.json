@@ -1,3 +1,7 @@
 {
-    "theme": "grid"
+    "theme": "grid",
+    "remote": {
+        "transformations": "../../deps/ImageTransformations.jl/docs/examples",
+        "filters": "../../deps/ImageFiltering.jl/docs/demos"
+    }
 }

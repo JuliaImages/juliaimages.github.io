@@ -1,0 +1,6 @@
+[submodule "deps/ImageTransformations.jl"]
+	path = deps/ImageTransformations.jl
+	url = https://github.com/JuliaImages/ImageTransformations.jl.git
+[submodule "deps/ImageFiltering.jl"]
+	path = deps/ImageFiltering.jl
+	url = https://github.com/JuliaImages/ImageFiltering.jl.git
