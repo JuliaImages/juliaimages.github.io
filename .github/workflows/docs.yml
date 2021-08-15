@@ -19,6 +19,8 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
       - uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.julia-version }}
