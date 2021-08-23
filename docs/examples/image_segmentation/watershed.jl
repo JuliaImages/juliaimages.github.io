@@ -14,7 +14,6 @@
 using Images
 using ImageSegmentation, TestImages
 using Random
-using Plots
 
 img = testimage("blobs")
 img_example = zeros(Gray, 5, 5)
