@@ -1,4 +1,5 @@
 # ---
+# cover: assets/convex_hull.gif
 # title: Convex Hull, Filling, Thinning, ClearBorder
 # author: Ashwani Rathee
 # date: 2021-7-4
@@ -19,13 +20,13 @@ img_src = testimage("morphology_test_512")
 img_input = binarize(Gray.(img_src), UnimodalRosin()) .> 0.5
 
 # This is the image that we will be using throughout this demonstration
-# in its boolean form as below mentioned operations are applied on binary images. 
+# in its boolean form as below mentioned operations are applied on binary images.
 
 Gray.(img_input)
 
 # ## Convex Hull
 
-# Convex Hull operation outputs outer most cover-like boundary of a binary image and 
+# Convex Hull operation outputs outer most cover-like boundary of a binary image and
 # returns the vertices of convex hull as a CartesianIndex array.
 
 cordinates = convexhull(img_input)
@@ -36,8 +37,8 @@ img_convex
 
 # ## Image Filling
 
-# Image filling operation finds connected components of an image using `flood-fill 
-# algorithm` and operation gives result image after filling objects that falls in the 
+# Image filling operation finds connected components of an image using `flood-fill
+# algorithm` and operation gives result image after filling objects that falls in the
 # range of interval specified.
 
 # For filling objects, represent the holes(part to be filled) with `true` in your array. Meaning color RGB(1)/black
@@ -47,15 +48,15 @@ img_convex
 # takes the same values as in label_components (Default value is `1:ndims(img)``)
 
 img_noise = salt_pepper(img_input, 0.5)
-fill_image_1 = imfill(img_noise, (0.1, 1)) 
+fill_image_1 = imfill(img_noise, (0.1, 1))
 fill_image_2 = imfill(img_noise, (0.1, 10)) # this configuration gets us best results
-fill_image_3 = imfill(img_noise, (1, 10)) 
+fill_image_3 = imfill(img_noise, (1, 10))
 fill_image_4 = imfill(img_noise, (5, 20)) # objects of smaller sizes gets left out
 Gray.([img_noise fill_image_1 fill_image_2 fill_image_3 fill_image_4])
 
 # ## Image thinning
 
-# Thinning operation applies a binary blob thinning operation to achieve a skeletization of the input image. 
+# Thinning operation applies a binary blob thinning operation to achieve a skeletization of the input image.
 # Guo Algorithm, decides which pixels to keep and which to remove using 3 rules given in original paper.
 
 img_thinning = thinning(img_input, algo = GuoAlgo());
@@ -74,3 +75,5 @@ cleared_img_2 = clearborder(img_input, 30); # notice how it remove the inner cir
 cleared_img_3 = clearborder(img_input, 30, 1);
 # Default color for removal is 0 meaning remove `RGB(0)` but now since it's 1 it's clears the whole image due to flood fill algorithm
 Gray.([img_input cleared_img_1 cleared_img_2 cleared_img_3])
+
+save("assets/convex_hull.gif", cat(img_input, cleared_img_1, cleared_img_2, cleared_img_3; dims=3); fps=2) #src
