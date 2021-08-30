@@ -2,6 +2,7 @@
 # cover: assets/indexed_image.png
 # title: Indexed image in 5 minutes
 # author: Johnny Chen
+# id: demo_indexed_image
 # date: 2020-11-23
 # ---
 
@@ -67,7 +68,7 @@ indexed_img = IndirectArray(indices, palatte)
 img == indexed_img
 
 # Under the hook, it is just a simple struct that subtypes `AbstractArray`:
-# 
+#
 # ```julia
 # # no need to run this
 # struct IndirectArray{T,N,A,V} <: AbstractArray{T,N}
