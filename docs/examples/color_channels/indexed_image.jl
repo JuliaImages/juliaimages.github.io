@@ -16,7 +16,7 @@
 
 using Images
 
-# The following is a normally used representation of image, i.e., an image as an array of
+# The following is a "direct" representation of image, i.e., an image as an array of
 # `Colorant`s.
 
 img = [
@@ -49,25 +49,24 @@ palatte[[1 2; 2 1]] == [palatte[1] palatte[2]; palatte[2] palatte[1]]
 # images with few distinct values can often be encoded more compactly as an indexed image.
 #
 # Although it does compress the data in this example, in real world applications, it is not always
-# clear whether you should or should not use indexed image format. There are two main drawbacks of
-# it:
+# clear whether you should or should not use indexed image format. Indexed images have two main drawbacks:
 #
-# - indexed images can require more memory if `length(unique(img))` is too large.
+# - indexed images can require more memory if `unique(img)` is close to the size of `img` itself.
 # - indexing into an indexed image requires two `getindex` operations, so using it can be slower
 #   than a direct image representation (and not amenable to SIMD vectorization). This is a typical
 #   [space-time tradeoff](https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff) case.
 #
 # Benchmarks are always recommended before you choose to use the indexed image format.
 
-# Using indexed image format with two seperate arrays can be inconvinient, hence
+# Using indexed image format with two separate arrays can be inconvenient, hence
 # [`IndirectArrays.jl`](https://github.com/JuliaArrays/IndirectArrays.jl) provides an array
-# abstraction to union these two data:
+# abstraction to unify these two pieces:
 using IndirectArrays
 
 indexed_img = IndirectArray(indices, palatte)
 img == indexed_img
 
-# Under the hook, it is just a simple struct that subtypes `AbstractArray`:
+# Under the hood, it is just a simple struct that subtypes `AbstractArray`:
 #
 # ```julia
 # # no need to run this
