@@ -1,7 +1,7 @@
 # ---
 # cover: assets/ssim.png
-# title: Structural Similarity Index
-# description: This demo shows how SSIM and MSE are used to evaluate the image quality
+# title: Structural Similarity Index, Peak Signal-to-Noise Ratio
+# description: This demo shows how SSIM, PSNR and MSE are used to evaluate the image quality
 # author: Jivetesh Jain
 # date: 2020-07-01
 # ---
@@ -75,6 +75,35 @@ assess(iqi, img_orig, img_const)
 # *contrast* (C) and *structure* (S) terms while calculating the SSIM,
 # and defaults to `(1.0, 1.0, 1.0)`.
 # Recall that SSIM is defined as Lᵅ × Cᵝ × Sᵞ.
+
+
+# # Peak signal-to-noise ratio
+
+# Peak signal-to-noise ratio (PSNR) is the ratio between the maximum possible power of a 
+# signal and the power of corrupting noise that affects the fidelity of its representation. 
+# PSNR is most easily defined via the [[mean squared error]] (''MSE''). Given a noise-free ''m''×''n''
+#  monochrome image ''I'' and its noisy approximation ''K'', ''MSE'' is defined as:
+
+# $\mathit{MSE} = \frac{1}{m\,n}\sum_{i=0}^{m-1}\sum_{j=0}^{n-1} [I(i,j) - K(i,j)]^2$
+
+# The PSNR (in [[decibel|dB]]) is defined as:
+
+# $\begin{align}\mathit{PSNR} &= 10 \cdot \log_{10} \left( \frac{\mathit{MAX}_I^2}{\mathit{MSE}} \right)\\ &= 20 \cdot \log_{10} \left( \frac{\mathit{MAX}_I}{\sqrt{\mathit{MSE}}} \right)\\ &= 20 \cdot \log_{10} \left( {\mathit{MAX}_I} \right) - 10 \cdot \log_{10} \left( {{\mathit{MSE}}} \right)\end{align}$
+
+# Here, $MAX_I$ is the maximum possible pixel value of the image. When the pixels 
+# are represented using 8 bits per sample, this is 255. More generally, when samples are
+# represented using linear [[Pulse-code modulation|PCM]] with ''B'' bits per sample, $MAX_I$ is $2^b−1$.
+
+assess_psnr(img_noise, img_orig) # 13.979400086720483
+
+# Let's change the contents of the noisy image
+
+noise = ones(size(img_orig)) .* 0.2 .* (maximum(img_orig) - minimum(img_orig))
+mask = rand(Float64, size(img_orig)) .< 0.5
+noise[mask] = noise[mask] .* -3
+img_noise = img_orig + noise
+
+assess_psnr(img_noise, img_orig) # 6.996517750410234
 
 # ### References
 # 1. Zhou Wang; Bovik, A.C.; ,”Mean squared error: Love it or leave it? A new look at Signal Fidelity Measures,” Signal Processing Magazine, IEEE, vol. 26, no. 1, pp. 98-117, Jan. 2009.
