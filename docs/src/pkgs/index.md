@@ -72,3 +72,5 @@ There are also some other packages outside JuliaImages that you might want to ta
 * [MIRT.jl](https://github.com/JeffFessler/MIRT.jl) the Michigan Image Reconstruction Toolbox. As its name indicates, it is
   a toolbox to solve image reconstruction problems.
 * [ImageClipboard.jl](https://github.com/hyrodium/ImageClipboard.jl) enables you to copy&paste image from/to your clipboard.
+* [ImagePhaseCongruency.jl](https://github.com/peterkovesi/ImagePhaseCongruency.jl) provides a set of frequency-domain filters based on phase congruency.
+* [ImageProjectiveGeometry.jl](https://github.com/peterkovesi/ImageProjectiveGeometry.jl) is a self-contained package for computer vision tasks related to projective geometry.
