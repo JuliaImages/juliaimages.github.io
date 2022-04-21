@@ -9,7 +9,7 @@ end
 
 In Julia, an image is just an array, and many of the ways you
 manipulate images come from the general methods to work with
-[multidimensional arrays](http://docs.julialang.org/en/stable/manual/arrays/). For
+[multidimensional arrays](https://docs.julialang.org/en/v1/manual/arrays/). For
 example,
 
 
