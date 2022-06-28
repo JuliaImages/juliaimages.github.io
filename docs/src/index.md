@@ -37,3 +37,7 @@ This documentation is a collection of several parts:
   The recommended way to use the references is by the searching function of your browser `Ctrl-F`/`Cmd-F`.
 * The ["Comparison with other image processing frameworks"](@ref page_api_comparison) would be helpful
   if you've used other frameworks previously.
+
+# Acknowledgement
+
+Johnny Chen([@johnnychen94](https://github.com/johnnychen94))'s work is partially supported by [Tongyuan (同元软控)](https://tongyuan.cc/) since 2022.
