@@ -4,7 +4,7 @@
 
 In [Arrays, Numbers, and Colors](@ref page_arrays_colors) we discussed how one can
 convert the element type of an array `a = [1,2,3,4]` using a syntax
-like `Float64.(a)`. You might be curious what affect, if any,
+like `Float64.(a)`. You might be curious what effect, if any,
 `Int.(a)` has:
 
 ```jldoctest
