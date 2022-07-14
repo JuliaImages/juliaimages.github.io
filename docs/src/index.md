@@ -40,4 +40,4 @@ This documentation is a collection of several parts:
 
 # Acknowledgement
 
-Johnny Chen([@johnnychen94](https://github.com/johnnychen94))'s work is partially supported by [Tongyuan (同元软控)](https://tongyuan.cc/) since 2022.
+Johnny Chen([@johnnychen94](https://github.com/johnnychen94))'s work is partially supported by [Tongyuan](https://github.com/Suzhou-Tongyuan) since 2022.
