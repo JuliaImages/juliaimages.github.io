@@ -37,7 +37,7 @@
 
 # Let us take a look at a simple example where the ORB descriptor is used to match two 
 # images where one has been translated by `(50, 40)` pixels and then rotated by an angle
-# of 75 degrees. We will use the `lighthouse` image from the [TestImages](https://github.com/JuliaImages/TestImages.jl) package for this example.
+# of 75 degrees. We will use the `cameraman` image from the [TestImages](https://github.com/JuliaImages/TestImages.jl) package for this example.
 
 # First, let us create the two images we will match using ORB.
 
