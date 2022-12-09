@@ -424,8 +424,8 @@ fast_scanning
 watershed
 hmin_transform
 region_adjacency_graph
-rem_segment
-rem_segment!
+remove_segment
+remove_segment!
 prune_segments
 region_tree
 region_splitting

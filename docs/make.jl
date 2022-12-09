@@ -2,6 +2,11 @@ using Documenter, DemoCards
 using Images, ImageFiltering, ImageSegmentation, ImageFeatures, PaddedViews
 using ImageContrastAdjustment, TestImages, FileIO, MosaicViews, ImageMorphology
 
+# loading Plots before generating demos (might be helpful to avoid segfaults)
+using Plots
+ENV["GKSwstype"] = "nul" # needed for the GR backend on headless servers
+gr()
+
 branch = "master"
 
 demos, demos_cb, demo_assets = makedemos("examples"; branch = branch)

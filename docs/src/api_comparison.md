@@ -41,7 +41,7 @@ welcome.
 | Text display of region                |                                           |                                   | `impixelregion`                           |
 | Zooming/scrolling                     | ImageView.jl and GtkUtilities.jl          | `imshow`                          | `imscrollpanel` etc.                      |
 | Interactive colormap                  |                                           |                                   | `imcolormaptool`                          |
-| Region selection                      |                                           | `RecatangleTool` etc.             | `imrect`, `imellipse`, `imfreehand`, etc. |
+| Region selection                      |                                           | `RectangleTool` etc.              | `imrect`, `imellipse`, `imfreehand`, etc. |
 | Image comparison                      | [`colorview`](@ref), [`mosaicview`](@ref) |                                   | `imshowpair`, `imfuse`                    |
 | Label colorization                    | `IndirectArray`, `ColorizedArray`         | `label2rgb`                       | `label2rgb`                               |
 |                                       |                                           |                                   |                                           |
