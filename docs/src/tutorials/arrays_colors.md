@@ -190,8 +190,8 @@ ColorTypes.BGR{Float32}
   r: Float32 0.7550899
 ```
 
-or even to pack the red, green, and blue colors---together with a
-dummy "alpha" (transparency) channel---into a single 32-bit integer:
+or even to pack the red, green, and blue colors—together with a
+dummy "alpha" (transparency) channel—into a single 32-bit integer:
 
 ```julia
 julia> c24 = RGB24(c); dump(c24)
@@ -218,7 +218,7 @@ julia> 0xa7/0xff
 ```
 
 These values are close to the channels of `c`, but have been rounded
-off---each channel is encoded with only 8 bits, so some approximation
+off—each channel is encoded with only 8 bits, so some approximation
 of the exact floating-point value is unavoidable.
 
 ## [A consistent scale for floating-point and "integer" colors: fixed-point numbers](@id fixedpoint)
@@ -236,7 +236,7 @@ carefully. Notice first that the "floating-point" portion of this
 number matches (to within the precision of the rounding) the value of
 `red(c)`. The `N0f8` means "**N**ormalized with **8 f**ractional bits,
 with **0** bits left for representing values higher than 1." This is a
-[fixed-point number](https://en.wikipedia.org/wiki/Fixed-point_arithmetic)---rather
+[fixed-point number](https://en.wikipedia.org/wiki/Fixed-point_arithmetic)—rather
 like floating-point numbers, except that the decimal does not
 "float". Internally, these are represented in terms of the 8-bit
 unsigned integer `UInt8`
@@ -346,7 +346,7 @@ nearly black:
 
 ![12bit_black](assets/arrays_colors/12bit_black.png)
 
-Since the camera is saturated, this is quite misleading---it should
+Since the camera is saturated, this is quite misleading—it should
 instead display as white.
 
 This again illustrates one of the fundamental problems about assuming

@@ -9,7 +9,7 @@ make_roi(xs::UnitRange, ys::UnitRange) = make_roi(Point(ys[1], xs[1]), Point(ys[
 
 If you're comfortable with Julia or have used another image-processing
 package before, this page may help you get started quickly. If some of
-the terms or concepts here seem strange, don't worry---there are much
+the terms or concepts here seem strange, don't worry—there are much
 more detailed explanations in the following sections.
 
 To start with, let's load the `Images.jl` package:
@@ -39,9 +39,9 @@ We could also select a region-of-interest from a larger image
 # and gets bright in the lower right
 img = Array(reshape(range(0,stop=1,length=10^4), 100, 100))
 # make a copy
-img_c = img[51:70, 21:70] # red
+img_c = img[51:70, 21:70] # see the red region
 # make a view
-img_v = @view img[16:35, 41:90] # blue
+img_v = @view img[16:35, 41:90] # see the blue region
 
 out = vcat(img, hcat(img_c, img_v)) # hide
 out = RGB.(Gray.(out)) # hide
@@ -57,12 +57,12 @@ draw!(out, roi_v_boundary, RGB{Float64}(0, 0, 1)) # hide
 draw!(out, roi_v, RGB{Float64}(0, 0, 1)) # hide
 ```
 
-As you might know, changing the value of a view would affect the original
-image, while changing that of a copy doesn't:
+As you might know, changing the value of a _view_ affects the original
+image, while changing a _copy_ does not:
 
 ```@example array
 fill!(img_c, 1) # red region in original doesn't change
-fill!(img_v, 0) # blue
+fill!(img_v, 0) # blue region is changed
 
 out = vcat(img, hcat(img_c, img_v)) # hide
 out = RGB.(Gray.(out)) # hide
@@ -115,17 +115,17 @@ It is very easy to define new array types in Julia--and consequently
 specialized images or operations--and have them interoperate
 smoothly with the vast majority of functions in JuliaImages.
 
-## Array elements are pixels (and vice versa)
+## Elements of images are pixel colorants
 
 ```@setup pixel
 using Images, MosaicViews
 ```
 
-Elements of image are called **pixels**; in JuliaImages we provide an
-abstraction on this concept. For example, we have `Gray` for grayscale image,
-`RGB` for RGB image, `Lab` for Lab image, and etc.
+Elements of an image are called **pixels**, and JuliaImages treats pixels as first-class objects.
+For example, we have `Gray` for grayscale pixels,
+`RGB` for RGB color pixels, `Lab` for Lab colors, etc.
 
-Creating a pixel is initializing a struct of that type:
+To create a pixel, initiate a struct of that type:
 
 ```@example pixel
 Gray(0.0) # black
@@ -136,7 +136,7 @@ RGB(0.0, 0.0, 1.0) # blue
 [RGB.(Gray(0.0)) RGB.(Gray(1.0)) RGB(1.0, 0.0, 0.0) RGB(0.0, 1.0, 0.0) RGB(0.0, 0.0, 1.0)] # hide
 ```
 
-and image is just an array of pixel objects:
+An image is just an array of pixel objects:
 
 ```@repl pixel
 img_gray = rand(Gray, 2, 2)
@@ -149,25 +149,25 @@ mosaicview(RGB.(img_gray), RGB.(img_rgb), RGB.(img_lab), # hide
            nrow=1, npad=2) # hide
 ```
 
+Color channels are not their own dimension of the image array; rather, an image is an array of pixels.
 As you can see, both `img_rgb` and `img_lab` images are of size
-``2 \times 2`` (instead of ``2 \times 2 \times 3`` or ``3 \times 2 \times 2``);
-a RGB image is an array of `RGB` pixels whereas a Lab image is an array of `Lab` pixel.
+``2 \times 2`` (instead of ``2 \times 2 \times 3`` or ``3 \times 2 \times 2``).
 
 !!! note
-    It's recommended to use `Gray` instead of the `Number` type in JuliaImages since it indicates
-    that the array of numbers is best interpreted as a grayscale image. For example, it
-    triggers `Atom/Juno` and `Jupyter` to display the array as an image instead of a
+    It's recommended to use `Gray` instead of `Number` types since it indicates
+    that the array is best interpreted as a grayscale image. For example, this
+    tells `Atom/Juno` and `Jupyter` to display the array as an image instead of a
     matrix of numbers. There's no performance overhead for using `Gray` over `Number`.
 
 This design choice facilitates generic code that can handle both
 grayscale and color images without needing to introduce extra loops or
 checks for a color dimension.
-It also provides more rational support for 3d grayscale images--which
-might happen to have size 3 along the third dimension--and
+It also provides more rational support for 3d grayscale images—which
+might happen to have size 3 along the third dimension—and
 consequently helps unify the "computer vision" and "biomedical image
 processing" communities.
 
-## Color conversions are construction/view
+## Converting between colorants and separate color channels
 
 Conversions between different `Colorant`s are straightforward:
 
@@ -190,22 +190,21 @@ img_CHW = channelview(img_rgb) # 3 * 2 * 2
 img_HWC = permutedims(img_CHW, (2, 3, 1)) # 2 * 2 * 3
 ```
 
+To convert a `channelview` array into an array of pixels, ensure the first dimension
+is the color channel and use `colorview`:
+
 ```@repl pixel
-img_CHW = permutedims(img_HWC, (3, 1, 2)) # 3 * 2 * 2
 img_rgb = colorview(RGB, img_CHW) # 2 * 2
 ```
 
 !!! warning
-    Don't overuse `channelview` because it loses the colorant information by
-    converting an image to a raw numeric array.
-
-    It's very likely that users from other languages will have the tendency to
-    `channelview` every image they're going to process. Unfamiliarity of the pixel
-    concept provided by JuliaImages doesn't necessarily mean it's bad.
+    It is best practice to manipulate images in the `colorview` representation.
+    Users from other languages may be more familiar with the `channelview` representation,
+    however this loses the colorant information by converting an image to a raw numeric array.
 
 !!! note
-    The reason we use CHW (i.e., channel-height-width) order instead of HWC
-    is that this provides a memory friendly indexing mechanisim for `Array`.
+    We use channel-height-width (CHW) order instead of HWC order
+    because this provides a memory friendly indexing mechanisim for `Array`.
     By default, in Julia the first index is also the fastest (i.e., has
     adjacent storage in memory). For more details, please refer to the performance tip:
     [Access arrays in memory order, along columns](https://docs.julialang.org/en/v1/manual/performance-tips/#Access-arrays-in-memory-order,-along-columns-1)
@@ -234,18 +233,15 @@ nothing # hide
 using ImageCore, ImageShow, FixedPointNumbers
 ```
 
-In JuliaImages, by default all images are displayed assuming that 0
-means "black" and 1 means "white" or "saturated" (the latter applying
-to channels of an RGB image).
+In JuliaImages, images are displayed assuming by default that 0
+means "black" and 1 means "white" (or "saturated" for an RGB image).
 
-Perhaps surprisingly, **this 0-to-1 convention applies even when the
-intensities are encoded using only 8-bits per color channel**. JuliaImages
-uses a special type, `N0f8`, that interprets an 8-bit "integer" as if it had
-been scaled by 1/255, thus encoding values from 0 to 1 in 256 steps.
+Importantly, this applies **even for intensities encoded as 8-bit integers** which themselves range
+from 0 to 255 (not from 0 to 1). This is made possible with the special number type `N0f8` which
+interprets an 8-bit "integer" as if it had been scaled by 1/255, encoding values from 0 to 1 in 256 steps.
 
-`N0f8` numbers (standing for **N**ormalized, with **0** integer bits and
-**8** **f**ractional bits) obey standard mathematical rules, and can be
-added, multiplied, etc. There are types like `N0f16` for working with 16-bit
+The name `N0f8` stands for **N**ormalized, with **0** integer bits and
+**8** **f**ractional bits. There are other types like `N0f16` for working with 16-bit
 images (and even `N2f14` for images acquired with a 14-bit camera, etc.).
 
 ```@repl fixedpoint
@@ -297,7 +293,7 @@ eltype(img_float_view)
 ## Arrays with arbitrary indices
 
 If you have an input image and perform some kind of spatial
-transformation on it, how do pixels/voxels in the transformed image
+transformation on it, how do pixels (or voxels) in the transformed image
 match up to pixels in the input? Through Julia's support for arrays
 with indices that start at values other than 1, it is possible to
 allow array indices to represent *absolute* position in space, making
@@ -305,7 +301,7 @@ it straightforward to keep track of the correspondence between
 location across multiple images. More information can be found in
 [Keeping track of location with unconventional indices](@ref).
 
-## Function categories
+## Index of functions
 
 See [Summary and function reference](@ref page_references) for more information about
 each of the topics below. The list below is accessible via `?Images`

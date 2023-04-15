@@ -149,8 +149,8 @@ julia> r = reshape(1:15, 3, 5)
  3  6  9  12  15
 ```
 
-A `UnitRange` is represented compactly---storing only the starting and
-stopping values---so there is no memory location that can be referenced to
+A `UnitRange` is represented compactly-storing only the starting and
+stopping values-so there is no memory location that can be referenced to
 access all values. In such cases, `reshape` returns a `ReshapedArray`,
 which is a generic "view type" that handles reshaping of any kind of
 `AbstractArray`.
