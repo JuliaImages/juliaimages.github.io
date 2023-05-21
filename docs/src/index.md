@@ -28,16 +28,18 @@ in Julia.
 
 This documentation is a collection of several parts:
 
+* ["Getting started"](@ref page_get_started) covers installation, loading images from files, and viewing images. New users should start here.
 * The ["Tutorials"](@ref page_quickstart) part contains a list of tutorials that help you gain better understanding of the JuliaImages
-  ecosystem.
+  ecosystem and its underlying concepts.
 * The ["Packages"](@ref page_packages_index) part contains information about specific components (themselves
   Julia packages) that together comprise JuliaImages and address specific subfields of image processing.
 * The ["Demos"](@ref demonstrations) part gives you demonstrations of how to carry out specific tasks with JuliaImages.
 * The ["References"](@ref page_references) part is a collection of function references provided by JuliaImages.
   The recommended way to use the references is by the searching function of your browser `Ctrl-F`/`Cmd-F`.
-* The ["Comparison with other image processing frameworks"](@ref page_api_comparison) would be helpful
+* The ["Comparison with other image processing frameworks"](@ref page_api_comparison) may be helpful
   if you've used other frameworks previously.
 
 # Acknowledgement
 
 Johnny Chen([@johnnychen94](https://github.com/johnnychen94))'s work is partially supported by [Tongyuan](https://github.com/Suzhou-Tongyuan) since 2022.
+Portions of Tim Holy's work on JuliaImages has been funded by grants from the [National Institutes of Health](https://www.nih.gov/).
