@@ -36,12 +36,12 @@ bw_transform_example = feature_transform(bw_example)
 
 # For example, the closest `true` to `bw_example[1,1]` exists at `CartesianIndex(2, 2)`,
 # hence it's assigned `CartesianIndex(2, 2)`. For other positions in `bw_example` it is
-# processed similarily.
+# processed similarly.
 
 dist = 1 .- distance_transform(bw_transform)
 dist_example = 1 .- distance_transform(bw_transform_example)
 
-# | Dist(distance tranform for img) | Dist(distance transform for img_example) |
+# | Dist(distance transform for img) | Dist(distance transform for img_example) |
 # | :---:| :-----------:|
 # |![](assets/contour1.png) | ![](assets/dist_example.png) |
 
@@ -82,7 +82,7 @@ colored_labels = IndirectArray(labels, distinguishable_colors(maximum(labels)))
 masked_colored_labels = colored_labels .* (1 .- bw)
 mosaic(img, colored_labels, masked_colored_labels; nrow=1)
 
-# Here we use `IndirectArray` to store the indexed image, for more explaination on it please
+# Here we use `IndirectArray` to store the indexed image, for more explanation on it please
 # check the tutorial [Indexed image in 5 minutes](@ref demo_indexed_image).
 
 save("assets/watershed.gif", cat(img, colored_labels, masked_colored_labels; dims=3); fps=1) #src
