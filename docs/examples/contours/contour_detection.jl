@@ -17,12 +17,12 @@ using Images, TestImages, FileIO
 ##              N          NE      E       SE      S       SW        W      NW
 ## direction between two pixels
 
-## rotate direction clocwise
+## rotate direction clockwise
 function clockwise(dir)
     return (dir)%8 + 1
 end
 
-## rotate direction counterclocwise
+## rotate direction counterclockwise
 function counterclockwise(dir)
     return (dir+6)%8 + 1
 end
