@@ -5,7 +5,7 @@
 # date: 2020-03-07
 # ---
 
-# This demonstration shows some common tricks in image comparision -- difference view
+# This demonstration shows some common tricks in image comparison -- difference view
 
 # People with MATLAB experiences would miss the function
 # [`imshowpair`](https://www.mathworks.com/help/images/ref/imshowpair.html), but in JuliaImages
