@@ -45,7 +45,7 @@ img_noise = img_orig + noise
 mosaicview(img_const, img_noise; nrow=1)
 save("assets/ssim.png", img_noise) #src
 
-# We use the `mse` funtion defined in `ImageDistances` to calculate the mean squared
+# We use the `mse` function defined in `ImageDistances` to calculate the mean squared
 # error between the original and the two modified images.
 
 mse(img_orig, img_const), mse(img_orig, img_noise)
