@@ -40,7 +40,7 @@ These backends aren't exclusive to each other, so if you're a macOS user, you ca
 backends. And in most cases, you don't need to directly interact with these backends, instead, we
 use the `save` and `load` provided by the [`FileIO.jl`](https://github.com/JuliaIO/FileIO.jl)
 frontend. If you've installed multiple backends then `FileIO` will choose the most appropriate
-backend acoording to your file format. For example, if available `ImageIO` is used to load PNG
+backend according to your file format. For example, if available `ImageIO` is used to load PNG
 files.
 
 Adding these gives you a basic image IO setup:

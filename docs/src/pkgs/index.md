@@ -57,7 +57,7 @@ you are interested in most.
 
 !!! tip
     For package developers, `Images.jl` is usually a large dependency to be included in the `deps` section of
-    your `Project.toml`. Hence it is reccomended to add only `ImageCore` together with the exact sub-packages
+    your `Project.toml`. Hence it is recommended to add only `ImageCore` together with the exact sub-packages
     you need. You can use `@which` to find out the exact package and file a method/function belongs to.
 
 JuliaImages is not a closed ecosystem; it works nicely with many other packages outside of JuliaImages.

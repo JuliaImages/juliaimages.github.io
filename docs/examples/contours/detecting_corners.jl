@@ -58,7 +58,7 @@ mosaicview(img_copies; nrow=1)
 # change abruptly at corner points, giving rise to large gradients. However, this makes them
 # computationally expensive.
 
-# The *FAST (Features from Accelarated Segment Test) Corner Detector* is a feature
+# The *FAST (Features from Accelerated Segment Test) Corner Detector* is a feature
 # detection algorithm which is designed to be computationally cheaper, and hence much faster.
 # It classifies a pixel $P$ as a corner if at least $n$ contiguous points out of the 16
 # points in a circle around it have intensities either higher (or lower) than that of $P$
